@@ -5,7 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d79d3631-22e9-4631-8380-5127baf7a43e" name="Changes" comment="Init">
-      <change beforePath="$PROJECT_DIR$/src/ast/TrAstBuilder.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/ast/TrAstBuilder.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/semantics/SemanticAnalyzer.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/semantics/SemanticsConfig.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/semantics/SemanticsDemo.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/semantics/SemanticsPlans.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/symbols/SymbolTable.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/symbols/SymbolTable.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,6 +43,7 @@
   "keyToString": {
     "Kotlin.IrDemoKt.executor": "Run",
     "Kotlin.MainKt.executor": "Run",
+    "Kotlin.SemanticsDemoKt.executor": "Run",
     "Kotlin.SnnArchDemoKt.executor": "Run",
     "Kotlin.SymbolTableDemoKt.executor": "Run",
     "Kotlin.TrAstDemoKt.executor": "Run",
@@ -53,9 +58,16 @@
     "project.structure.side.proportion": "0.2"
   }
 }]]></component>
-  <component name="RunManager" selected="Kotlin.IrDemoKt">
+  <component name="RunManager" selected="Kotlin.SemanticsDemoKt">
     <configuration name="IrDemoKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="ir.IrDemoKt" />
+      <module name="neomorphix" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SemanticsDemoKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="semantics.SemanticsDemoKt" />
       <module name="neomorphix" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -75,13 +87,6 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="TransactionDemoKt (1)" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="demo.TransactionDemoKt" />
-      <module name="neomorphix" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="TransactionDemoKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="transaction.TransactionDemoKt" />
       <module name="neomorphix" />
@@ -91,11 +96,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Kotlin.SemanticsDemoKt" />
         <item itemvalue="Kotlin.IrDemoKt" />
         <item itemvalue="Kotlin.TrAstDemoKt" />
         <item itemvalue="Kotlin.SymbolTableDemoKt" />
         <item itemvalue="Kotlin.TransactionDemoKt" />
-        <item itemvalue="Kotlin.TransactionDemoKt (1)" />
       </list>
     </recent_temporary>
   </component>

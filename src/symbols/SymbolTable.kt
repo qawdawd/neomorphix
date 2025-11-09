@@ -96,6 +96,12 @@ class SymbolTable {
     /** Returns the width recorded for the specified symbol, if present. */
     fun widthOf(name: String): Int? = widthTable[name]
 
+    /** Returns descriptors of all registered fields in insertion order. */
+    fun allFields(): List<SymbolEntry> = fieldSymbols.values.toList()
+
+    /** Returns descriptors of all registered operands in insertion order. */
+    fun allOperands(): List<SymbolEntry> = operandSymbols.values.toList()
+
     /** Performs basic validation ensuring that all AST references are registered in the table. */
     fun validate(ast: AstBlock) {
         val issues = mutableListOf<String>()

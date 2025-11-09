@@ -78,7 +78,12 @@ class TrAstBuilder {
         require(phaseBlock.phase == AstPhase.SYNAPTIC) {
             "Synaptic loop expansion can only be applied to the synaptic phase"
         }
-        val expanded = expandBlockWithPattern(phaseBlock.body, arch, TransactionKind.SPIKE)
+        val expanded = expandBlockWithPattern(
+            phaseBlock.body,
+            arch,
+            TransactionKind.SPIKE,
+            LoopContext()
+        )
         return phaseBlock.copy(body = expanded)
     }
 
@@ -87,7 +92,12 @@ class TrAstBuilder {
         require(phaseBlock.phase == AstPhase.SOMATIC) {
             "Somatic loop expansion can only be applied to the somatic phase"
         }
-        val expanded = expandBlockWithPattern(phaseBlock.body, arch, TransactionKind.NEURON)
+        val expanded = expandBlockWithPattern(
+            phaseBlock.body,
+            arch,
+            TransactionKind.NEURON,
+            LoopContext()
+        )
         return phaseBlock.copy(body = expanded)
     }
 
@@ -96,7 +106,12 @@ class TrAstBuilder {
         require(phaseBlock.phase == AstPhase.EMISSION) {
             "Emission loop expansion can only be applied to the emission phase"
         }
-        val expanded = expandBlockWithPattern(phaseBlock.body, arch, TransactionKind.NEURON)
+        val expanded = expandBlockWithPattern(
+            phaseBlock.body,
+            arch,
+            TransactionKind.NEURON,
+            LoopContext()
+        )
         return phaseBlock.copy(body = expanded)
     }
 
@@ -105,7 +120,12 @@ class TrAstBuilder {
         require(phaseBlock.phase == AstPhase.REFRACTORY) {
             "Refractory loop expansion can only be applied to the refractory phase"
         }
-        val expanded = expandBlockWithPattern(phaseBlock.body, arch, TransactionKind.NEURON)
+        val expanded = expandBlockWithPattern(
+            phaseBlock.body,
+            arch,
+            TransactionKind.NEURON,
+            LoopContext()
+        )
         return phaseBlock.copy(body = expanded)
     }
 
@@ -243,81 +263,114 @@ class TrAstBuilder {
     private fun expandBlockWithPattern(
         block: AstBlock,
         arch: SnnArch,
-        kind: TransactionKind
+        kind: TransactionKind,
+        context: LoopContext
     ): AstBlock {
-        val expanded = block.statements.map { expandNode(it, arch, kind) }
+        val expanded = block.statements.map { expandNode(it, arch, kind, context) }
         return block.copy(statements = expanded)
     }
 
     /** Applies expansion to a specific node. */
-    private fun expandNode(node: AstNode, arch: SnnArch, kind: TransactionKind): AstNode {
-        val updated = when (node) {
-            is AstOperation -> node
-            is AstCondition -> expandCondition(node, arch, kind)
-            is AstLoop -> node
-            is AstPhaseBlock -> node // phase blocks are handled by callers
-        }
-        val pattern = when (kind) {
-            TransactionKind.SPIKE -> classifySynapticPattern(updated)
-            TransactionKind.NEURON -> classifyNeuronPattern(updated)
-        }
-        return wrapWithPattern(updated, pattern, arch)
-    }
-
-    /** Recursively expands nested condition bodies. */
-    private fun expandCondition(node: AstCondition, arch: SnnArch, kind: TransactionKind): AstCondition {
-        val thenExpanded = expandBlockWithPattern(node.thenBlock, arch, kind)
-        val elseIfExpanded = node.elseIfBranches.map {
-            AstCondition.ElseIfBranch(
-                condition = it.condition,
-                body = expandBlockWithPattern(it.body, arch, kind)
-            )
-        }
-        val elseExpanded = node.elseBlock?.let { expandBlockWithPattern(it, arch, kind) }
-        return node.copy(
-            thenBlock = thenExpanded,
-            elseIfBranches = elseIfExpanded,
-            elseBlock = elseExpanded
-        )
-    }
-
-    /** Wraps the node in loops depending on the required expansion pattern. */
-    private fun wrapWithPattern(node: AstNode, pattern: LoopPattern, arch: SnnArch): AstNode {
-        if (pattern == LoopPattern.SCALAR || node is AstLoop) {
-            return node
-        }
-        val preCount = arch.neuronsPerLayer.firstOrNull() ?: 0
-        val postCount = when (arch.connectivity) {
-            ConnectivityType.FULLY_CONNECTED -> arch.neuronsPerLayer.getOrNull(1) ?: 0
-            else -> arch.neuronsPerLayer.lastOrNull() ?: 0
-        }
-
-        fun wrapSingle(count: Int, iterator: String, kind: LoopKind, description: String): AstNode {
-            if (count <= 0) return node
-            val body = AstBlock(node.origin, listOf(node))
-            return AstLoop(
-                origin = node.origin,
-                descriptor = LoopDescriptor(iterator, count, kind, description),
-                body = body
-            )
-        }
-
-        return when (pattern) {
-            LoopPattern.DOUBLE -> {
-                if (preCount <= 0 || postCount <= 0) return node
-                val inner = wrapSingle(postCount, "postNeuron", LoopKind.POSTSYNAPTIC, "iterate post-synaptic neurons") as AstLoop
-                val innerBlock = AstBlock(node.origin, listOf(inner))
-                AstLoop(
-                    origin = node.origin,
-                    descriptor = LoopDescriptor("preNeuron", preCount, LoopKind.PRESYNAPTIC, "iterate pre-synaptic neurons"),
-                    body = innerBlock
-                )
+    private fun expandNode(
+        node: AstNode,
+        arch: SnnArch,
+        kind: TransactionKind,
+        context: LoopContext
+    ): AstNode {
+        return when (node) {
+            is AstOperation -> {
+                val pattern = when (kind) {
+                    TransactionKind.SPIKE -> classifySynapticPattern(node)
+                    TransactionKind.NEURON -> classifyNeuronPattern(node)
+                }
+                applyLoopRequirement(node, pattern.toRequirement(), arch, context)
             }
 
-            LoopPattern.PRE_ONLY -> wrapSingle(preCount, "preNeuron", LoopKind.PRESYNAPTIC, "iterate pre-synaptic neurons")
-            LoopPattern.POST_ONLY -> wrapSingle(postCount, "postNeuron", LoopKind.POSTSYNAPTIC, "iterate post-synaptic neurons")
-            LoopPattern.SCALAR -> node
+            is AstCondition -> {
+                val pattern = when (kind) {
+                    TransactionKind.SPIKE -> classifySynapticPattern(node)
+                    TransactionKind.NEURON -> classifyNeuronPattern(node)
+                }
+                val innerContext = context.ensure(pattern.toRequirement())
+                val thenExpanded = expandBlockWithPattern(node.thenBlock, arch, kind, innerContext)
+                val elseIfExpanded = node.elseIfBranches.map {
+                    AstCondition.ElseIfBranch(
+                        condition = it.condition,
+                        body = expandBlockWithPattern(it.body, arch, kind, innerContext)
+                    )
+                }
+                val elseExpanded = node.elseBlock?.let {
+                    expandBlockWithPattern(it, arch, kind, innerContext)
+                }
+                val rebuilt = node.copy(
+                    thenBlock = thenExpanded,
+                    elseIfBranches = elseIfExpanded,
+                    elseBlock = elseExpanded
+                )
+                applyLoopRequirement(rebuilt, pattern.toRequirement(), arch, context)
+            }
+
+            is AstLoop -> {
+                val loopContext = context.withLoop(node.descriptor.kind)
+                val expandedBody = expandBlockWithPattern(node.body, arch, kind, loopContext)
+                node.copy(body = expandedBody)
+            }
+
+            is AstPhaseBlock -> {
+                val expanded = expandBlockWithPattern(node.body, arch, kind, context)
+                node.copy(body = expanded)
+            }
         }
+    }
+
+    /** Wraps the node with any loops missing from the current context. */
+    private fun applyLoopRequirement(
+        node: AstNode,
+        requirement: LoopRequirement,
+        arch: SnnArch,
+        context: LoopContext
+    ): AstNode {
+        var result: AstNode = node
+        var updatedContext = context
+
+        if (requirement.needsPost && !updatedContext.hasPost) {
+            result = wrapWithLoop(
+                result,
+                count = arch.postSynapticCount(),
+                iterator = "postNeuron",
+                kind = LoopKind.POSTSYNAPTIC,
+                description = "iterate post-synaptic neurons"
+            )
+            updatedContext = updatedContext.withPost()
+        }
+        if (requirement.needsPre && !updatedContext.hasPre) {
+            result = wrapWithLoop(
+                result,
+                count = arch.preSynapticCount(),
+                iterator = "preNeuron",
+                kind = LoopKind.PRESYNAPTIC,
+                description = "iterate pre-synaptic neurons"
+            )
+            updatedContext = updatedContext.withPre()
+        }
+        return result
+    }
+
+    /** Creates a loop node around the provided child if the count is positive. */
+    private fun wrapWithLoop(
+        child: AstNode,
+        count: Int,
+        iterator: String,
+        kind: LoopKind,
+        description: String
+    ): AstNode {
+        if (count <= 0) return child
+        val body = AstBlock(child.origin, listOf(child))
+        return AstLoop(
+            origin = child.origin,
+            descriptor = LoopDescriptor(iterator, count, kind, description),
+            body = body
+        )
     }
 
     /** Gathers the types referenced by the node to drive loop classification. */
@@ -592,5 +645,44 @@ class TrAstBuilder {
         PRE_ONLY,
         POST_ONLY,
         SCALAR
+    }
+
+    /** Records which iterator loops already surround the current block. */
+    private data class LoopContext(
+        val hasPre: Boolean = false,
+        val hasPost: Boolean = false
+    ) {
+        fun withLoop(kind: LoopKind): LoopContext = when (kind) {
+            LoopKind.PRESYNAPTIC -> withPre()
+            LoopKind.POSTSYNAPTIC -> withPost()
+        }
+
+        fun withPre(): LoopContext = copy(hasPre = true)
+        fun withPost(): LoopContext = copy(hasPost = true)
+
+        fun ensure(requirement: LoopRequirement): LoopContext = LoopContext(
+            hasPre = hasPre || requirement.needsPre,
+            hasPost = hasPost || requirement.needsPost
+        )
+    }
+
+    /** Describes which iterator loops are required for a node. */
+    private data class LoopRequirement(
+        val needsPre: Boolean,
+        val needsPost: Boolean
+    )
+
+    private fun LoopPattern.toRequirement(): LoopRequirement = when (this) {
+        LoopPattern.DOUBLE -> LoopRequirement(needsPre = true, needsPost = true)
+        LoopPattern.PRE_ONLY -> LoopRequirement(needsPre = true, needsPost = false)
+        LoopPattern.POST_ONLY -> LoopRequirement(needsPre = false, needsPost = true)
+        LoopPattern.SCALAR -> LoopRequirement(needsPre = false, needsPost = false)
+    }
+
+    private fun SnnArch.preSynapticCount(): Int = neuronsPerLayer.firstOrNull() ?: 0
+
+    private fun SnnArch.postSynapticCount(): Int = when (connectivity) {
+        ConnectivityType.FULLY_CONNECTED -> neuronsPerLayer.getOrNull(1) ?: 0
+        else -> neuronsPerLayer.lastOrNull() ?: 0
     }
 }

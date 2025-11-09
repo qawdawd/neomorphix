@@ -5,11 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d79d3631-22e9-4631-8380-5127baf7a43e" name="Changes" comment="Init">
-      <change afterPath="$PROJECT_DIR$/src/ir/IrBuilder.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/ir/IrDemo.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/ir/IrNodes.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/ir/IrProgram.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ast/TrAstBuilder.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/ast/TrAstBuilder.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,7 +53,7 @@
     "project.structure.side.proportion": "0.2"
   }
 }]]></component>
-  <component name="RunManager" selected="Kotlin.TrAstDemoKt">
+  <component name="RunManager" selected="Kotlin.IrDemoKt">
     <configuration name="IrDemoKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="ir.IrDemoKt" />
       <module name="neomorphix" />
@@ -95,8 +91,8 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Kotlin.TrAstDemoKt" />
         <item itemvalue="Kotlin.IrDemoKt" />
+        <item itemvalue="Kotlin.TrAstDemoKt" />
         <item itemvalue="Kotlin.SymbolTableDemoKt" />
         <item itemvalue="Kotlin.TransactionDemoKt" />
         <item itemvalue="Kotlin.TransactionDemoKt (1)" />

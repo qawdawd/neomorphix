@@ -5,12 +5,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d79d3631-22e9-4631-8380-5127baf7a43e" name="Changes" comment="Init">
-      <change afterPath="$PROJECT_DIR$/src/symbols/SymbolEntry.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/symbols/SymbolTable.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/symbols/SymbolTableDemo.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ir/IrBuilder.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ir/IrDemo.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ir/IrNodes.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ir/IrProgram.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ast/TrAstDemo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/ast/TrAstDemo.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/transaction/TransactionDemo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/transaction/TransactionDemo.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -42,6 +41,7 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "Kotlin.IrDemoKt.executor": "Run",
     "Kotlin.MainKt.executor": "Run",
     "Kotlin.SnnArchDemoKt.executor": "Run",
     "Kotlin.SymbolTableDemoKt.executor": "Run",
@@ -57,9 +57,9 @@
     "project.structure.side.proportion": "0.2"
   }
 }]]></component>
-  <component name="RunManager" selected="Kotlin.SymbolTableDemoKt">
-    <configuration name="SnnArchDemoKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="arch.SnnArchDemoKt" />
+  <component name="RunManager" selected="Kotlin.TrAstDemoKt">
+    <configuration name="IrDemoKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="ir.IrDemoKt" />
       <module name="neomorphix" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -95,11 +95,11 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Kotlin.SymbolTableDemoKt" />
         <item itemvalue="Kotlin.TrAstDemoKt" />
+        <item itemvalue="Kotlin.IrDemoKt" />
+        <item itemvalue="Kotlin.SymbolTableDemoKt" />
         <item itemvalue="Kotlin.TransactionDemoKt" />
         <item itemvalue="Kotlin.TransactionDemoKt (1)" />
-        <item itemvalue="Kotlin.SnnArchDemoKt" />
       </list>
     </recent_temporary>
   </component>

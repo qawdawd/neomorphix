@@ -4,25 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d79d3631-22e9-4631-8380-5127baf7a43e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/kotlinc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/KotlinJavaRuntime.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/neomorphix.iml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/Main.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/arch/SnnArch.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/arch/SnnArchDemo.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/ast/TrAstBuilder.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/ast/TrAstDemo.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/ast/TrAstNodes.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/transaction/TransactionDemo.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/transaction/TransactionPrimitives.kt" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/transaction/Transactions.kt" afterDir="false" />
+    <list default="true" id="d79d3631-22e9-4631-8380-5127baf7a43e" name="Changes" comment="Init">
+      <change afterPath="$PROJECT_DIR$/src/symbols/SymbolEntry.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/symbols/SymbolTable.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/symbols/SymbolTableDemo.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/ast/TrAstDemo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/ast/TrAstDemo.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/transaction/TransactionDemo.kt" beforeDir="false" afterPath="$PROJECT_DIR$/src/transaction/TransactionDemo.kt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -40,6 +28,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
   <component name="ProjectColorInfo"><![CDATA[{
   "associatedIndex": 4
 }]]></component>
@@ -53,6 +44,7 @@
   "keyToString": {
     "Kotlin.MainKt.executor": "Run",
     "Kotlin.SnnArchDemoKt.executor": "Run",
+    "Kotlin.SymbolTableDemoKt.executor": "Run",
     "Kotlin.TrAstDemoKt.executor": "Run",
     "Kotlin.TransactionDemoKt (1).executor": "Run",
     "Kotlin.TransactionDemoKt.executor": "Run",
@@ -65,16 +57,16 @@
     "project.structure.side.proportion": "0.2"
   }
 }]]></component>
-  <component name="RunManager" selected="Kotlin.TrAstDemoKt">
-    <configuration name="MainKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="MainKt" />
+  <component name="RunManager" selected="Kotlin.SymbolTableDemoKt">
+    <configuration name="SnnArchDemoKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="arch.SnnArchDemoKt" />
       <module name="neomorphix" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="SnnArchDemoKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="arch.SnnArchDemoKt" />
+    <configuration name="SymbolTableDemoKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="symbols.SymbolTableDemoKt" />
       <module name="neomorphix" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -103,11 +95,11 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Kotlin.SymbolTableDemoKt" />
         <item itemvalue="Kotlin.TrAstDemoKt" />
         <item itemvalue="Kotlin.TransactionDemoKt" />
         <item itemvalue="Kotlin.TransactionDemoKt (1)" />
         <item itemvalue="Kotlin.SnnArchDemoKt" />
-        <item itemvalue="Kotlin.MainKt" />
       </list>
     </recent_temporary>
   </component>
@@ -120,6 +112,19 @@
       <option name="presentableId" value="Default" />
       <updated>1762635712196</updated>
     </task>
+    <task id="LOCAL-00001" summary="Init">
+      <option name="closed" value="true" />
+      <created>1762718406788</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1762718406789</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="Init" />
+    <option name="LAST_COMMIT_MESSAGE" value="Init" />
   </component>
 </project>

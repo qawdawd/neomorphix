@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="d79d3631-22e9-4631-8380-5127baf7a43e" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/kotlinc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/libraries/KotlinJavaRuntime.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/neomorphix.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/Main.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/arch/SnnArch.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/arch/SnnArchDemo.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ast/TrAstBuilder.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ast/TrAstDemo.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/ast/TrAstNodes.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/transaction/TransactionDemo.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/transaction/TransactionPrimitives.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/transaction/Transactions.kt" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+        <option value="Kotlin Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "associatedIndex": 4
+}]]></component>
+  <component name="ProjectId" id="35DDNi4glDCw9999EFlBc848F7r" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Kotlin.MainKt.executor": "Run",
+    "Kotlin.SnnArchDemoKt.executor": "Run",
+    "Kotlin.TrAstDemoKt.executor": "Run",
+    "Kotlin.TransactionDemoKt (1).executor": "Run",
+    "Kotlin.TransactionDemoKt.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "git-widget-placeholder": "main",
+    "kotlin-language-version-configured": "true",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.2"
+  }
+}]]></component>
+  <component name="RunManager" selected="Kotlin.TrAstDemoKt">
+    <configuration name="MainKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="MainKt" />
+      <module name="neomorphix" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="SnnArchDemoKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="arch.SnnArchDemoKt" />
+      <module name="neomorphix" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TrAstDemoKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="ast.TrAstDemoKt" />
+      <module name="neomorphix" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TransactionDemoKt (1)" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="demo.TransactionDemoKt" />
+      <module name="neomorphix" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="TransactionDemoKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="transaction.TransactionDemoKt" />
+      <module name="neomorphix" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Kotlin.TrAstDemoKt" />
+        <item itemvalue="Kotlin.TransactionDemoKt" />
+        <item itemvalue="Kotlin.TransactionDemoKt (1)" />
+        <item itemvalue="Kotlin.SnnArchDemoKt" />
+        <item itemvalue="Kotlin.MainKt" />
+      </list>
+    </recent_temporary>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="d79d3631-22e9-4631-8380-5127baf7a43e" name="Changes" comment="" />
+      <created>1762635712196</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1762635712196</updated>
+    </task>
+    <servers />
+  </component>
+</project>

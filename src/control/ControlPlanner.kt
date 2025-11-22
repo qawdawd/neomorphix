@@ -48,21 +48,16 @@ class ControlPlanner {
         states += ControlState("complete", null, "All phases processed")
         transitions += FsmTransition(previous, "complete", "phase_done")
 
-        if (layoutPlan.pipeline.enabled) {
-            notes += "Controller accounts for pipelined synaptic phase with ${layoutPlan.pipeline.stageCount} stage(s)"
-        }
         if (bindingPlan.bindings.any { it.value.isEmpty() }) {
             notes += "Some phases only contribute control flow without operations"
+        }
+        if (layoutPlan.phases.syn.gateByTick) {
+            notes += "Synaptic phase is gated by tick and selector timing"
         }
 
         return ControlPlan(states, transitions, phaseOrder, notes)
     }
 
-    private fun conditionForPhase(layoutPlan: LayoutPlan, phase: IrPhase): String {
-        return if (phase == IrPhase.SYNAPTIC && layoutPlan.pipeline.enabled) {
-            "pipeline_complete"
-        } else {
-            "phase_done"
-        }
-    }
+    private fun conditionForPhase(layoutPlan: LayoutPlan, phase: IrPhase): String =
+        if (phase == IrPhase.SYNAPTIC && layoutPlan.phases.syn.gateByTick) "tick_window_complete" else "phase_done"
 }

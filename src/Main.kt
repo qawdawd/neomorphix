@@ -13,7 +13,8 @@ import export.SystemVerilogExporter
 import generation.CyclixGenerator
 import ir.IrBuilder
 import layout.LayoutPlanner
-import naming.NameAllocator
+import naming.Naming
+import naming.NamingPlanner
 import phasebinding.PhaseBinder
 import semantics.PackingConstraints
 import semantics.PackingOptions
@@ -116,7 +117,7 @@ fun main() {
     val layoutPlan = LayoutPlanner(program).buildPlan(packingPlan, pipelinePlan, somaticPlan, emissionPlan, refractoryPlan)
     val bindingPlan = PhaseBinder(program).bind(layoutPlan)
     val controlPlan = ControlPlanner().plan(layoutPlan, bindingPlan)
-    val namingPlan = NameAllocator(kernelPrefix = "neomorphix").planNames(controlPlan)
+    val namingPlan = NamingPlanner.plan(controlPlan, layoutPlan, bindingPlan, Naming(kernelPrefix = "neomorphix"))
     val generated = CyclixGenerator().generate(program, layoutPlan, bindingPlan, controlPlan, namingPlan)
     val svArtifact = SystemVerilogExporter().export(generated)
 

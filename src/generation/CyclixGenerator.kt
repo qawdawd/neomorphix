@@ -28,22 +28,23 @@ class CyclixGenerator {
         val builder = StringBuilder()
         builder.appendLine("// Kernel: ${namingPlan.kernelName}")
         builder.appendLine("// Layers: ${program.architecture.layerCount}, neurons per layer: ${program.architecture.neuronsPerLayer}")
-        builder.appendLine("// Tick: ${layoutPlan.tick.signalName} every ${layoutPlan.tick.cfg.timeslot}${layoutPlan.tick.cfg.unit} (clk=${layoutPlan.tick.cfg.clkPeriodNs}ns)")
+        builder.appendLine("// Tick: ${namingPlan.assigned.tickInst} every ${layoutPlan.tick.cfg.timeslot}${layoutPlan.tick.cfg.unit} (clk=${layoutPlan.tick.cfg.clkPeriodNs}ns)")
         builder.appendLine(
-            "// FIFO in: role=${layoutPlan.fifoIn.role}, width=${layoutPlan.fifoIn.cfg.dataWidth}, depth=${layoutPlan.fifoIn.cfg.depth}, tickDB=${layoutPlan.fifoIn.cfg.useTickDoubleBuffer}"
+            "// FIFO in: inst=${namingPlan.assigned.fifoInInst}, role=${layoutPlan.fifoIn.role}, width=${layoutPlan.fifoIn.cfg.dataWidth}, depth=${layoutPlan.fifoIn.cfg.depth}, tickDB=${layoutPlan.fifoIn.cfg.useTickDoubleBuffer}"
         )
         builder.appendLine(
-            "// FIFO out: role=${layoutPlan.fifoOut.role}, width=${layoutPlan.fifoOut.cfg.dataWidth}, depth=${layoutPlan.fifoOut.cfg.depth}, tickDB=${layoutPlan.fifoOut.cfg.useTickDoubleBuffer}"
+            "// FIFO out: inst=${namingPlan.assigned.fifoOutInst}, role=${layoutPlan.fifoOut.role}, width=${layoutPlan.fifoOut.cfg.dataWidth}, depth=${layoutPlan.fifoOut.cfg.depth}, tickDB=${layoutPlan.fifoOut.cfg.useTickDoubleBuffer}"
         )
         layoutPlan.wmems.entries.distinctBy { it.value.cfg.name }.forEach { (field, mem) ->
             val packInfo = mem.pack?.let { pack -> "packed (${pack.fields.keys.joinToString()})" } ?: "separate"
             builder.appendLine(
-                "// Weight mem for $field -> ${mem.cfg.name}: ${mem.cfg.wordWidth}b x ${mem.cfg.depth} ($packInfo)"
+                "// Weight mem for $field -> ${namingPlan.assigned.wmemInsts[field]}: ${mem.cfg.wordWidth}b x ${mem.cfg.depth} ($packInfo)"
             )
         }
-        builder.appendLine("// Dyn main=${layoutPlan.dyn.main.field}, extras=${layoutPlan.dyn.extra.joinToString { it.field }}")
-        builder.appendLine("// Selector: ${layoutPlan.selector.cfg.name}, addrW=${layoutPlan.selector.cfg.addrWidth}, tickGate=${layoutPlan.selector.cfg.stepByTick}")
+        builder.appendLine("// Dyn main=${layoutPlan.dyn.main.field} (${namingPlan.assigned.dynMainInst}), extras=${layoutPlan.dyn.extra.joinToString { extra -> extra.field + " -> " + (namingPlan.assigned.dynExtraInsts[extra.field] ?: "-") }}")
+        builder.appendLine("// Selector: ${namingPlan.assigned.selectorInst}, addrW=${layoutPlan.selector.cfg.addrWidth}, tickGate=${layoutPlan.selector.cfg.stepByTick}")
         builder.appendLine("// Phases: synParam=${layoutPlan.phases.syn.synParamField ?: "none"}, emit cmp=${layoutPlan.phases.emit.cmp}")
+        builder.appendLine("// Reg map: ${namingPlan.assigned.regApiToRtl}")
 
         bindingPlan.bindings.forEach { (phase, ops) ->
             val phaseName = namingPlan.phaseNames[phase] ?: phase.name.lowercase()
@@ -58,7 +59,7 @@ class CyclixGenerator {
             builder.appendLine("}")
         }
 
-        builder.appendLine("fsm ${namingPlan.kernelName}_fsm {")
+        builder.appendLine("fsm ${namingPlan.assigned.fsmInst} {")
         controlPlan.states.forEach { state ->
             val mapped = namingPlan.fsmStateNames[state.name] ?: state.name
             builder.appendLine("  state $mapped // ${state.description}")

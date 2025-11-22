@@ -127,9 +127,8 @@ fun main() {
     println("Phase bindings: ${bindingPlan.bindings}")
     println("Control plan: states=${controlPlan.states.size}, transitions=${controlPlan.transitions.size}")
     println()
-    println("Generated Cyclix kernel:\n${generated.cyclixSnippet}")
-    println()
-    println("SystemVerilog output:\n${svArtifact.body}")
+    println("Generated Cyclix kernel: ${generated.name}")
+    println("SystemVerilog output written to ${svArtifact.outputDir}")
     println()
     println("IR dump with planned transforms:\n${irBuilder.dump(program)}")
 }

@@ -1,0 +1,7 @@
+Running: xsim.dir/tb_synapse_selector_behav/xsimk -simmode gui -wdb tb_synapse_selector_behav.wdb -simrunnum 0 -socket 36959
+Design successfully loaded
+Design Loading Memory Usage: 32816 KB (Peak: 33380 KB)
+Design Loading CPU Usage: 10 ms
+Simulation completed
+Simulation Memory Usage: 114980 KB (Peak: 172084 KB)
+Simulation CPU Usage: 60 ms

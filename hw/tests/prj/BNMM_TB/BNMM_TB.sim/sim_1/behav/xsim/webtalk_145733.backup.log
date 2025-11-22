@@ -1,0 +1,14 @@
+#-----------------------------------------------------------
+# Webtalk v2019.1 (64-bit)
+# SW Build 2552052 on Fri May 24 14:47:09 MDT 2019
+# IP Build 2548770 on Fri May 24 18:01:18 MDT 2019
+# Start of session at: Fri Nov 21 19:31:31 2025
+# Process ID: 145733
+# Current directory: /home/yan/neomorphix/hw/tests/prj/BNMM_TB/BNMM_TB.sim/sim_1/behav/xsim
+# Command line: wbtcv -mode batch -source /home/yan/neomorphix/hw/tests/prj/BNMM_TB/BNMM_TB.sim/sim_1/behav/xsim/xsim.dir/tb_synapse_selector_behav/webtalk/xsim_webtalk.tcl -notrace
+# Log file: /home/yan/neomorphix/hw/tests/prj/BNMM_TB/BNMM_TB.sim/sim_1/behav/xsim/webtalk.log
+# Journal file: /home/yan/neomorphix/hw/tests/prj/BNMM_TB/BNMM_TB.sim/sim_1/behav/xsim/webtalk.jou
+#-----------------------------------------------------------
+source /home/yan/neomorphix/hw/tests/prj/BNMM_TB/BNMM_TB.sim/sim_1/behav/xsim/xsim.dir/tb_synapse_selector_behav/webtalk/xsim_webtalk.tcl -notrace
+webtalk_transmit: Time (s): cpu = 00:00:00.70 ; elapsed = 00:00:06 . Memory (MB): peak = 381.156 ; gain = 0.000 ; free physical = 3095 ; free virtual = 10095
+INFO: [Common 17-206] Exiting Webtalk at Fri Nov 21 19:31:37 2025...

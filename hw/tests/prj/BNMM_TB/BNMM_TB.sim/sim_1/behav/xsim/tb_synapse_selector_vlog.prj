@@ -1,0 +1,11 @@
+# compile verilog/system verilog design source files
+sv xil_defaultlib  --include "../../../../../../../../out/synapse_selector_demo" \
+"../../../../../../../../out/synapse_selector_demo/synapse_selector_demo.sv" \
+"../../../../../../src/bnmm/synapse_selector_wrapper.sv" \
+"../../../../../../src/bnmm/tb_synselector.sv" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort

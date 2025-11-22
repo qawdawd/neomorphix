@@ -1,0 +1,16 @@
+Vivado Simulator 2019.1
+Time resolution is 1 ps
+=== Synapse Selector Testbench Start ===
+[t=105000] addr=0 en=0 | post=0 weight=0000 busy=0 done=0
+[t=115000] addr=0 en=0 | post=0 weight=0000 busy=0 done=0
+[t=125000] addr=0 en=0 | post=0 weight=0000 busy=1 done=0
+[t=135000] addr=44 en=1 | post=1 weight=07fc busy=1 done=0
+[t=145000] addr=44 en=1 | post=2 weight=0414 busy=1 done=0
+[t=155000] addr=45 en=1 | post=3 weight=07fd busy=1 done=0
+[t=165000] addr=45 en=1 | post=4 weight=0415 busy=1 done=0
+[t=175000] addr=46 en=1 | post=5 weight=07fe busy=1 done=0
+[t=185000] addr=46 en=1 | post=6 weight=0416 busy=1 done=0
+[t=195000] addr=47 en=1 | post=7 weight=07ff busy=1 done=0
+[t=205000] addr=47 en=1 | post=7 weight=0417 busy=0 done=1
+=== Test finished ===
+$finish called at time : 215 ns : File "/home/yan/neomorphix/hw/tests/src/bnmm/tb_synselector.sv" Line 103

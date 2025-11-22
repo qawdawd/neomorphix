@@ -1,0 +1,9 @@
+0.6
+2019.1
+May 24 2019
+14:51:52
+/home/yan/neomorphix/hw/tests/prj/BNMM_TB/BNMM_TB.sim/sim_1/behav/xsim/glbl.v,1558713910,verilog,,,,glbl,,,,,,,,
+/home/yan/neomorphix/hw/tests/src/bnmm/synapse_selector_wrapper.sv,1763742515,systemVerilog,,/home/yan/neomorphix/hw/tests/src/bnmm/tb_synselector.sv,,synapse_selector_wrapper,,,../../../../../../../../out/synapse_selector_demo,,,,,
+/home/yan/neomorphix/hw/tests/src/bnmm/tb_synselector.sv,1763742684,systemVerilog,,,,tb_synapse_selector,,,../../../../../../../../out/synapse_selector_demo,,,,,
+/home/yan/neomorphix/out/synapse_selector_demo/synapse_selector_demo.sv,1763739746,systemVerilog,,/home/yan/neomorphix/hw/tests/src/bnmm/synapse_selector_wrapper.sv,/home/yan/neomorphix/out/synapse_selector_demo/synapse_selector_demo.svh,synapse_selector_demo,,,../../../../../../../../out/synapse_selector_demo,,,,,
+/home/yan/neomorphix/out/synapse_selector_demo/synapse_selector_demo.svh,1763739746,verilog,,,,,,,,,,,,

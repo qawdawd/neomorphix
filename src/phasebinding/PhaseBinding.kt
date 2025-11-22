@@ -47,10 +47,6 @@ class PhaseBinder(private val program: IrProgram) {
             }
         }
 
-        if (!layoutPlan.pipeline.enabled) {
-            notes += "Pipeline disabled; bindings remain one-to-one with IR order"
-        }
-
         return PhaseBindingPlan(bindings, notes)
     }
 

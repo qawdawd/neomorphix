@@ -70,15 +70,15 @@ module wrapper #(
     logic                 rd_fifo_out;
     logic [7:0]           rd_data_fifo_out;
     logic                 empty_fifo_out;
-    logic                 rd_weights_0;
-    logic [3:0]           addr_weights_0;
+    logic                 rd_weights_0_r;
+    logic [3:0]           addr_weights_0_r;
     logic [15:0]          data_weights_0;
-    logic                 rd_state_0;
-    logic [3:0]           addr_state_0;
+    logic                 rd_state_0_r;
+    logic [3:0]           addr_state_0_r;
     logic [11:0]          data_state_0;
-    logic                 we_state;
-    logic [3:0]           waddr_state;
-    logic [11:0]          wdata_state;
+    logic                 we_state_r;
+    logic [3:0]           waddr_state_r;
+    logic [11:0]          wdata_state_r;
 
     // счётчик для обхода конфигурационных слов в BRAM
     logic [ADDR_WIDTH_WORD-1:0] bram_addr_next;
@@ -97,15 +97,15 @@ bnmm_manual_demo u_lif_core (
     .rd_fifo_out      (rd_fifo_out),
     .rd_data_fifo_out (rd_data_fifo_out),
     .empty_fifo_out   (empty_fifo_out),
-    .rd_weights_0     (rd_weights_0),
-    .addr_weights_0   (addr_weights_0),
+    .rd_weights_0     (rd_weights_0_r),
+    .addr_weights_0   (addr_weights_0_r),
     .data_weights_0   (data_weights_0),
-    .rd_state_0       (rd_state_0),
-    .addr_state_0     (addr_state_0),
+    .rd_state_0       (rd_state_0_r),
+    .addr_state_0     (addr_state_0_r),
     .data_state_0     (data_state_0),
-    .we_state         (we_state),
-    .waddr_state      (waddr_state),
-    .wdata_state      (wdata_state)
+    .we_state         (we_state_r),
+    .waddr_state      (waddr_state_r),
+    .wdata_state      (wdata_state_r)
 );
 
 
@@ -125,13 +125,13 @@ bnmm_manual_demo u_lif_core (
             wr_fifo_in       <= 1'b0;
             wr_data_fifo_in  <= '0;
             rd_fifo_out      <= 1'b0;
-            rd_weights_0     <= 1'b0;
-            addr_weights_0   <= '0;
-            rd_state_0       <= 1'b0;
-            addr_state_0     <= '0;
-            we_state         <= 1'b0;
-            waddr_state      <= '0;
-            wdata_state      <= '0;
+            rd_weights_0_r   <= 1'b0;
+            addr_weights_0_r <= '0;
+            rd_state_0_r     <= 1'b0;
+            addr_state_0_r   <= '0;
+            we_state_r       <= 1'b0;
+            waddr_state_r    <= '0;
+            wdata_state_r    <= '0;
 
             last_read_data   <= '0;
         end else begin
@@ -144,24 +144,24 @@ bnmm_manual_demo u_lif_core (
                     rst_tick_manual <= bram_dout[1];
                     wr_fifo_in      <= bram_dout[2];
                     rd_fifo_out     <= bram_dout[3];
-                    rd_weights_0    <= bram_dout[4];
-                    rd_state_0      <= bram_dout[5];
-                    we_state        <= bram_dout[6];
+                    rd_weights_0_r   <= bram_dout[4];
+                    rd_state_0_r     <= bram_dout[5];
+                    we_state_r       <= bram_dout[6];
                 end
                 CFG_FIFO_DATA: begin
                     wr_data_fifo_in <= bram_dout[15:0];
                 end
                 CFG_WADDR: begin
-                    addr_weights_0 <= bram_dout[3:0];
+                    addr_weights_0_r <= bram_dout[3:0];
                 end
                 CFG_SADDR: begin
-                    addr_state_0 <= bram_dout[3:0];
+                    addr_state_0_r <= bram_dout[3:0];
                 end
                 CFG_WSTATE: begin
-                    waddr_state <= bram_dout[3:0];
+                    waddr_state_r <= bram_dout[3:0];
                 end
                 CFG_WSDATA: begin
-                    wdata_state <= bram_dout[11:0];
+                    wdata_state_r <= bram_dout[11:0];
                 end
                 default: /* none */;
             endcase

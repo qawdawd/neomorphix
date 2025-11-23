@@ -47,10 +47,10 @@ module wrapper #(
     // ----------------------------------------------------------------
     logic                   en_tick_manual;
     logic                   rst_tick_manual;
-    logic                   wr_fifo_in;
-    logic [15:0]            wr_data_fifo_in;
     logic                   full_fifo_in;
-    logic                   rd_fifo_out;
+    logic                   wr_fifo_in, wr_fifo_in_next;
+    logic [15:0]            wr_data_fifo_in, wr_data_fifo_in_next;
+    logic                   rd_fifo_out, rd_fifo_out_next;
     logic [7:0]             rd_data_fifo_out;
     logic                   empty_fifo_out;
 
@@ -167,6 +167,7 @@ module wrapper #(
             last_read_data    <= '0;
 
             wr_fifo_in        <= 1'b0;
+            wr_data_fifo_in   <= '0;
             rd_fifo_out       <= 1'b0;
 
             en_tick_manual    <= 1'b0;
@@ -178,6 +179,10 @@ module wrapper #(
             bram_we        <= bram_we_next;
             bram_din       <= bram_din_next;
             last_read_data <= bram_dout;
+
+            wr_fifo_in      <= wr_fifo_in_next;
+            wr_data_fifo_in <= wr_data_fifo_in_next;
+            rd_fifo_out     <= rd_fifo_out_next;
 
             rst_tick_manual  <= 1'b0;
             en_tick_manual   <= (state_next == ST_RUN);
@@ -213,6 +218,10 @@ module wrapper #(
         bram_we_next  = '0;
         bram_din_next = '0;
 
+        wr_fifo_in_next      = 1'b0;
+        wr_data_fifo_in_next = '0;
+        rd_fifo_out_next     = 1'b0;
+
         wr_leakage       = 1'b0;
         wr_threshold     = 1'b0;
         wr_vreset        = 1'b0;
@@ -221,10 +230,6 @@ module wrapper #(
         wr_neuron_base   = 1'b0;
         wr_emit_tag      = 1'b0;
         wr_postsyn_count = 1'b0;
-
-        wr_fifo_in       = 1'b0;
-        wr_data_fifo_in  = '0;
-        rd_fifo_out      = 1'b0;
 
         wd_leakage        = 16'd0;
         wd_threshold      = 16'd0;
@@ -299,8 +304,8 @@ module wrapper #(
             ST_IN_LOAD: begin
                 bram_addr_next = IN_SPIKES_BASE + (spk_cnt << 2);
                 if (spk_cnt < spikes_num && !full_fifo_in) begin
-                    wr_fifo_in      = 1'b1;
-                    wr_data_fifo_in = bram_dout[15:0];
+                    wr_fifo_in_next      = 1'b1;
+                    wr_data_fifo_in_next = bram_dout[15:0];
                 end else if (spk_cnt >= spikes_num) begin
                     state_next = ST_RUN;
                 end
@@ -314,7 +319,7 @@ module wrapper #(
 
                 // capture outgoing spikes into BRAM (overrides weight access for a cycle)
                 if (!empty_fifo_out) begin
-                    rd_fifo_out    = 1'b1;
+                    rd_fifo_out_next = 1'b1;
                     bram_en_next   = 1'b1;
                     bram_we_next   = 4'b0011;
                     bram_addr_next = OUT_SPIKES_BASE + (out_cnt << 2);

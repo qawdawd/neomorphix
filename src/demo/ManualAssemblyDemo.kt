@@ -332,7 +332,6 @@ private class ManualAssembly(private val cfg: ControllerConfig) {
     }
 
     private fun exposeMemoryDefaults(g: Generic, ports: AssemblyPorts) {
-        ports.weightMem.en?.assign(1)
         val wr = ports.dynMem.writePorts.first()
         wr.en.assign(0)
         wr.addr.assign(hw_imm(0))

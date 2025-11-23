@@ -1,12 +1,33 @@
-### IntelliJ IDEA ###
+###############################################
+# IntelliJ IDEA / JetBrains
+###############################################
 out/
 !**/src/main/**/out/
 !**/src/test/**/out/
+.idea/
+*.iml
 
-### Kotlin ###
+###############################################
+# Kotlin / Java / JVM
+###############################################
 .kotlin
+*.class
+*.jar
+*.war
+*.ear
+*.jmod
+*.kts~
 
-### Eclipse ###
+# Gradle (если появится)
+.gradle/
+build/
+
+# Maven (если появится)
+target/
+
+###############################################
+# Eclipse (оставил твои правила)
+###############################################
 .apt_generated
 .classpath
 .factorypath
@@ -14,19 +35,93 @@ out/
 .settings
 .springBeans
 .sts4-cache
+
 bin/
 !**/src/main/**/bin/
 !**/src/test/**/bin/
 
-### NetBeans ###
+###############################################
+# NetBeans
+###############################################
 /nbproject/private/
 /nbbuild/
 /dist/
 /nbdist/
 /.nb-gradle/
 
-### VS Code ###
+###############################################
+# VS Code
+###############################################
 .vscode/
 
-### Mac OS ###
+###############################################
+# OS / File Explorer junk
+###############################################
 .DS_Store
+Thumbs.db
+desktop.ini
+
+###############################################
+# Temporary files (safe, common)
+###############################################
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+*~
+*.lock
+
+###############################################
+# Logs
+###############################################
+*.log
+
+###############################################
+# Python cache (вдруг появится скрипты)
+###############################################
+__pycache__/
+*.pyc
+
+###############################################
+# Vivado (щадящий вариант!)
+# — работает только если внутри репо есть lif_core/
+# — НЕ ломает Kotlin
+###############################################
+lif_core.cache/
+lif_core.hw/
+lif_core.ip_user_files/
+lif_core.runs/
+lif_core.sim/
+lif_core.sdk/
+lif_core.srcs/sim_1/
+lif_core.srcs/sources_1/ip/
+lif_core.srcs/sources_1/bd/*/ip/
+lif_core.srcs/sources_1/bd/*/hdl/
+lif_core.xpr
+
+# Vivado outputs (безопасно)
+*.bit
+*.bin
+*.mcs
+*.prm
+*.dcp
+*.rpt
+*.ltx
+*.jou
+*.log
+*.backup.jou
+*.backup.log
+*.html
+*.xml
+*.wdb
+*.vcd
+
+###############################################
+# Verilog simulators (мусор)
+###############################################
+*.vvp
+*.saif
+*.lxt
+*.fst
+

@@ -17,11 +17,15 @@
       <list>
         <option value="Class" />
         <option value="Kotlin Class" />
+        <option value="Kotlin File" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
@@ -39,6 +43,7 @@
   "keyToString": {
     "Kotlin.IrDemoKt.executor": "Run",
     "Kotlin.MainKt.executor": "Run",
+    "Kotlin.ManualAssemblyDemoKt.executor": "Run",
     "Kotlin.SemanticsDemoKt.executor": "Run",
     "Kotlin.SnnArchDemoKt.executor": "Run",
     "Kotlin.SymbolTableDemoKt.executor": "Run",
@@ -62,9 +67,16 @@
       <recent name="$PROJECT_DIR$/src/bnmm/selector" />
     </key>
   </component>
-  <component name="RunManager" selected="Kotlin.SynapseSelectorDemoKt">
-    <configuration name="IrDemoKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="ir.IrDemoKt" />
+  <component name="RunManager" selected="Kotlin.ManualAssemblyDemoKt">
+    <configuration name="MainKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="neomorphix.MainKt" />
+      <module name="neomorphix" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="ManualAssemblyDemoKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="demo.ManualAssemblyDemoKt" />
       <module name="neomorphix" />
       <method v="2">
         <option name="Make" enabled="true" />
@@ -91,20 +103,13 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
-    <configuration name="TrAstDemoKt" type="JetRunConfigurationType" temporary="true" nameIsGenerated="true">
-      <option name="MAIN_CLASS_NAME" value="ast.TrAstDemoKt" />
-      <module name="neomorphix" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Kotlin.ManualAssemblyDemoKt" />
+        <item itemvalue="Kotlin.MainKt" />
         <item itemvalue="Kotlin.SynapseSelectorDemoKt" />
         <item itemvalue="Kotlin.SnnArchDemoKt" />
         <item itemvalue="Kotlin.SemanticsDemoKt" />
-        <item itemvalue="Kotlin.IrDemoKt" />
-        <item itemvalue="Kotlin.TrAstDemoKt" />
       </list>
     </recent_temporary>
   </component>

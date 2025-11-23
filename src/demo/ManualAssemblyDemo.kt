@@ -65,7 +65,7 @@ fun main() {
             QueueConfig(name = "fifo_out", dataWidth = 8, depth = 8)
         ),
         memoryBanks = listOf(
-            MemoryBankConfig(name = "weights", addrWidth = 4, dataWidth = 16, depth = 16, writable = false),
+            MemoryBankConfig(name = "weights", addrWidth = 4, dataWidth = 16, depth = 16, writable = false, external = true),
             MemoryBankConfig(name = "state", addrWidth = 4, dataWidth = 12, depth = 16, writable = true),
             MemoryBankConfig(
                 name = "regs",

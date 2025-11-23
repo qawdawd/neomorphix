@@ -4,6 +4,7 @@ import bnmm.description.MemoryBankConfig
 import cyclix.Generic
 import hwast.PORT_DIR
 import hwast.hw_dim_static
+import hwast.hw_imm_zeroes
 import hwast.hw_var
 
 /**
@@ -36,14 +37,34 @@ class StaticMemoryBank(private val instName: String = "mem_static") {
         require(cfg.ports >= 1) { "At least one read port is required" }
         val name = cfg.name
 
-        val memDim = hw_dim_static(cfg.dataWidth).apply { add(cfg.depth, 0) }
-        val mem = g.uglobal("${instName}_${name}", memDim, "0")
+        val mem = if (!cfg.external) {
+            val memDim = hw_dim_static(cfg.dataWidth).apply { add(cfg.depth, 0) }
+            g.uglobal("${instName}_${name}", memDim, "0")
+        } else {
+            null
+        }
 
         val readPorts = (0 until cfg.ports).map { idx ->
             val rd = g.uport("rd_${name}_$idx", PORT_DIR.IN, hw_dim_static(1), "0")
             val addr = g.uport("addr_${name}_$idx", PORT_DIR.IN, hw_dim_static(cfg.addrWidth), "0")
             val data = g.uport("data_${name}_$idx", PORT_DIR.OUT, hw_dim_static(cfg.dataWidth), "0")
-            data.assign(mem[addr])
+
+            if (cfg.external) {
+                require(cfg.ports == 1) { "External static bank supports only one read port" }
+                val bramAddr = g.uport("bram_addr_${name}", PORT_DIR.OUT, hw_dim_static(cfg.addrWidth), "0")
+                val bramEn = g.uport("bram_en_${name}", PORT_DIR.OUT, hw_dim_static(1), "0")
+                val weWidth = maxOf(1, cfg.dataWidth / 8)
+                val bramWe = g.uport("bram_we_${name}", PORT_DIR.OUT, hw_dim_static(weWidth), "0")
+                val bramDout = g.uport("bram_dout_${name}", PORT_DIR.IN, hw_dim_static(cfg.dataWidth), "0")
+
+                bramAddr.assign(addr)
+                bramEn.assign(rd)
+                bramWe.assign(hw_imm_zeroes(weWidth))
+                data.assign(bramDout)
+            } else {
+                data.assign(mem!![addr])
+            }
+
             MemoryReadPort(rd, addr, data)
         }
 

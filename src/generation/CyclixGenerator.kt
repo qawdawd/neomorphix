@@ -254,7 +254,7 @@ class CyclixGenerator {
             runtime = SynapticPhaseRuntime(preIndex = fifoIn.rd_data_o, tick = tick),
             selector = selector,
             irLogic = program.phaseBlockOrNull(IrPhase.SYNAPTIC)?.let { SynapticPhaseIrLogic(it.body, program.symbols) },
-            bindings = mapOfNotNull(layoutPlan.phases.syn.synParamField to selector.weight)
+            bindings = mapOfNotNull(layoutPlan.phases.syn.synParamField, selector.weight)
         ).also {
             fifoIn.rd_o.assign(it.busy)
         }

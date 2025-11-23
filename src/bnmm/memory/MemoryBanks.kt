@@ -64,6 +64,7 @@ class StaticMemoryBank(private val instName: String = "mem_static") {
                 bramAddr.assign(addr)
                 bramEn.assign(rd)
                 bramWe.assign(hw_imm_zeroes(weWidth))
+                data.assign(bramDout)
             } else {
                 data.assign(mem!![addr])
             }

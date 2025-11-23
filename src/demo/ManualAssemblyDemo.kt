@@ -110,6 +110,7 @@ private data class RegisterSet(
     val totalNeurons: hw_var,
     val weightBase: hw_var,
     val neuronBase: hw_var,
+    val postsynCount: hw_var,
     val emitTag: hw_var
 )
 
@@ -129,9 +130,10 @@ private class ManualAssembly(private val cfg: ControllerConfig) {
             "leakage",
             "threshold",
             "vreset",
-            "total_neurons", // shared between synapse and neuron selectors
+            "total_neurons",
             "weight_base",
             "neuron_base",
+            "postsyn_count",
             "emit_tag"
         )
         val regMap = RegisterBankAdapter("reg").build(g, regCfg, registerNames)
@@ -142,6 +144,7 @@ private class ManualAssembly(private val cfg: ControllerConfig) {
             totalNeurons = regMap.getValue("total_neurons"),
             weightBase = regMap.getValue("weight_base"),
             neuronBase = regMap.getValue("neuron_base"),
+            postsynCount = regMap.getValue("postsyn_count"),
             emitTag = regMap.getValue("emit_tag")
         )
 
@@ -158,7 +161,7 @@ private class ManualAssembly(private val cfg: ControllerConfig) {
         // Keep selector ranges consistent by sourcing both selectors from one register.
         val sharedPostCount = regs.totalNeurons[postIndexWidth - 1, 0]
         val selectorRuntime = bnmm.selector.SynapseSelectorRuntime(
-            postsynCount = sharedPostCount,
+            postsynCount = regs.postsynCount[selectorCfg.postIndexWidth - 1, 0],
             baseAddress = regs.weightBase[selectorCfg.addrWidth - 1, 0]
         )
         val synSelector = SynapseSelector(selectorCfg.name).emit(
@@ -179,8 +182,8 @@ private class ManualAssembly(private val cfg: ControllerConfig) {
                 stepByTick = false
             ),
             runtime = NeuronSelectorRuntime(
-                totalNeurons = sharedPostCount,
-                baseIndex = regs.neuronBase[postIndexWidth - 1, 0],
+                totalNeurons = regs.totalNeurons[selectorCfg.postIndexWidth - 1, 0],
+                baseIndex = regs.neuronBase[selectorCfg.postIndexWidth - 1, 0],
                 tick = tick
             )
         )
@@ -256,8 +259,7 @@ private class ManualAssembly(private val cfg: ControllerConfig) {
             dynRd.addr.assign(ctx.selector.postIndex)
             dynWr.en.assign(0)
             g.begif(g.eq2(ctx.runStep, 1)); run {
-                val membranePotential = g.sub(dynRd.data, regs.leakage[11, 0])
-                val above = g.gr(membranePotential, regs.threshold[11, 0])
+                val above = g.gr(dynRd.data, regs.threshold[11, 0])
                 spikeFlag.assign(above)
                 g.begif(above); run {
                     dynWr.en.assign(1)

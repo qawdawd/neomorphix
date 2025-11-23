@@ -9,6 +9,7 @@ import bnmm.description.TickGenConfig
 import bnmm.memory.DynamicMemoryBank
 import bnmm.memory.MemoryBankPorts
 import bnmm.memory.MemoryReadPort
+import bnmm.memory.RegisterBankAdapter
 import bnmm.memory.StaticMemoryBank
 import bnmm.phase.EmissionPhaseConfig
 import bnmm.phase.EmissionPhaseContext
@@ -65,7 +66,16 @@ fun main() {
         ),
         memoryBanks = listOf(
             MemoryBankConfig(name = "weights", addrWidth = 4, dataWidth = 16, depth = 16, writable = false),
-            MemoryBankConfig(name = "state", addrWidth = 4, dataWidth = 12, depth = 16, writable = true)
+            MemoryBankConfig(name = "state", addrWidth = 4, dataWidth = 12, depth = 16, writable = true),
+            MemoryBankConfig(
+                name = "regs",
+                addrWidth = 4,
+                dataWidth = 16,
+                depth = 8,
+                writable = true,
+                registerAdapter = true,
+                notes = listOf("static parameter registers")
+            )
         ),
         tickGen = TickGenConfig(name = "tick_manual", periodCycles = 4, pulseWidthCycles = 1),
         notes = listOf("semi-manual demo layout")
@@ -92,6 +102,17 @@ private data class AssemblyPorts(
     val emPhase: bnmm.phase.EmissionPhasePorts
 )
 
+private data class RegisterSet(
+    val leakage: hw_var,
+    val threshold: hw_var,
+    val vreset: hw_var,
+    val totalNeurons: hw_var,
+    val weightBase: hw_var,
+    val neuronBase: hw_var,
+    val postsynCount: hw_var,
+    val emitTag: hw_var
+)
+
 private class ManualAssembly(private val cfg: ControllerConfig) {
 
     fun buildKernel(): GeneratedKernel {
@@ -103,6 +124,28 @@ private class ManualAssembly(private val cfg: ControllerConfig) {
 
         val weightPorts = StaticMemoryBank("wmem").emit(g, cfg.memoryBanks.first()).readPorts.first()
         val dynPorts = DynamicMemoryBank("dmem").emit(g, cfg.memoryBanks.last())
+        val regCfg = cfg.memoryBanks.first { it.registerAdapter }
+        val registerNames = listOf(
+            "leakage",
+            "threshold",
+            "vreset",
+            "total_neurons",
+            "weight_base",
+            "neuron_base",
+            "postsyn_count",
+            "emit_tag"
+        )
+        val regMap = RegisterBankAdapter("reg").build(g, regCfg, registerNames)
+        val regs = RegisterSet(
+            leakage = regMap.getValue("leakage"),
+            threshold = regMap.getValue("threshold"),
+            vreset = regMap.getValue("vreset"),
+            totalNeurons = regMap.getValue("total_neurons"),
+            weightBase = regMap.getValue("weight_base"),
+            neuronBase = regMap.getValue("neuron_base"),
+            postsynCount = regMap.getValue("postsyn_count"),
+            emitTag = regMap.getValue("emit_tag")
+        )
 
         val selectorCfg = SynapseSelectorConfig(
             name = cfg.selectors.first().name,
@@ -114,8 +157,8 @@ private class ManualAssembly(private val cfg: ControllerConfig) {
             stepByTick = true
         )
         val selectorRuntime = bnmm.selector.SynapseSelectorRuntime(
-            postsynCount = g.uglobal("postsyn_count", hw_dim_static(selectorCfg.postIndexWidth), "4"),
-            baseAddress = g.uglobal("weight_base", hw_dim_static(selectorCfg.addrWidth), "0")
+            postsynCount = regs.postsynCount[selectorCfg.postIndexWidth - 1, 0],
+            baseAddress = regs.weightBase[selectorCfg.addrWidth - 1, 0]
         )
         val synSelector = SynapseSelector(selectorCfg.name).emit(
             g = g,
@@ -135,8 +178,8 @@ private class ManualAssembly(private val cfg: ControllerConfig) {
                 stepByTick = false
             ),
             runtime = NeuronSelectorRuntime(
-                totalNeurons = g.uglobal("total_neurons", hw_dim_static(selectorCfg.postIndexWidth), "4"),
-                baseIndex = g.uglobal("neuron_base", hw_dim_static(selectorCfg.postIndexWidth), "0"),
+                totalNeurons = regs.totalNeurons[selectorCfg.postIndexWidth - 1, 0],
+                baseIndex = regs.neuronBase[selectorCfg.postIndexWidth - 1, 0],
                 tick = tick
             )
         )
@@ -154,7 +197,7 @@ private class ManualAssembly(private val cfg: ControllerConfig) {
             cfg = SomaticPhaseConfig(name = cfg.phases[1].name, stepByTick = true),
             runtime = SomaticPhaseRuntime(tick = tick),
             selector = neurSelector,
-            customLogic = somaticThreshold(g, dynPorts)
+            customLogic = somaticThreshold(g, dynPorts, regs)
         )
 
         val emPhase = EmissionPhaseUnit(cfg.phases[2].name).emit(
@@ -163,7 +206,7 @@ private class ManualAssembly(private val cfg: ControllerConfig) {
             runtime = EmissionPhaseRuntime(tick = tick),
             selector = neurSelector,
             outQueue = fifoOut,
-            customLogic = emissionWriter(g, fifoOut)
+            customLogic = emissionWriter(g, fifoOut, regs)
         )
 
         wireController(g, synPhase, somPhase, emPhase, fifoIn)
@@ -201,29 +244,27 @@ private class ManualAssembly(private val cfg: ControllerConfig) {
 
     private fun somaticThreshold(
         g: Generic,
-        dynMem: MemoryBankPorts
+        dynMem: MemoryBankPorts,
+        regs: RegisterSet
     ): (SomaticPhaseContext) -> Unit {
-        val threshold = g.uglobal("threshold", hw_dim_static(12), "32")
         val spikeFlag = g.uglobal("spike_flag", hw_dim_static(1), "0")
         val dynRd = dynMem.readPorts.first()
         return { ctx ->
             dynRd.en?.assign(ctx.runStep)
             dynRd.addr.assign(ctx.selector.postIndex)
             g.begif(g.eq2(ctx.runStep, 1)); run {
-                val above = g.gr(dynRd.data, threshold)
+                val above = g.gr(dynRd.data, regs.threshold[11, 0])
                 spikeFlag.assign(above)
             }; g.endif()
         }
     }
 
-    private fun emissionWriter(g: Generic, fifoOut: bnmm.queue.FifoOutIF): (EmissionPhaseContext) -> Unit {
-        val tag = g.uglobal("emit_tag", hw_dim_static(8), "0")
+    private fun emissionWriter(g: Generic, fifoOut: bnmm.queue.FifoOutIF, regs: RegisterSet): (EmissionPhaseContext) -> Unit {
         return { ctx ->
             g.begif(g.eq2(ctx.runStep, 1)); run {
                 g.begif(g.bnot(fifoOut.full_o)); run {
                     fifoOut.we_i.assign(1)
-                    tag.assign(ctx.selector.postIndex)
-                    fifoOut.wr_data_i.assign(tag)
+                    fifoOut.wr_data_i.assign(g.add(regs.emitTag[7, 0], ctx.selector.postIndex))
                 }; g.endif()
             }; g.endif()
         }

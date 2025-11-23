@@ -282,12 +282,14 @@ class LayoutPlanner(private val program: IrProgram) {
             when (stmt) {
                 is IrAssignment -> ops += OperationRef(stmt.target, null)
                 is IrOperation -> ops += OperationRef(stmt.target, stmt.opcode)
+                is ir.IrEmit -> stmt.target?.let { ops += OperationRef(it, null) }
                 is IrConditional -> {
                     ops += collectOperations(stmt.thenBlock)
                     stmt.elseIfBranches.forEach { ops += collectOperations(it.body) }
                     stmt.elseBlock?.let { ops += collectOperations(it) }
                 }
                 is IrLoop -> ops += collectOperations(stmt.body)
+                else -> {}
             }
         }
         return ops
@@ -404,10 +406,7 @@ class LayoutPlanner(private val program: IrProgram) {
             ComparisonOp.LTE -> CmpKind.LE
             else -> CmpKind.GE
         }
-        val cmpRegKey = when (condition?.right) {
-            is ir.IrValue.Symbol -> condition.right.entry.name
-            else -> "threshold"
-        }
+        val cmpRegKey = (condition?.right as? ir.IrValue.Symbol)?.entry?.name ?: "threshold"
         val resetRegKey = program.symbols.allFields().firstOrNull { it.name == "reset" && it.type == TxFieldType.STATIC }?.name
 
         return EmitPlan(
@@ -424,6 +423,7 @@ class LayoutPlanner(private val program: IrProgram) {
             when (stmt) {
                 is IrConditional -> return stmt.condition
                 is IrLoop -> findFirstCondition(stmt.body)?.let { return it }
+                else -> {}
             }
         }
         return null

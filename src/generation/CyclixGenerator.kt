@@ -254,7 +254,7 @@ class CyclixGenerator {
             runtime = SynapticPhaseRuntime(preIndex = fifoIn.rd_data_o, tick = tick),
             selector = selector,
             irLogic = program.phaseBlockOrNull(IrPhase.SYNAPTIC)?.let { SynapticPhaseIrLogic(it.body, program.symbols) },
-            bindings = mapOfNotNull(layoutPlan.phases.syn.synParamField to selector.weight)
+            bindings = mapOfNotNull(layoutPlan.phases.syn.synParamField, selector.weight)
         ).also {
             fifoIn.rd_o.assign(it.busy)
         }
@@ -351,9 +351,9 @@ class CyclixGenerator {
             val currentIdx = encoding[stateName] ?: return@forEach
             val nextIdx = encoding[controlPlan.transitions.firstOrNull { it.from == stateName }?.to] ?: encoding["complete"] ?: idleIdx
             val phasePorts = when (phase) {
-                IrPhase.SYNAPTIC -> synPhase
-                IrPhase.SOMATIC -> somPhase
-                IrPhase.EMISSION, IrPhase.REFRACTORY -> emitPhase
+                IrPhase.SYNAPTIC -> PhasePorts(synPhase.start, synPhase.done)
+                IrPhase.SOMATIC -> PhasePorts(somPhase.start, somPhase.done)
+                IrPhase.EMISSION, IrPhase.REFRACTORY -> PhasePorts(emitPhase.start, emitPhase.done)
             }
 
             g.begif(stateEq(currentIdx)); run {
@@ -403,6 +403,8 @@ class CyclixGenerator {
         }
         return max(r, 1)
     }
+
+    private data class PhasePorts(val start: hwast.hw_var, val done: hwast.hw_var)
 
     private fun mapOfNotNull(key: String?, value: hwast.hw_var?): Map<String, hwast.hw_var> =
         if (key != null && value != null) mapOf(key to value) else emptyMap()

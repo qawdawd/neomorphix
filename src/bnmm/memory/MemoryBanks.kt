@@ -89,16 +89,16 @@ class DynamicMemoryBank(private val instName: String = "mem_dyn") {
         val mem = g.uglobal("${instName}_${name}", memDim, "0")
 
         val readPorts = (0 until cfg.ports).map { idx ->
-            val rd = g.uport("rd_${name}_$idx", PORT_DIR.IN, hw_dim_static(1), "0")
-            val addr = g.uport("addr_${name}_$idx", PORT_DIR.IN, hw_dim_static(cfg.addrWidth), "0")
-            val data = g.uport("data_${name}_$idx", PORT_DIR.OUT, hw_dim_static(cfg.dataWidth), "0")
+            val rd = g.uglobal("rd_${name}_$idx", hw_dim_static(1), "0")
+            val addr = g.uglobal("addr_${name}_$idx", hw_dim_static(cfg.addrWidth), "0")
+            val data = g.uglobal("data_${name}_$idx", hw_dim_static(cfg.dataWidth), "0")
             g.begif(g.eq2(rd, 1)); run { data.assign(mem[addr]) }; g.endif()
             MemoryReadPort(rd, addr, data)
         }
 
-        val wr = g.uport("we_${name}", PORT_DIR.IN, hw_dim_static(1), "0")
-        val wrAddr = g.uport("waddr_${name}", PORT_DIR.IN, hw_dim_static(cfg.addrWidth), "0")
-        val wrData = g.uport("wdata_${name}", PORT_DIR.IN, hw_dim_static(cfg.dataWidth), "0")
+        val wr = g.uglobal("we_${name}", hw_dim_static(1), "0")
+        val wrAddr = g.uglobal("waddr_${name}", hw_dim_static(cfg.addrWidth), "0")
+        val wrData = g.uglobal("wdata_${name}", hw_dim_static(cfg.dataWidth), "0")
         g.begif(g.eq2(wr, 1)); run { mem[wrAddr].assign(wrData) }; g.endif()
 
         return MemoryBankPorts(

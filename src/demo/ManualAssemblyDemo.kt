@@ -124,7 +124,7 @@ private class ManualAssembly(private val cfg: ControllerConfig) {
         val fifoOut = FifoOutput(cfg.queues.last().name).emit(g, cfg.queues.last().toFifoConfig(), tick)
 
         val weightPorts = StaticMemoryBank("wmem").emit(g, cfg.memoryBanks.first()).readPorts.first()
-        val dynPorts = DynamicMemoryBank("dmem").emit(g, cfg.memoryBanks.last())
+        val dynPorts = DynamicMemoryBank("dmem").emit(g, cfg.memoryBanks[1])
         val regCfg = cfg.memoryBanks.first { it.registerAdapter }
         val registerNames = listOf(
             "leakage",

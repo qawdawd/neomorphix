@@ -41,7 +41,6 @@ import cyclix.Generic
 import export.SystemVerilogExporter
 import generation.GeneratedKernel
 import hwast.hw_dim_static
-import hwast.hw_imm
 import hwast.hw_var
 
 /**
@@ -228,8 +227,6 @@ private class ManualAssembly(private val cfg: ControllerConfig) {
             emPhase = emPhase
         )
 
-        exposeMemoryDefaults(g, ports)
-
         return GeneratedKernel(g.name, g)
     }
 
@@ -331,12 +328,6 @@ private class ManualAssembly(private val cfg: ControllerConfig) {
         }; g.endif()
     }
 
-    private fun exposeMemoryDefaults(g: Generic, ports: AssemblyPorts) {
-        val wr = ports.dynMem.writePorts.first()
-        wr.en.assign(0)
-        wr.addr.assign(hw_imm(0))
-        wr.data.assign(hw_imm(0))
-    }
 }
 
 private fun QueueConfig.toFifoConfig() = FifoConfig(

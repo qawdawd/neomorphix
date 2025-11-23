@@ -4,6 +4,7 @@ import bnmm.description.MemoryBankConfig
 import cyclix.Generic
 import hwast.PORT_DIR
 import hwast.hw_dim_static
+import hwast.hw_imm
 import hwast.hw_imm_zeroes
 import hwast.hw_var
 
@@ -27,6 +28,12 @@ data class MemoryBankPorts(
     val writePorts: List<MemoryWritePort>
 )
 
+data class RegisterBank(
+    val registers: Map<String, hw_var>,
+    val readPort: MemoryReadPort,
+    val writePort: MemoryWritePort
+)
+
 /**
  * Статический банк памяти с только чтением. Использует обобщённую
  * конфигурацию и экспортирует порты для подключения к фазам/контроллеру.
@@ -47,11 +54,14 @@ class StaticMemoryBank(private val instName: String = "mem_static") {
         val readPorts = (0 until cfg.ports).map { idx ->
             val rdDir = if (cfg.external) PORT_DIR.OUT else PORT_DIR.IN
             val addrDir = if (cfg.external) PORT_DIR.OUT else PORT_DIR.IN
-            val dataDir = if (cfg.external) PORT_DIR.IN else PORT_DIR.OUT
 
             val rd = g.uport("rd_${name}_$idx", rdDir, hw_dim_static(1), "0")
             val addr = g.uport("addr_${name}_$idx", addrDir, hw_dim_static(cfg.addrWidth), "0")
-            val data = g.uport("data_${name}_$idx", dataDir, hw_dim_static(cfg.dataWidth), "0")
+            val data = if (cfg.external) {
+                g.uglobal("data_${name}_$idx", hw_dim_static(cfg.dataWidth), "0")
+            } else {
+                g.uport("data_${name}_$idx", PORT_DIR.OUT, hw_dim_static(cfg.dataWidth), "0")
+            }
 
             if (cfg.external) {
                 require(cfg.ports == 1) { "External static bank supports only one read port" }
@@ -115,7 +125,7 @@ class DynamicMemoryBank(private val instName: String = "mem_dyn") {
  */
 class RegisterBankAdapter(private val instName: String = "reg_bank") {
 
-    fun build(g: Generic, cfg: MemoryBankConfig, registerNames: List<String>): Map<String, hw_var> {
+    fun build(g: Generic, cfg: MemoryBankConfig, registerNames: List<String>): RegisterBank {
         require(cfg.registerAdapter) { "Register adapter requires registerAdapter=true in config" }
         require(registerNames.isNotEmpty()) { "At least one register name must be provided" }
 
@@ -123,12 +133,37 @@ class RegisterBankAdapter(private val instName: String = "reg_bank") {
         registerNames.forEachIndexed { idx, regName ->
             val reg = g.uglobal("${instName}_${cfg.name}_${regName}", hw_dim_static(cfg.dataWidth), "0")
             regs[regName] = reg
-            if (cfg.writable) {
-                val wr = g.uport("wr_${regName}", PORT_DIR.IN, hw_dim_static(1), "0")
-                val data = g.uport("wd_${regName}", PORT_DIR.IN, hw_dim_static(cfg.dataWidth), "0")
-                g.begif(g.eq2(wr, 1)); run { reg.assign(data) }; g.endif()
-            }
         }
-        return regs
+
+        // Single read port exposed to the top level
+        val rd = g.uport("rd_${cfg.name}_0", PORT_DIR.IN, hw_dim_static(1), "0")
+        val addr = g.uport("addr_${cfg.name}_0", PORT_DIR.IN, hw_dim_static(cfg.addrWidth), "0")
+        val data = g.uport("data_${cfg.name}_0", PORT_DIR.OUT, hw_dim_static(cfg.dataWidth), "0")
+        data.assign(hw_imm_zeroes(cfg.dataWidth))
+        g.begif(g.eq2(rd, 1)); run {
+            registerNames.forEachIndexed { idx, regName ->
+                g.begif(g.eq2(addr, hw_imm(idx)));
+                run { data.assign(regs.getValue(regName)) }
+                g.endif()
+            }
+        }; g.endif()
+
+        // Single write port exposed to the top level
+        val wr = g.uport("we_${cfg.name}", PORT_DIR.IN, hw_dim_static(1), "0")
+        val wrAddr = g.uport("waddr_${cfg.name}", PORT_DIR.IN, hw_dim_static(cfg.addrWidth), "0")
+        val wrData = g.uport("wdata_${cfg.name}", PORT_DIR.IN, hw_dim_static(cfg.dataWidth), "0")
+        g.begif(g.eq2(wr, 1)); run {
+            registerNames.forEachIndexed { idx, regName ->
+                g.begif(g.eq2(wrAddr, hw_imm(idx)));
+                run { regs.getValue(regName).assign(wrData) }
+                g.endif()
+            }
+        }; g.endif()
+
+        return RegisterBank(
+            registers = regs,
+            readPort = MemoryReadPort(en = rd, addr = addr, data = data),
+            writePort = MemoryWritePort(en = wr, addr = wrAddr, data = wrData)
+        )
     }
 }

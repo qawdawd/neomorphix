@@ -86,6 +86,7 @@ fun main() {
     val artifact = SystemVerilogExporter().export(kernel)
 
     println("Manual BNMM demo exported: module=${artifact.moduleName}, dir=${artifact.outputDir}")
+    println("Synapse and neuron selectors rely on the shared total_neurons register for post-synaptic iteration")
     println("Expected top-level ports: ingress fifo_in, egress fifo_out, weight memory read-only, state memory read/write, tick and reset")
 }
 
@@ -156,6 +157,9 @@ private class ManualAssembly(private val cfg: ControllerConfig) {
             useLinearAddress = true,
             stepByTick = true
         )
+        val postIndexWidth = selectorCfg.postIndexWidth
+        // Keep selector ranges consistent by sourcing both selectors from one register.
+        val sharedPostCount = regs.totalNeurons[postIndexWidth - 1, 0]
         val selectorRuntime = bnmm.selector.SynapseSelectorRuntime(
             postsynCount = regs.postsynCount[selectorCfg.postIndexWidth - 1, 0],
             baseAddress = regs.weightBase[selectorCfg.addrWidth - 1, 0]
@@ -249,12 +253,19 @@ private class ManualAssembly(private val cfg: ControllerConfig) {
     ): (SomaticPhaseContext) -> Unit {
         val spikeFlag = g.uglobal("spike_flag", hw_dim_static(1), "0")
         val dynRd = dynMem.readPorts.first()
+        val dynWr = dynMem.writePorts.first()
         return { ctx ->
             dynRd.en?.assign(ctx.runStep)
             dynRd.addr.assign(ctx.selector.postIndex)
+            dynWr.en.assign(0)
             g.begif(g.eq2(ctx.runStep, 1)); run {
                 val above = g.gr(dynRd.data, regs.threshold[11, 0])
                 spikeFlag.assign(above)
+                g.begif(above); run {
+                    dynWr.en.assign(1)
+                    dynWr.addr.assign(ctx.selector.postIndex)
+                    dynWr.data.assign(regs.vreset[11, 0])
+                }; g.endif()
             }; g.endif()
         }
     }

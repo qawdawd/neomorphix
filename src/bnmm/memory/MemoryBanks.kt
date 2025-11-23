@@ -47,11 +47,14 @@ class StaticMemoryBank(private val instName: String = "mem_static") {
         val readPorts = (0 until cfg.ports).map { idx ->
             val rdDir = if (cfg.external) PORT_DIR.OUT else PORT_DIR.IN
             val addrDir = if (cfg.external) PORT_DIR.OUT else PORT_DIR.IN
-            val dataDir = if (cfg.external) PORT_DIR.IN else PORT_DIR.OUT
 
             val rd = g.uport("rd_${name}_$idx", rdDir, hw_dim_static(1), "0")
             val addr = g.uport("addr_${name}_$idx", addrDir, hw_dim_static(cfg.addrWidth), "0")
-            val data = g.uport("data_${name}_$idx", dataDir, hw_dim_static(cfg.dataWidth), "0")
+            val data = if (cfg.external) {
+                g.uglobal("data_${name}_$idx", hw_dim_static(cfg.dataWidth), "0")
+            } else {
+                g.uport("data_${name}_$idx", PORT_DIR.OUT, hw_dim_static(cfg.dataWidth), "0")
+            }
 
             if (cfg.external) {
                 require(cfg.ports == 1) { "External static bank supports only one read port" }

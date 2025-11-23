@@ -125,10 +125,11 @@ private class ManualAssembly(private val cfg: ControllerConfig) {
             tick = tick
         )
 
-        val neurSelector = NeuronSelector(cfg.phases[1].name).emit(
+        val neuronSelectorName = "${cfg.phases[1].name}_selector"
+        val neurSelector = NeuronSelector(neuronSelectorName).emit(
             g = g,
             cfg = NeuronSelectorConfig(
-                name = cfg.phases[1].name,
+                name = neuronSelectorName,
                 indexWidth = selectorCfg.postIndexWidth,
                 plan = NeuronSelectorPlan(groupSize = 1, totalGroups = 4, activeGroups = 4, remainder = 0),
                 stepByTick = false

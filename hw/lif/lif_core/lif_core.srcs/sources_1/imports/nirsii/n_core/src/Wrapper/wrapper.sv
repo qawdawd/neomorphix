@@ -34,7 +34,8 @@ module wrapper #(
     localparam logic [ADDR_WIDTH_WORD-1:0] CFG_WEIGHT_BASE_ADDR = CFG_BASE + (5<<2);
     localparam logic [ADDR_WIDTH_WORD-1:0] CFG_NEURON_BASE_ADDR = CFG_BASE + (6<<2);
     localparam logic [ADDR_WIDTH_WORD-1:0] CFG_EMIT_TAG_ADDR    = CFG_BASE + (7<<2);
-    localparam int                         CFG_WORDS            = 8;
+    localparam logic [ADDR_WIDTH_WORD-1:0] CFG_POSTSYN_CNT_ADDR = CFG_BASE + (8<<2);
+    localparam int                         CFG_WORDS            = 9;
 
     localparam logic [ADDR_WIDTH_WORD-1:0] WEIGHTS_BASE  = CFG_BASE + (10<<2);
     localparam logic [ADDR_WIDTH_WORD-1:0] IN_SPIKES_BASE = WEIGHTS_BASE + (16<<2);
@@ -73,6 +74,8 @@ module wrapper #(
     logic [15:0]            wd_neuron_base;
     logic                   wr_emit_tag;
     logic [15:0]            wd_emit_tag;
+    logic                   wr_postsyn_count;
+    logic [15:0]            wd_postsyn_count;
 
     bnmm_manual_demo u_core (
         .clk_i           (clk),
@@ -118,7 +121,9 @@ module wrapper #(
         .wr_neuron_base  (wr_neuron_base),
         .wd_neuron_base  (wd_neuron_base),
         .wr_emit_tag     (wr_emit_tag),
-        .wd_emit_tag     (wd_emit_tag)
+        .wd_emit_tag     (wd_emit_tag),
+        .wr_postsyn_count(wr_postsyn_count),
+        .wd_postsyn_count(wd_postsyn_count)
     );
 
     // ----------------------------------------------------------------
@@ -215,6 +220,7 @@ module wrapper #(
         wr_weight_base   = 1'b0;
         wr_neuron_base   = 1'b0;
         wr_emit_tag      = 1'b0;
+        wr_postsyn_count = 1'b0;
 
         wr_fifo_in       = 1'b0;
         wr_data_fifo_in  = '0;
@@ -227,6 +233,7 @@ module wrapper #(
         wd_weight_base    = 16'd0;
         wd_neuron_base    = 16'd0;
         wd_emit_tag       = 16'd0;
+        wd_postsyn_count  = 16'd0;
 
         case (state)
             ST_IDLE: begin
@@ -271,6 +278,11 @@ module wrapper #(
                         bram_addr_next = CFG_EMIT_TAG_ADDR;
                         wr_emit_tag    = 1'b1;
                         wd_emit_tag    = bram_dout[15:0];
+                    end
+                    7: begin
+                        bram_addr_next   = CFG_POSTSYN_CNT_ADDR;
+                        wr_postsyn_count = 1'b1;
+                        wd_postsyn_count = bram_dout[15:0];
                     end
                     default: begin
                         state_next = ST_IN_CNT;

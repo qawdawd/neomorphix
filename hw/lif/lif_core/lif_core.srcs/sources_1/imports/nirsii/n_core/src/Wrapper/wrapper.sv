@@ -283,6 +283,7 @@ module wrapper #(
                         bram_addr_next   = CFG_POSTSYN_CNT_ADDR;
                         wr_postsyn_count = 1'b1;
                         wd_postsyn_count = bram_dout[15:0];
+                        state_next       = ST_IN_CNT;
                     end
                     default: begin
                         state_next = ST_IN_CNT;

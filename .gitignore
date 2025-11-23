@@ -1,9 +1,9 @@
 ###############################################
 # IntelliJ IDEA / JetBrains
 ###############################################
-out/
-!**/src/main/**/out/
-!**/src/test/**/out/
+# out/
+# !**/src/main/**/out/
+# !**/src/test/**/out/
 .idea/
 *.iml
 

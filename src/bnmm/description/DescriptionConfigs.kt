@@ -63,6 +63,7 @@ data class MemoryBankConfig(
     val ports: Int = 1,
     val writable: Boolean = false,
     val registerAdapter: Boolean = false,
+    val external: Boolean = false,
     val notes: List<String> = emptyList()
 ) {
     init {

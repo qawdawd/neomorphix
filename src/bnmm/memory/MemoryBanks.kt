@@ -45,31 +45,25 @@ class StaticMemoryBank(private val instName: String = "mem_static") {
         }
 
         val readPorts = (0 until cfg.ports).map { idx ->
-            val rdDir = if (cfg.external) PORT_DIR.OUT else PORT_DIR.IN
-            val addrDir = if (cfg.external) PORT_DIR.OUT else PORT_DIR.IN
-            val dataDir = if (cfg.external) PORT_DIR.IN else PORT_DIR.OUT
-
-            val rd = g.uport("rd_${name}_$idx", rdDir, hw_dim_static(1), "0")
-            val addr = g.uport("addr_${name}_$idx", addrDir, hw_dim_static(cfg.addrWidth), "0")
-            val data = g.uport("data_${name}_$idx", dataDir, hw_dim_static(cfg.dataWidth), "0")
-
             if (cfg.external) {
                 require(cfg.ports == 1) { "External static bank supports only one read port" }
+
                 val bramAddr = g.uport("bram_addr_${name}", PORT_DIR.OUT, hw_dim_static(cfg.addrWidth), "0")
                 val bramEn = g.uport("bram_en_${name}", PORT_DIR.OUT, hw_dim_static(1), "0")
                 val weWidth = maxOf(1, cfg.dataWidth / 8)
                 val bramWe = g.uport("bram_we_${name}", PORT_DIR.OUT, hw_dim_static(weWidth), "0")
                 val bramDout = g.uport("bram_dout_${name}", PORT_DIR.IN, hw_dim_static(cfg.dataWidth), "0")
 
-                bramAddr.assign(addr)
-                bramEn.assign(rd)
                 bramWe.assign(hw_imm_zeroes(weWidth))
-                data.assign(bramDout)
+                MemoryReadPort(bramEn, bramAddr, bramDout)
             } else {
-                data.assign(mem!![addr])
-            }
+                val rd = g.uport("rd_${name}_$idx", PORT_DIR.IN, hw_dim_static(1), "0")
+                val addr = g.uport("addr_${name}_$idx", PORT_DIR.IN, hw_dim_static(cfg.addrWidth), "0")
+                val data = g.uport("data_${name}_$idx", PORT_DIR.OUT, hw_dim_static(cfg.dataWidth), "0")
 
-            MemoryReadPort(rd, addr, data)
+                data.assign(mem!![addr])
+                MemoryReadPort(rd, addr, data)
+            }
         }
 
         return MemoryBankPorts(readPorts = readPorts, writePorts = emptyList())

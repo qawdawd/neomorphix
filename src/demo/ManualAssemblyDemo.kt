@@ -135,8 +135,7 @@ private class ManualAssembly(private val cfg: ControllerConfig) {
             "postsyn_count",
             "emit_tag"
         )
-        val regBank = RegisterBankAdapter("reg").build(g, regCfg, registerNames)
-        val regMap = regBank.registers
+        val regMap = RegisterBankAdapter("reg").build(g, regCfg, registerNames)
         val regs = RegisterSet(
             leakage = regMap.getValue("leakage"),
             threshold = regMap.getValue("threshold"),

@@ -10,6 +10,7 @@ import hwast.hw_var
  * Простое ядро генератора тиков на основе счётчика.
  */
 data class TickGenPorts(
+    val tick_o: hw_var,
     val tick: hw_var,
     val counter: hw_var,
     val enable: hw_var,
@@ -37,10 +38,13 @@ class TickGenerator(private val instName: String = "tickgen") {
 
         val enable = g.uport("en_$name", PORT_DIR.IN, hw_dim_static(1), "1")
         val reset = g.uport("rst_$name", PORT_DIR.IN, hw_dim_static(1), "0")
+        val tick_o = g.uport("tick_o_$name", PORT_DIR.OUT, hw_dim_static(1), "0")
         val tick = g.uglobal("tick_$name", hw_dim_static(1), "0")
         val counter = g.uglobal("ctr_$name", hw_dim_static(ctrWidth), "0")
 
         val running = g.land(enable, g.bnot(reset))
+
+        tick_o.assign(tick)
 
         g.begif(g.eq2(reset, 1)); run {
             counter.assign(0)
@@ -62,6 +66,7 @@ class TickGenerator(private val instName: String = "tickgen") {
         }; g.endif()
 
         return TickGenPorts(
+            tick_o = tick_o,
             tick = tick,
             counter = counter,
             enable = enable,

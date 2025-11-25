@@ -33,7 +33,8 @@ private object TickMath {
 class TickGenerator(private val instName: String = "tickgen") {
 
     fun emit(g: Generic, cfg: TickGenConfig): TickGenPorts {
-        val ctrWidth = TickMath.log2ceil(cfg.periodCycles)
+        val periodCycles = cfg.resolvedPeriodCycles
+        val ctrWidth = TickMath.log2ceil(periodCycles)
         val name = cfg.name
 
         val enable = g.uport("en_$name", PORT_DIR.IN, hw_dim_static(1), "1")
@@ -53,7 +54,7 @@ class TickGenerator(private val instName: String = "tickgen") {
 
         g.begif(g.eq2(running, 1)); run {
             val next = counter.plus(1)
-            val wrap = g.eq2(next, cfg.periodCycles)
+            val wrap = g.eq2(next, periodCycles)
             g.begif(wrap); run {
                 counter.assign(0)
                 tick.assign(1)

@@ -1,6 +1,7 @@
 package bnmm.description
 
 import bnmm.queue.FifoConfig
+import layout.TimeUnit
 import semantics.PhaseParallelPlan
 import semantics.SynapticPackingPlan
 
@@ -154,13 +155,39 @@ data class ControllerConfig(
 data class TickGenConfig(
     val name: String = "tickgen",
     val periodCycles: Int = 1,
-    val pulseWidthCycles: Int = 1
+    val pulseWidthCycles: Int = 1,
+    val period: Long? = null,
+    val periodUnit: TimeUnit = TimeUnit.NS,
+    val clockPeriodNs: Long? = null
 ) {
+    val resolvedPeriodCycles: Int = computePeriodCycles()
+
+    private fun computePeriodCycles(): Int {
+        val cyclesFromTime = period?.let { toCycles(it) }
+        val base = cyclesFromTime ?: periodCycles.toLong()
+        require(base > 0) { "Period must be positive" }
+        require(base <= Int.MAX_VALUE) { "Period exceeds Int range" }
+        return base.toInt()
+    }
+
+    private fun toCycles(periodValue: Long): Long {
+        val clk = clockPeriodNs ?: error("Clock period must be set for time-based tick period")
+        require(clk > 0) { "Clock period must be positive" }
+        val periodNs = when (periodUnit) {
+            TimeUnit.NS -> periodValue
+            TimeUnit.US -> periodValue * 1_000
+            TimeUnit.MS -> periodValue * 1_000_000
+            TimeUnit.S -> periodValue * 1_000_000_000
+        }
+        val cycles = periodNs / clk
+        require(cycles > 0) { "Calculated period in cycles must be positive" }
+        return cycles
+    }
+
     init {
         require(name.isNotBlank()) { "Tick generator name must not be blank" }
-        require(periodCycles > 0) { "Period must be positive" }
         require(pulseWidthCycles > 0) { "Pulse width must be positive" }
-        require(pulseWidthCycles <= periodCycles) { "Pulse width must not exceed period" }
+        require(pulseWidthCycles <= resolvedPeriodCycles) { "Pulse width must not exceed period" }
     }
 }
 
@@ -233,6 +260,20 @@ object DescriptionFactory {
         notes = notes
     )
 
-    fun tickGen(name: String = "tickgen", periodCycles: Int = 1, pulseWidthCycles: Int = 1) =
-        TickGenConfig(name = name, periodCycles = periodCycles, pulseWidthCycles = pulseWidthCycles)
+    fun tickGen(
+        name: String = "tickgen",
+        periodCycles: Int = 1,
+        pulseWidthCycles: Int = 1,
+        period: Long? = null,
+        periodUnit: TimeUnit = TimeUnit.NS,
+        clockPeriodNs: Long? = null
+    ) =
+        TickGenConfig(
+            name = name,
+            periodCycles = periodCycles,
+            pulseWidthCycles = pulseWidthCycles,
+            period = period,
+            periodUnit = periodUnit,
+            clockPeriodNs = clockPeriodNs
+        )
 }

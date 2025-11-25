@@ -6,6 +6,7 @@ import bnmm.description.MemoryBankConfig
 import bnmm.description.QueueConfig
 import bnmm.description.SelectorConfig
 import bnmm.description.TickGenConfig
+import layout.TimeUnit
 import bnmm.memory.DynamicMemoryBank
 import bnmm.memory.MemoryBankPorts
 import bnmm.memory.MemoryReadPort
@@ -77,7 +78,14 @@ fun main() {
                 notes = listOf("static parameter registers")
             )
         ),
-        tickGen = TickGenConfig(name = "tick_manual", periodCycles = 4, pulseWidthCycles = 1),
+        tickGen = TickGenConfig(
+            name = "tick_manual",
+            periodCycles = 4,
+            pulseWidthCycles = 1,
+            period = 100_000,
+            periodUnit = TimeUnit.NS,
+            clockPeriodNs = 10
+        ),
         notes = listOf("semi-manual demo layout")
     )
 

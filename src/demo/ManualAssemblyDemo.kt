@@ -171,6 +171,8 @@ private class ManualAssembly(
     fun buildKernel(): GeneratedKernel {
         val g = Generic("bnmm_manual_demo")
 
+        logModuleParameters()
+
         val tick = TickGenerator(cfg.tickGen?.name ?: "tick").emit(g, cfg.tickGen ?: TickGenConfig()).tick
         val fifoIn = FifoInput(cfg.queues.first().name).emit(g, cfg.queues.first().toFifoConfig(), tick)
         val fifoOut = FifoOutput(cfg.queues.last().name).emit(g, cfg.queues.last().toFifoConfig(), tick)
@@ -279,6 +281,44 @@ private class ManualAssembly(
         )
 
         return GeneratedKernel(g.name, g)
+    }
+
+    private fun logModuleParameters() {
+        val archWidths = arch.getDerivedWidths()
+        println("=== Manual BNMM generation parameters ===")
+        println(arch.describe())
+        println(cfg.describe(registerNames))
+
+        val selectorCfg = cfg.selectors.firstOrNull()
+        val weightCfg = cfg.memoryBanks.firstOrNull()
+        if (selectorCfg != null && weightCfg != null) {
+            val packing = SynapticPackingConfig(wordWidth = weightCfg.dataWidth, weightWidth = 8, weightsPerWord = 2)
+            println("Synapse selector: ${selectorCfg.describe()}")
+            println("  packing: ${packing.describe()}")
+            println("  weight memory: ${weightCfg.describe()}")
+            println("  runtime base address register: weight_base (${cfg.memoryBanks.first { it.registerAdapter }.dataWidth}b)")
+        }
+
+        val neuronPlanTotal = arch.neuronsPerLayer.last()
+        println("Neuron selector:")
+        println("  ${cfg.phases.getOrNull(1)?.name ?: "neuron"}_selector -> postCountRegister=postsyn_count (${bitWidthForCount(neuronPlanTotal)}b used=${archWidths.neuronIndexWidths.last()}b) baseRegister=neuron_base")
+
+        val dynMem = cfg.memoryBanks.getOrNull(1)
+        if (dynMem != null) {
+            println("Dynamic state memory: ${dynMem.describe()}")
+        }
+
+        val regCfg = cfg.memoryBanks.firstOrNull { it.registerAdapter }
+        if (regCfg != null) {
+            println("Register set (static params and runtime controls):")
+            arch.staticParameterDescriptors().forEach { param ->
+                println("  ${param.name}: ${param.bitWidth}b (stored in ${regCfg.dataWidth}b slot)")
+            }
+            println("  weight_base / neuron_base / postsyn_count / emit_tag: stored in ${regCfg.dataWidth}b slots")
+            println("  register bank depth=${regCfg.depth} addrWidth=${regCfg.addrWidth}")
+        }
+
+        println("------------------------------------------------------------")
     }
 
     private fun synapticAccumulator(g: Generic, dynMem: MemoryBankPorts): (SynapticPhaseContext) -> Unit {

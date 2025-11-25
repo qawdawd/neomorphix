@@ -21,6 +21,12 @@ data class SelectorConfig(
         require(indexWidth > 0) { "Selector index width must be positive" }
     }
 
+    fun describe(): String {
+        val planNotes = plan?.notes?.takeIf { it.isNotEmpty() }?.joinToString()
+        val planStr = plan?.let { " planGroups=${it.totalGroups} active=${it.activeGroups} notes=${planNotes ?: "-"}" } ?: ""
+        return "name=$name indexWidth=${indexWidth}b stepByTick=$stepByTick${planStr}"
+    }
+
     companion object {
         fun fromPlan(name: String, indexWidth: Int, plan: PhaseParallelPlan?, stepByTick: Boolean = false) =
             SelectorConfig(name = name, indexWidth = indexWidth, plan = plan, stepByTick = stepByTick)
@@ -75,6 +81,17 @@ data class MemoryBankConfig(
         require(ports > 0) { "Number of ports must be positive" }
     }
 
+    fun describe(): String {
+        val flags = buildList {
+            if (writable) add("writable")
+            if (registerAdapter) add("registerAdapter")
+            if (external) add("external")
+        }.joinToString(separator = ", ")
+        val flagStr = if (flags.isBlank()) "" else " flags=[$flags]"
+        val notesStr = if (notes.isEmpty()) "" else " notes=${notes.joinToString()}"
+        return "name=$name addrWidth=${addrWidth}b dataWidth=${dataWidth}b depth=$depth ports=$ports${flagStr}${notesStr}"
+    }
+
     companion object {
         fun fromPackingPlan(name: String, plan: SynapticPackingPlan, depth: Int): MemoryBankConfig {
             val notes = buildList {
@@ -115,22 +132,25 @@ data class QueueConfig(
     val depth: Int,
     val creditWidth: Int = 8,
     val useTickDoubleBuffer: Boolean = true
-) {
-    init {
-        require(name.isNotBlank()) { "Queue name must not be blank" }
-        require(dataWidth > 0) { "Queue data width must be positive" }
-        require(depth > 0) { "Queue depth must be positive" }
-        require(creditWidth > 0) { "Queue credit width must be positive" }
-    }
+    ) {
+        init {
+            require(name.isNotBlank()) { "Queue name must not be blank" }
+            require(dataWidth > 0) { "Queue data width must be positive" }
+            require(depth > 0) { "Queue depth must be positive" }
+            require(creditWidth > 0) { "Queue credit width must be positive" }
+        }
 
-    fun toFifoConfig() = FifoConfig(
-        name = name,
-        dataWidth = dataWidth,
-        depth = depth,
-        creditWidth = creditWidth,
-        useTickDoubleBuffer = useTickDoubleBuffer
-    )
-}
+        fun toFifoConfig() = FifoConfig(
+            name = name,
+            dataWidth = dataWidth,
+            depth = depth,
+            creditWidth = creditWidth,
+            useTickDoubleBuffer = useTickDoubleBuffer
+        )
+
+        fun describe(): String =
+            "name=$name dataWidth=${dataWidth}b depth=$depth creditWidth=${creditWidth}b doubleBuffer=$useTickDoubleBuffer"
+    }
 
 /**
  * Конфигурация контроллера, агрегирующая подмодули.
@@ -146,6 +166,17 @@ data class ControllerConfig(
 ) {
     init {
         require(name.isNotBlank()) { "Controller name must not be blank" }
+    }
+
+    fun describe(registerNames: List<String> = emptyList()): String {
+        val selectorInfo = selectors.joinToString(prefix = "selectors=[", postfix = "]") { it.describe() }
+        val phaseInfo = phases.joinToString(prefix = "phases=[", postfix = "]") { it.name }
+        val queueInfo = queues.joinToString(prefix = "queues=[", postfix = "]") { it.describe() }
+        val memInfo = memoryBanks.joinToString(prefix = "memory=[", postfix = "]") { it.describe() }
+        val regList = if (registerNames.isEmpty()) "" else " registers=${registerNames.joinToString()}"
+        val tickInfo = tickGen?.let { " tickgen=${it.name}(period=${it.resolvedPeriodCycles})" } ?: ""
+        val notesStr = if (notes.isEmpty()) "" else " notes=${notes.joinToString()}"
+        return "$name: $selectorInfo $phaseInfo $queueInfo $memInfo${regList}${tickInfo}${notesStr}"
     }
 }
 

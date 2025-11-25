@@ -42,6 +42,7 @@ import export.SystemVerilogExporter
 import generation.GeneratedKernel
 import hwast.hw_dim_static
 import hwast.hw_var
+import kotlin.math.min
 
 /**
  * Semi-manual assembly demo that reuses BNMM building blocks directly instead of
@@ -144,9 +145,10 @@ private class ManualAssembly(private val cfg: ControllerConfig) {
             emitTag = regMap.getValue("emit_tag")
         )
 
+        val selectorAddrWidth = min(cfg.memoryBanks.first().addrWidth, regCfg.dataWidth)
         val selectorCfg = SynapseSelectorConfig(
             name = cfg.selectors.first().name,
-            addrWidth = cfg.memoryBanks.first().addrWidth,
+            addrWidth = selectorAddrWidth,
             preIndexWidth = cfg.selectors.first().indexWidth,
             postIndexWidth = cfg.selectors.first().indexWidth,
             packing = SynapticPackingConfig(wordWidth = cfg.memoryBanks.first().dataWidth, weightWidth = 8, weightsPerWord = 2),
@@ -156,9 +158,10 @@ private class ManualAssembly(private val cfg: ControllerConfig) {
         val postIndexWidth = selectorCfg.postIndexWidth
         // Keep selector ranges consistent by sourcing both selectors from one register.
         val sharedPostCount = regs.postsynCount[postIndexWidth - 1, 0]
+        val weightBaseWidth = regs.weightBase.vartype.dimensions.first().GetWidth()
         val selectorRuntime = bnmm.selector.SynapseSelectorRuntime(
             postsynCount = sharedPostCount,
-            baseAddress = regs.weightBase[selectorCfg.addrWidth - 1, 0]
+            baseAddress = regs.weightBase[min(weightBaseWidth, selectorCfg.addrWidth) - 1, 0]
         )
         val synSelector = SynapseSelector(selectorCfg.name).emit(
             g = g,

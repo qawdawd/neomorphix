@@ -158,7 +158,7 @@ private class ManualAssembly(private val cfg: ControllerConfig) {
         val postIndexWidth = selectorCfg.postIndexWidth
         // Keep selector ranges consistent by sourcing both selectors from one register.
         val sharedPostCount = regs.postsynCount[postIndexWidth - 1, 0]
-        val weightBaseWidth = regs.weightBase.width
+        val weightBaseWidth = regs.weightBase.vartype.dimensions.first().GetWidth()
         val selectorRuntime = bnmm.selector.SynapseSelectorRuntime(
             postsynCount = sharedPostCount,
             baseAddress = regs.weightBase[min(weightBaseWidth, selectorCfg.addrWidth) - 1, 0]

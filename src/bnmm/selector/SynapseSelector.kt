@@ -37,6 +37,9 @@ data class SynapticPackingConfig(
         }
         laneMask = if (packShift == 0) 0 else (1 shl packShift) - 1
     }
+
+    fun describe(): String =
+        "wordWidth=${wordWidth}b weightWidth=${weightWidth}b weightsPerWord=$weightsPerWord packShift=$packShift laneMask=0x${laneMask.toString(16)}"
 }
 
 /**
@@ -57,6 +60,9 @@ data class SynapseSelectorConfig(
         require(preIndexWidth > 0) { "Pre-synaptic index width must be positive" }
         require(postIndexWidth > 0) { "Post-synaptic index width must be positive" }
     }
+
+    fun describe(): String =
+        "name=$name addrWidth=${addrWidth}b preIndexWidth=${preIndexWidth}b postIndexWidth=${postIndexWidth}b stepByTick=$stepByTick"
 }
 
 /**

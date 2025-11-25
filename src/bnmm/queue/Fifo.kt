@@ -27,6 +27,9 @@ data class FifoConfig(
         require(depth > 0) { "Depth must be positive" }
         require(creditWidth > 0) { "Credit width must be positive" }
     }
+
+    fun describe(): String =
+        "name=$name dataWidth=${dataWidth}b depth=$depth creditWidth=${creditWidth}b doubleBuffer=$useTickDoubleBuffer"
 }
 
 /**

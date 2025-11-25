@@ -27,6 +27,11 @@ data class NeuronSelectorPlan(
             notes = plan.notes
         )
     }
+
+    fun describe(): String {
+        val notesStr = if (notes.isEmpty()) "" else " notes=${notes.joinToString()}"
+        return "groupSize=$groupSize totalGroups=$totalGroups activeGroups=$activeGroups remainder=$remainder${notesStr}"
+    }
 }
 
 /**
@@ -41,6 +46,11 @@ data class NeuronSelectorConfig(
     init {
         require(name.isNotBlank()) { "Selector name must not be blank" }
         require(indexWidth > 0) { "Index width must be positive" }
+    }
+
+    fun describe(): String {
+        val planDesc = plan?.describe()?.let { " plan={$it}" } ?: ""
+        return "name=$name indexWidth=${indexWidth}b stepByTick=$stepByTick${planDesc}"
     }
 }
 

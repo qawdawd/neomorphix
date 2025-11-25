@@ -189,6 +189,7 @@ module wrapper #(
             state <= ST_IDLE;
     
             en_tick_manual <= 1'b0;
+            rst_tick_manual   <= 1'b1;
     
             cfg_idx <= '0;
             spk_cnt <= '0;
@@ -198,8 +199,9 @@ module wrapper #(
             state <= state_next;
     
             // tick: активен только в ST_RUN
-            en_tick_manual <= (state_next == ST_RUN);
-    
+            en_tick_manual <= 1; // (state_next == ST_RUN);
+            rst_tick_manual   <= 1'b0;
+
             unique case (state)
     
                 // -----------------------------------------------------

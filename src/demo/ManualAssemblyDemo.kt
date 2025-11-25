@@ -1,5 +1,8 @@
 package demo
 
+import arch.ConnectivityType
+import arch.SnnArch
+import arch.StaticParamDescriptor
 import bnmm.description.ControllerConfig
 import bnmm.description.PhaseUnitConfig
 import bnmm.description.MemoryBankConfig
@@ -43,6 +46,7 @@ import export.SystemVerilogExporter
 import generation.GeneratedKernel
 import hwast.hw_dim_static
 import hwast.hw_var
+import kotlin.math.max
 import kotlin.math.min
 
 /**
@@ -53,26 +57,63 @@ import kotlin.math.min
  * SystemVerilog using the ActiveCore backend.
  */
 fun main() {
+    val arch = SnnArch(
+        layerCount = 2,
+        neuronsPerLayer = listOf(784, 128),
+        connectivity = ConnectivityType.FULLY_CONNECTED,
+        staticParameters = listOf(
+            StaticParamDescriptor(name = "leakage", bitWidth = 8),
+            StaticParamDescriptor(name = "threshold", bitWidth = 12),
+            StaticParamDescriptor(name = "vreset", bitWidth = 12)
+        )
+    )
+    val archWidths = arch.getDerivedWidths()
+    val presynCount = arch.neuronsPerLayer.first()
+    val postsynCount = arch.neuronsPerLayer.last()
+    val preIndexWidth = archWidths.neuronIndexWidths.first()
+    val postIndexWidth = archWidths.neuronIndexWidths.last()
+    val registerNames = arch.staticParameterDescriptors().map { it.name } +
+        listOf("weight_base", "neuron_base", "postsyn_count", "emit_tag")
+
     val controllerCfg = ControllerConfig(
         name = "manual_bnmm_controller",
-        selectors = listOf(SelectorConfig(name = "syn_selector", indexWidth = 4, stepByTick = true)),
+        selectors = listOf(
+            SelectorConfig(
+                name = "syn_selector",
+                indexWidth = max(preIndexWidth, postIndexWidth),
+                stepByTick = true
+            )
+        ),
         phases = listOf(
             PhaseUnitConfig(name = "syn_manual", stepByTick = true),
             PhaseUnitConfig(name = "som_manual", stepByTick = true),
             PhaseUnitConfig(name = "em_manual", stepByTick = true)
         ),
         queues = listOf(
-            QueueConfig(name = "fifo_in", dataWidth = 16, depth = 8),
-            QueueConfig(name = "fifo_out", dataWidth = 8, depth = 8)
+            QueueConfig(name = "fifo_in", dataWidth = 16, depth = presynCount),
+            QueueConfig(name = "fifo_out", dataWidth = 8, depth = postsynCount)
         ),
         memoryBanks = listOf(
-            MemoryBankConfig(name = "weights", addrWidth = 32, dataWidth = 16, depth = 16, writable = false, external = true),
-            MemoryBankConfig(name = "state", addrWidth = 4, dataWidth = 12, depth = 16, writable = true),
+            MemoryBankConfig(
+                name = "weights",
+                addrWidth = archWidths.synapseAddressWidth,
+                dataWidth = 16,
+                depth = archWidths.totalSynapseCount,
+                writable = false,
+                external = true
+            ),
+            MemoryBankConfig(
+                name = "state",
+                addrWidth = bitWidthForCount(postsynCount),
+                dataWidth = 12,
+                depth = postsynCount,
+                writable = true
+            ),
             MemoryBankConfig(
                 name = "regs",
-                addrWidth = 4,
+                addrWidth = bitWidthForCount(registerNames.size),
                 dataWidth = 16,
-                depth = 8,
+                depth = registerNames.size,
                 writable = true,
                 registerAdapter = true,
                 notes = listOf("static parameter registers")
@@ -89,7 +130,7 @@ fun main() {
         notes = listOf("semi-manual demo layout")
     )
 
-    val demo = ManualAssembly(controllerCfg)
+    val demo = ManualAssembly(controllerCfg, arch, registerNames)
     val kernel = demo.buildKernel()
     val artifact = SystemVerilogExporter().export(kernel)
 
@@ -121,7 +162,11 @@ private data class RegisterSet(
     val emitTag: hw_var
 )
 
-private class ManualAssembly(private val cfg: ControllerConfig) {
+private class ManualAssembly(
+    private val cfg: ControllerConfig,
+    private val arch: SnnArch,
+    private val registerNames: List<String>
+) {
 
     fun buildKernel(): GeneratedKernel {
         val g = Generic("bnmm_manual_demo")
@@ -133,15 +178,6 @@ private class ManualAssembly(private val cfg: ControllerConfig) {
         val weightPorts = StaticMemoryBank("wmem").emit(g, cfg.memoryBanks.first()).readPorts.first()
         val dynPorts = DynamicMemoryBank("dmem").emit(g, cfg.memoryBanks[1])
         val regCfg = cfg.memoryBanks.first { it.registerAdapter }
-        val registerNames = listOf(
-            "leakage",
-            "threshold",
-            "vreset",
-            "weight_base",
-            "neuron_base",
-            "postsyn_count",
-            "emit_tag"
-        )
         val regMap = RegisterBankAdapter("reg").build(g, regCfg, registerNames)
         val regs = RegisterSet(
             leakage = regMap.getValue("leakage"),
@@ -154,16 +190,18 @@ private class ManualAssembly(private val cfg: ControllerConfig) {
         )
 
         val selectorAddrWidth = min(cfg.memoryBanks.first().addrWidth, regCfg.dataWidth)
+        val archWidths = arch.getDerivedWidths()
+        val preIndexWidth = archWidths.neuronIndexWidths.first()
+        val postIndexWidth = archWidths.neuronIndexWidths.last()
         val selectorCfg = SynapseSelectorConfig(
             name = cfg.selectors.first().name,
             addrWidth = selectorAddrWidth,
-            preIndexWidth = cfg.selectors.first().indexWidth,
-            postIndexWidth = cfg.selectors.first().indexWidth,
+            preIndexWidth = preIndexWidth,
+            postIndexWidth = postIndexWidth,
             packing = SynapticPackingConfig(wordWidth = cfg.memoryBanks.first().dataWidth, weightWidth = 8, weightsPerWord = 2),
             useLinearAddress = true,
             stepByTick = true
         )
-        val postIndexWidth = selectorCfg.postIndexWidth
         // Keep selector ranges consistent by sourcing both selectors from one register.
         val sharedPostCount = regs.postsynCount[postIndexWidth - 1, 0]
         val weightBaseWidth = regs.weightBase.vartype.dimensions.first().GetWidth()
@@ -185,7 +223,12 @@ private class ManualAssembly(private val cfg: ControllerConfig) {
             cfg = NeuronSelectorConfig(
                 name = neuronSelectorName,
                 indexWidth = selectorCfg.postIndexWidth,
-                plan = NeuronSelectorPlan(groupSize = 1, totalGroups = 4, activeGroups = 4, remainder = 0),
+                plan = NeuronSelectorPlan(
+                    groupSize = 1,
+                    totalGroups = arch.neuronsPerLayer.last(),
+                    activeGroups = arch.neuronsPerLayer.last(),
+                    remainder = 0
+                ),
                 stepByTick = false
             ),
             runtime = NeuronSelectorRuntime(
@@ -345,3 +388,15 @@ private fun QueueConfig.toFifoConfig() = FifoConfig(
     creditWidth = creditWidth,
     useTickDoubleBuffer = useTickDoubleBuffer
 )
+
+private fun bitWidthForCount(count: Int): Int {
+    require(count >= 0) { "Count must not be negative" }
+    if (count <= 1) return 1
+    var value = count - 1
+    var width = 0
+    while (value > 0) {
+        width += 1
+        value = value ushr 1
+    }
+    return width
+}

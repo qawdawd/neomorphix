@@ -96,7 +96,10 @@ class CyclixGenerator {
             TickGenConfig(
                 name = namingPlan.assigned.tickInst,
                 periodCycles = layoutPlan.tick.cfg.timeslot.toInt().coerceAtLeast(1),
-                pulseWidthCycles = 1
+                pulseWidthCycles = 1,
+                period = layoutPlan.tick.cfg.timeslot,
+                periodUnit = layoutPlan.tick.cfg.unit,
+                clockPeriodNs = layoutPlan.tick.cfg.clkPeriodNs
             )
         ).tick
 

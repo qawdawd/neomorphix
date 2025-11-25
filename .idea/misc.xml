@@ -15,7 +15,21 @@
                     <option name="offset" value="141" />
                     <option name="source" value="glbl.v" />
                   </Body>
+                  <Body>
+                    <option name="offset" value="24138" />
+                    <option name="source" value="design_1_auto_pc_0_sim_netlist.v" />
+                  </Body>
+                  <Body>
+                    <option name="offset" value="640908" />
+                    <option name="source" value="design_1_blk_mem_gen_0_1_sim_netlist.v" />
+                  </Body>
                 </list>
+              </option>
+              <option name="dependencies">
+                <set>
+                  <option value="design_1_auto_pc_0_sim_netlist.v" />
+                  <option value="design_1_blk_mem_gen_0_1_sim_netlist.v" />
+                </set>
               </option>
             </Define>
           </value>

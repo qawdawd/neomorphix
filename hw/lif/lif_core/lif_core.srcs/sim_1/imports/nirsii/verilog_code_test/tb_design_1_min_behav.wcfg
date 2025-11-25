@@ -14,15 +14,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="46072500000fs"></ZoomStartTime>
-      <ZoomEndTime time="47173000001fs"></ZoomEndTime>
-      <Cursor1Time time="46555000000fs"></Cursor1Time>
+      <ZoomStartTime time="45673000000fs"></ZoomStartTime>
+      <ZoomEndTime time="50115000001fs"></ZoomEndTime>
+      <Cursor1Time time="46675000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="242"></NameColumnWidth>
-      <ValueColumnWidth column_width="102"></ValueColumnWidth>
+      <ValueColumnWidth column_width="82"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="70" />
+   <WVObjectSize size="105" />
    <wvobject type="logic" fp_name="/tb/clk_100MHz">
       <obj_property name="ElementShortName">clk_100MHz</obj_property>
       <obj_property name="ObjectShortName">clk_100MHz</obj_property>
@@ -278,23 +278,23 @@
       <obj_property name="ElementShortName">enb</obj_property>
       <obj_property name="ObjectShortName">enb</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/web">
-      <obj_property name="ElementShortName">web[3:0]</obj_property>
-      <obj_property name="ObjectShortName">web[3:0]</obj_property>
-   </wvobject>
    <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/addrb">
       <obj_property name="ElementShortName">addrb[31:0]</obj_property>
       <obj_property name="ObjectShortName">addrb[31:0]</obj_property>
       <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/dinb">
-      <obj_property name="ElementShortName">dinb[31:0]</obj_property>
-      <obj_property name="ObjectShortName">dinb[31:0]</obj_property>
-   </wvobject>
    <wvobject type="array" fp_name="/tb/dut/u_bd/BRAM_PORTB_dout">
       <obj_property name="ElementShortName">BRAM_PORTB_dout[31:0]</obj_property>
       <obj_property name="ObjectShortName">BRAM_PORTB_dout[31:0]</obj_property>
       <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/cfg_idx">
+      <obj_property name="ElementShortName">cfg_idx[7:0]</obj_property>
+      <obj_property name="ObjectShortName">cfg_idx[7:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/bram_addr_word_next">
+      <obj_property name="ElementShortName">bram_addr_word_next[12:0]</obj_property>
+      <obj_property name="ObjectShortName">bram_addr_word_next[12:0]</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/tb/dut/u_bd/BRAM_PORTB_addr">
       <obj_property name="ElementShortName">BRAM_PORTB_addr[31:0]</obj_property>
@@ -306,15 +306,158 @@
       <obj_property name="ObjectShortName">BRAM_PORTB_clk</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/tb/dut/u_wrapper/state">
-      <obj_property name="ElementShortName">state[6:0]</obj_property>
-      <obj_property name="ObjectShortName">state[6:0]</obj_property>
+      <obj_property name="ElementShortName">state[2:0]</obj_property>
+      <obj_property name="ObjectShortName">state[2:0]</obj_property>
    </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_wrapper/bram_addr_next">
-      <obj_property name="ElementShortName">bram_addr_next[12:0]</obj_property>
-      <obj_property name="ObjectShortName">bram_addr_next[12:0]</obj_property>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/state_next">
+      <obj_property name="ElementShortName">state_next[2:0]</obj_property>
+      <obj_property name="ObjectShortName">state_next[2:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wr_leakage">
+      <obj_property name="ElementShortName">wr_leakage[0:0]</obj_property>
+      <obj_property name="ObjectShortName">wr_leakage[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wd_leakage">
+      <obj_property name="ElementShortName">wd_leakage[15:0]</obj_property>
+      <obj_property name="ObjectShortName">wd_leakage[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wr_threshold">
+      <obj_property name="ElementShortName">wr_threshold[0:0]</obj_property>
+      <obj_property name="ObjectShortName">wr_threshold[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wd_threshold">
+      <obj_property name="ElementShortName">wd_threshold[15:0]</obj_property>
+      <obj_property name="ObjectShortName">wd_threshold[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wr_vreset">
+      <obj_property name="ElementShortName">wr_vreset[0:0]</obj_property>
+      <obj_property name="ObjectShortName">wr_vreset[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wd_vreset">
+      <obj_property name="ElementShortName">wd_vreset[15:0]</obj_property>
+      <obj_property name="ObjectShortName">wd_vreset[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wr_weight_base">
+      <obj_property name="ElementShortName">wr_weight_base[0:0]</obj_property>
+      <obj_property name="ObjectShortName">wr_weight_base[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wd_weight_base">
+      <obj_property name="ElementShortName">wd_weight_base[15:0]</obj_property>
+      <obj_property name="ObjectShortName">wd_weight_base[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wr_neuron_base">
+      <obj_property name="ElementShortName">wr_neuron_base[0:0]</obj_property>
+      <obj_property name="ObjectShortName">wr_neuron_base[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wd_neuron_base">
+      <obj_property name="ElementShortName">wd_neuron_base[15:0]</obj_property>
+      <obj_property name="ObjectShortName">wd_neuron_base[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wr_postsyn_count">
+      <obj_property name="ElementShortName">wr_postsyn_count[0:0]</obj_property>
+      <obj_property name="ObjectShortName">wr_postsyn_count[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wd_postsyn_count">
+      <obj_property name="ElementShortName">wd_postsyn_count[15:0]</obj_property>
+      <obj_property name="ObjectShortName">wd_postsyn_count[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/reg_regs_vreset">
+      <obj_property name="ElementShortName">reg_regs_vreset[15:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_regs_vreset[15:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/reg_regs_threshold">
+      <obj_property name="ElementShortName">reg_regs_threshold[15:0]</obj_property>
+      <obj_property name="ObjectShortName">reg_regs_threshold[15:0]</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/tb/dut/u_wrapper/spikes_num">
       <obj_property name="ElementShortName">spikes_num[9:0]</obj_property>
       <obj_property name="ObjectShortName">spikes_num[9:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/spk_cnt">
+      <obj_property name="ElementShortName">spk_cnt[9:0]</obj_property>
+      <obj_property name="ObjectShortName">spk_cnt[9:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb/dut/u_wrapper/en_tick_manual">
+      <obj_property name="ElementShortName">en_tick_manual</obj_property>
+      <obj_property name="ObjectShortName">en_tick_manual</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/IN_SPIKES_BASE">
+      <obj_property name="ElementShortName">IN_SPIKES_BASE[12:0]</obj_property>
+      <obj_property name="ObjectShortName">IN_SPIKES_BASE[12:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/IN_SPIKES_COUNT">
+      <obj_property name="ElementShortName">IN_SPIKES_COUNT[12:0]</obj_property>
+      <obj_property name="ObjectShortName">IN_SPIKES_COUNT[12:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/CFG_BASE">
+      <obj_property name="ElementShortName">CFG_BASE[12:0]</obj_property>
+      <obj_property name="ObjectShortName">CFG_BASE[12:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/CFG_EN_CORE_ADDR">
+      <obj_property name="ElementShortName">CFG_EN_CORE_ADDR[12:0]</obj_property>
+      <obj_property name="ObjectShortName">CFG_EN_CORE_ADDR[12:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/CFG_LEAKAGE_ADDR">
+      <obj_property name="ElementShortName">CFG_LEAKAGE_ADDR[12:0]</obj_property>
+      <obj_property name="ObjectShortName">CFG_LEAKAGE_ADDR[12:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/CFG_VRST_ADDR">
+      <obj_property name="ElementShortName">CFG_VRST_ADDR[12:0]</obj_property>
+      <obj_property name="ObjectShortName">CFG_VRST_ADDR[12:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/CFG_VTHRSH_ADDR">
+      <obj_property name="ElementShortName">CFG_VTHRSH_ADDR[12:0]</obj_property>
+      <obj_property name="ObjectShortName">CFG_VTHRSH_ADDR[12:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/CFG_TOTAL_NEUR_ADDR">
+      <obj_property name="ElementShortName">CFG_TOTAL_NEUR_ADDR[12:0]</obj_property>
+      <obj_property name="ObjectShortName">CFG_TOTAL_NEUR_ADDR[12:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/CFG_WEIGHT_BASE_ADDR">
+      <obj_property name="ElementShortName">CFG_WEIGHT_BASE_ADDR[12:0]</obj_property>
+      <obj_property name="ObjectShortName">CFG_WEIGHT_BASE_ADDR[12:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/CFG_NEURON_BASE_ADDR">
+      <obj_property name="ElementShortName">CFG_NEURON_BASE_ADDR[12:0]</obj_property>
+      <obj_property name="ObjectShortName">CFG_NEURON_BASE_ADDR[12:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/CFG_EMIT_TAG_ADDR">
+      <obj_property name="ElementShortName">CFG_EMIT_TAG_ADDR[12:0]</obj_property>
+      <obj_property name="ObjectShortName">CFG_EMIT_TAG_ADDR[12:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/CFG_WORDS">
+      <obj_property name="ElementShortName">CFG_WORDS[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CFG_WORDS[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wr_fifo_in">
+      <obj_property name="ElementShortName">wr_fifo_in[0:0]</obj_property>
+      <obj_property name="ObjectShortName">wr_fifo_in[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/full_fifo_in">
+      <obj_property name="ElementShortName">full_fifo_in[0:0]</obj_property>
+      <obj_property name="ObjectShortName">full_fifo_in[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/start_syn_selector">
+      <obj_property name="ElementShortName">start_syn_selector[0:0]</obj_property>
+      <obj_property name="ObjectShortName">start_syn_selector[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/start_som_manual_selector">
+      <obj_property name="ElementShortName">start_som_manual_selector[0:0]</obj_property>
+      <obj_property name="ObjectShortName">start_som_manual_selector[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/start_syn_manual">
+      <obj_property name="ElementShortName">start_syn_manual[0:0]</obj_property>
+      <obj_property name="ObjectShortName">start_syn_manual[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/start_som_manual">
+      <obj_property name="ElementShortName">start_som_manual[0:0]</obj_property>
+      <obj_property name="ObjectShortName">start_som_manual[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/start_em_manual">
+      <obj_property name="ElementShortName">start_em_manual[0:0]</obj_property>
+      <obj_property name="ObjectShortName">start_em_manual[0:0]</obj_property>
    </wvobject>
 </wave_config>

@@ -1,7 +1,7 @@
 //Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
 //--------------------------------------------------------------------------------
 //Tool Version: Vivado v.2019.1 (lin64) Build 2552052 Fri May 24 14:47:09 MDT 2019
-//Date        : Mon Nov 17 13:34:20 2025
+//Date        : Mon Nov 24 16:32:44 2025
 //Host        : thinkpad running 64-bit Debian GNU/Linux 12 (bookworm)
 //Command     : generate_target design_1_wrapper.bd
 //Design      : design_1_wrapper

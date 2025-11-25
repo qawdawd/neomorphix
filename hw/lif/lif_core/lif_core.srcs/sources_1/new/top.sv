@@ -6,14 +6,18 @@ module top(
     output wire [31:0] dbg_data      // для отладки
 );
 
-    wire [12:0] bram_addr_word;
+    wire /*[12*/[31:0] bram_addr_word;
 
-    wire [31:0] bram_addr = {19'd0, bram_addr_word};
+    wire [31:0] bram_addr = {/*19'd0,*/ bram_addr_word};
 
-    wire [31:0] bram_din;
-    wire [31:0] bram_dout;
+//    wire [31:0] bram_din;
+//    wire [31:0] bram_dout;
     wire        bram_en;
-    wire [3:0]  bram_we;
+//    wire [3:0]  bram_we;
+    wire [15:0] bram_din;
+    wire [15:0] bram_dout;
+    wire [1:0]  bram_we;
+
 
     // 1) Block Design (MicroBlaze + AXI BRAM + BRAM PORT B наружу)
     design_1_wrapper u_bd (

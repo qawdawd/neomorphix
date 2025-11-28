@@ -256,7 +256,7 @@ BEGIN
       C_S_AXI_PROTOCOL => "AXI4",
       C_S_AXI_SUPPORTS_NARROW_BURST => 0,
       C_SINGLE_PORT_BRAM => 1,
-      C_FAMILY => "artix7",
+      C_FAMILY => "zynq",
       C_READ_LATENCY => 1,
       C_RD_CMD_OPTIMIZATION => 0,
       C_S_AXI_CTRL_ADDR_WIDTH => 32,

@@ -1,0 +1,238 @@
+
+=== Manual BNMM generation parameters ===
+SNN Architecture description
+Layers: 2
+  Layer 1: neurons=784, indexWidth=10b
+  Layer 2: neurons=128, indexWidth=7b
+Connectivity: fully_connected
+
+Static parameters:
+  - leakage: width=8b
+  - threshold: width=12b
+  - vreset: width=12b
+
+Derived widths:
+  Layer index width: 1b
+  Global neuron id width: 10b
+  Synapse address width: 17b
+  Total neurons: 912
+  Total synapses: 100352
+
+manual_bnmm_controller: selectors=[name=syn_selector indexWidth=10b stepByTick=true] phases=[syn_manual, som_manual, em_manual] queues=[name=fifo_in dataWidth=16b depth=784 creditWidth=8b doubleBuffer=true, name=fifo_out dataWidth=8b depth=128 creditWidth=8b doubleBuffer=true] memory=[name=weights addrWidth=17b dataWidth=16b depth=100352 ports=1 flags=[external], name=state addrWidth=7b dataWidth=12b depth=128 ports=1 flags=[writable], name=regs addrWidth=3b dataWidth=16b depth=7 ports=1 flags=[writable, registerAdapter] notes=static parameter registers] registers=leakage, threshold, vreset, weight_base, neuron_base, postsyn_count, emit_tag tickgen=tick_manual(period=10000) notes=semi-manual demo layout
+Synapse selector: name=syn_selector indexWidth=10b stepByTick=true
+  packing: wordWidth=16b weightWidth=8b weightsPerWord=2 packShift=1 laneMask=0x1
+  weight memory: name=weights addrWidth=17b dataWidth=16b depth=100352 ports=1 flags=[external]
+  runtime base address register: weight_base (16b)
+Neuron selector:
+  som_manual_selector -> postCountRegister=postsyn_count (7b used=7b) baseRegister=neuron_base
+Dynamic state memory: name=state addrWidth=7b dataWidth=12b depth=128 ports=1 flags=[writable]
+Register set (static params and runtime controls):
+  leakage: 8b (stored in 16b slot)
+  threshold: 12b (stored in 16b slot)
+  vreset: 12b (stored in 16b slot)
+  weight_base / neuron_base / postsyn_count / emit_tag: stored in 16b slots
+  register bank depth=7 addrWidth=3
+------------------------------------------------------------
+
+
+Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
+----------------------------------------------------------------------------------------------------------------------------------
+| Device       : 7z020clg484-1
+| Design State : Synthesized
+----------------------------------------------------------------------------------------------------------------------------------
+
+Utilization Design Information
+
+Table of Contents
+-----------------
+1. Slice Logic
+1.1 Summary of Registers by Type
+2. Memory
+3. DSP
+4. IO and GT Specific
+5. Clocking
+6. Specific Feature
+7. Primitives
+8. Black Boxes
+9. Instantiated Netlists
+
+1. Slice Logic
+--------------
+
++----------------------------+-------+-------+-----------+-------+
+|          Site Type         |  Used | Fixed | Available | Util% |
++----------------------------+-------+-------+-----------+-------+
+| Slice LUTs*                | 15291 |     0 |     53200 | 28.74 |
+|   LUT as Logic             | 15147 |     0 |     53200 | 28.47 |
+|   LUT as Memory            |   144 |     0 |     17400 |  0.83 |
+|     LUT as Distributed RAM |    64 |     0 |           |       |
+|     LUT as Shift Register  |    80 |     0 |           |       |
+| Slice Registers            |  9593 |     0 |    106400 |  9.02 |
+|   Register as Flip Flop    |  9592 |     0 |    106400 |  9.02 |
+|   Register as Latch        |     0 |     0 |    106400 |  0.00 |
+|   Register as AND/OR       |     1 |     0 |    106400 | <0.01 |
+| F7 Muxes                   |  1148 |     0 |     26600 |  4.32 |
+| F8 Muxes                   |   520 |     0 |     13300 |  3.91 |
++----------------------------+-------+-------+-----------+-------+
+* Warning! The Final LUT count, after physical optimizations and full implementation, is typically lower. Run opt_design after synthesis, if not already completed, for a more realistic count.
+
+
+1.1 Summary of Registers by Type
+--------------------------------
+
++-------+--------------+-------------+--------------+
+| Total | Clock Enable | Synchronous | Asynchronous |
++-------+--------------+-------------+--------------+
+| 1     |            _ |           - |            - |
+| 0     |            _ |           - |          Set |
+| 0     |            _ |           - |        Reset |
+| 0     |            _ |         Set |            - |
+| 0     |            _ |       Reset |            - |
+| 0     |          Yes |           - |            - |
+| 0     |          Yes |           - |          Set |
+| 0     |          Yes |           - |        Reset |
+| 45    |          Yes |         Set |            - |
+| 9547  |          Yes |       Reset |            - |
++-------+--------------+-------------+--------------+
+
+
+2. Memory
+---------
+
++-------------------+------+-------+-----------+-------+
+|     Site Type     | Used | Fixed | Available | Util% |
++-------------------+------+-------+-----------+-------+
+| Block RAM Tile    |   64 |     0 |       140 | 45.71 |
+|   RAMB36/FIFO*    |   64 |     0 |       140 | 45.71 |
+|     RAMB36E1 only |   64 |       |           |       |
+|   RAMB18          |    0 |     0 |       280 |  0.00 |
++-------------------+------+-------+-----------+-------+
+* Note: Each Block RAM Tile only has one FIFO logic available and therefore can accommodate only one FIFO36E1 or one FIFO18E1. However, if a FIFO18E1 occupies a Block RAM Tile, that tile can still accommodate a RAMB18E1
+
+
+3. DSP
+------
+
++----------------+------+-------+-----------+-------+
+|    Site Type   | Used | Fixed | Available | Util% |
++----------------+------+-------+-----------+-------+
+| DSPs           |    2 |     0 |       220 |  0.91 |
+|   DSP48E1 only |    2 |       |           |       |
++----------------+------+-------+-----------+-------+
+
+
+4. IO and GT Specific
+---------------------
+
++-----------------------------+------+-------+-----------+-------+
+|          Site Type          | Used | Fixed | Available | Util% |
++-----------------------------+------+-------+-----------+-------+
+| Bonded IOB                  |   34 |     0 |       200 | 17.00 |
+| Bonded IPADs                |    0 |     0 |         2 |  0.00 |
+| Bonded IOPADs               |    0 |     0 |       130 |  0.00 |
+| PHY_CONTROL                 |    0 |     0 |         4 |  0.00 |
+| PHASER_REF                  |    0 |     0 |         4 |  0.00 |
+| OUT_FIFO                    |    0 |     0 |        16 |  0.00 |
+| IN_FIFO                     |    0 |     0 |        16 |  0.00 |
+| IDELAYCTRL                  |    0 |     0 |         4 |  0.00 |
+| IBUFDS                      |    0 |     0 |       192 |  0.00 |
+| PHASER_OUT/PHASER_OUT_PHY   |    0 |     0 |        16 |  0.00 |
+| PHASER_IN/PHASER_IN_PHY     |    0 |     0 |        16 |  0.00 |
+| IDELAYE2/IDELAYE2_FINEDELAY |    0 |     0 |       200 |  0.00 |
+| ILOGIC                      |    0 |     0 |       200 |  0.00 |
+| OLOGIC                      |    0 |     0 |       200 |  0.00 |
++-----------------------------+------+-------+-----------+-------+
+
+
+5. Clocking
+-----------
+
++------------+------+-------+-----------+-------+
+|  Site Type | Used | Fixed | Available | Util% |
++------------+------+-------+-----------+-------+
+| BUFGCTRL   |    2 |     0 |        32 |  6.25 |
+| BUFIO      |    0 |     0 |        16 |  0.00 |
+| MMCME2_ADV |    1 |     0 |         4 | 25.00 |
+| PLLE2_ADV  |    0 |     0 |         4 |  0.00 |
+| BUFMRCE    |    0 |     0 |         8 |  0.00 |
+| BUFHCE     |    0 |     0 |        72 |  0.00 |
+| BUFR       |    0 |     0 |        16 |  0.00 |
++------------+------+-------+-----------+-------+
+
+
+6. Specific Feature
+-------------------
+
++-------------+------+-------+-----------+-------+
+|  Site Type  | Used | Fixed | Available | Util% |
++-------------+------+-------+-----------+-------+
+| BSCANE2     |    0 |     0 |         4 |  0.00 |
+| CAPTUREE2   |    0 |     0 |         1 |  0.00 |
+| DNA_PORT    |    0 |     0 |         1 |  0.00 |
+| EFUSE_USR   |    0 |     0 |         1 |  0.00 |
+| FRAME_ECCE2 |    0 |     0 |         1 |  0.00 |
+| ICAPE2      |    0 |     0 |         2 |  0.00 |
+| STARTUPE2   |    0 |     0 |         1 |  0.00 |
+| XADC        |    0 |     0 |         1 |  0.00 |
++-------------+------+-------+-----------+-------+
+
+
+7. Primitives
+-------------
+
++------------+-------+---------------------+
+|  Ref Name  |  Used | Functional Category |
++------------+-------+---------------------+
+| LUT6       | 12476 |                 LUT |
+| FDRE       |  9547 |        Flop & Latch |
+| LUT5       |  1232 |                 LUT |
+| MUXF7      |  1148 |               MuxFx |
+| LUT3       |   733 |                 LUT |
+| LUT4       |   718 |                 LUT |
+| MUXF8      |   520 |               MuxFx |
+| LUT2       |   479 |                 LUT |
+| RAMD32     |    96 |  Distributed Memory |
+| SRL16E     |    80 |  Distributed Memory |
+| RAMB36E1   |    64 |        Block Memory |
+| LUT1       |    49 |                 LUT |
+| FDSE       |    45 |        Flop & Latch |
+| CARRY4     |    38 |          CarryLogic |
+| RAMS32     |    32 |  Distributed Memory |
+| OBUFT      |    16 |                  IO |
+| OBUF       |    16 |                  IO |
+| IBUF       |     2 |                  IO |
+| DSP48E1    |     2 |    Block Arithmetic |
+| BUFG       |     2 |               Clock |
+| MMCME2_ADV |     1 |               Clock |
+| AND2B1L    |     1 |              Others |
++------------+-------+---------------------+
+
+
+8. Black Boxes
+--------------
+
++----------+------+
+| Ref Name | Used |
++----------+------+
+
+
+9. Instantiated Netlists
+------------------------
+
++-------------------------------+------+
+|            Ref Name           | Used |
++-------------------------------+------+
+| design_1_rst_clk_wiz_1_100M_0 |    1 |
+| design_1_microblaze_0_0       |    1 |
+| design_1_lmb_bram_0           |    1 |
+| design_1_ilmb_v10_0           |    1 |
+| design_1_ilmb_bram_if_cntlr_0 |    1 |
+| design_1_dlmb_v10_0           |    1 |
+| design_1_dlmb_bram_if_cntlr_0 |    1 |
+| design_1_clk_wiz_1_0          |    1 |
+| design_1_blk_mem_gen_0_1      |    1 |
+| design_1_axi_bram_ctrl_0_0    |    1 |
+| design_1_auto_pc_0            |    1 |
++-------------------------------+------+
+
+

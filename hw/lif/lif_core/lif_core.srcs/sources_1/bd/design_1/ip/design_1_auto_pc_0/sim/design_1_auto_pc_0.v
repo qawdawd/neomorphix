@@ -232,7 +232,7 @@ SER_BITS_PER_BYTE 0, WUSER_BITS_PER_BYTE 0, INSERT_VIP 0" *)
 output wire m_axi_rready;
 
   axi_protocol_converter_v2_1_19_axi_protocol_converter #(
-    .C_FAMILY("artix7"),
+    .C_FAMILY("zynq"),
     .C_M_AXI_PROTOCOL(0),
     .C_S_AXI_PROTOCOL(2),
     .C_IGNORE_ID(1),

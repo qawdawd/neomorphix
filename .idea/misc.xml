@@ -6,6 +6,86 @@
   <component name="SVCompilerDirectivesDefines">
     <option name="define">
       <map>
+        <entry key="FIXED_WIDTH">
+          <value>
+            <Define>
+              <option name="definitions">
+                <list>
+                  <Body>
+                    <option name="offset" value="2638" />
+                    <option name="replacementList" value="32" />
+                    <option name="source" value="mmcm_pll_drp_func_us_plus_mmcm.vh" />
+                  </Body>
+                  <Body>
+                    <option name="offset" value="2469" />
+                    <option name="replacementList" value="32" />
+                    <option name="source" value="mmcm_pll_drp_func_7s_pll.vh" />
+                  </Body>
+                  <Body>
+                    <option name="offset" value="2584" />
+                    <option name="replacementList" value="32" />
+                    <option name="source" value="mmcm_pll_drp_func_us_mmcm.vh" />
+                  </Body>
+                  <Body>
+                    <option name="offset" value="2598" />
+                    <option name="replacementList" value="32" />
+                    <option name="source" value="mmcm_pll_drp_func_7s_mmcm.vh" />
+                  </Body>
+                  <Body>
+                    <option name="offset" value="2622" />
+                    <option name="replacementList" value="32" />
+                    <option name="source" value="mmcm_pll_drp_func_us_pll.vh" />
+                  </Body>
+                  <Body>
+                    <option name="offset" value="2794" />
+                    <option name="replacementList" value="32" />
+                    <option name="source" value="mmcm_pll_drp_func_us_plus_pll.vh" />
+                  </Body>
+                </list>
+              </option>
+            </Define>
+          </value>
+        </entry>
+        <entry key="FRAC_PRECISION">
+          <value>
+            <Define>
+              <option name="definitions">
+                <list>
+                  <Body>
+                    <option name="offset" value="2438" />
+                    <option name="replacementList" value="10" />
+                    <option name="source" value="mmcm_pll_drp_func_us_plus_mmcm.vh" />
+                  </Body>
+                  <Body>
+                    <option name="offset" value="2266" />
+                    <option name="replacementList" value="10" />
+                    <option name="source" value="mmcm_pll_drp_func_7s_pll.vh" />
+                  </Body>
+                  <Body>
+                    <option name="offset" value="2381" />
+                    <option name="replacementList" value="10" />
+                    <option name="source" value="mmcm_pll_drp_func_us_mmcm.vh" />
+                  </Body>
+                  <Body>
+                    <option name="offset" value="2395" />
+                    <option name="replacementList" value="10" />
+                    <option name="source" value="mmcm_pll_drp_func_7s_mmcm.vh" />
+                  </Body>
+                  <Body>
+                    <option name="offset" value="2419" />
+                    <option name="replacementList" value="10" />
+                    <option name="source" value="mmcm_pll_drp_func_us_pll.vh" />
+                  </Body>
+                  <Body>
+                    <option name="offset" value="2591" />
+                    <option name="replacementList" value="10" />
+                    <option name="source" value="mmcm_pll_drp_func_us_plus_pll.vh" />
+                  </Body>
+                </list>
+              </option>
+            </Define>
+          </value>
+        </entry>
         <entry key="GLBL">
           <value>
             <Define>
@@ -23,13 +103,73 @@
                     <option name="offset" value="640908" />
                     <option name="source" value="design_1_blk_mem_gen_0_1_sim_netlist.v" />
                   </Body>
+                  <Body>
+                    <option name="offset" value="7965" />
+                    <option name="source" value="design_1_dlmb_v10_0_sim_netlist.v" />
+                  </Body>
+                  <Body>
+                    <option name="offset" value="23258" />
+                    <option name="source" value="design_1_ilmb_bram_if_cntlr_0_sim_netlist.v" />
+                  </Body>
+                  <Body>
+                    <option name="offset" value="210993" />
+                    <option name="source" value="design_1_axi_bram_ctrl_0_0_sim_netlist.v" />
+                  </Body>
+                  <Body>
+                    <option name="offset" value="1762474" />
+                    <option name="source" value="design_1_microblaze_0_0_sim_netlist.v" />
+                  </Body>
+                  <Body>
+                    <option name="offset" value="698579" />
+                    <option name="source" value="design_1_lmb_bram_0_sim_netlist.v" />
+                  </Body>
+                  <Body>
+                    <option name="offset" value="23388" />
+                    <option name="source" value="design_1_dlmb_bram_if_cntlr_0_sim_netlist.v" />
+                  </Body>
+                  <Body>
+                    <option name="offset" value="23401" />
+                    <option name="source" value="design_1_rst_clk_wiz_1_100M_0_sim_netlist.v" />
+                  </Body>
+                  <Body>
+                    <option name="offset" value="6176" />
+                    <option name="source" value="design_1_clk_wiz_1_0_sim_netlist.v" />
+                  </Body>
+                  <Body>
+                    <option name="offset" value="7855" />
+                    <option name="source" value="design_1_ilmb_v10_0_sim_netlist.v" />
+                  </Body>
                 </list>
               </option>
               <option name="dependencies">
                 <set>
                   <option value="design_1_auto_pc_0_sim_netlist.v" />
                   <option value="design_1_blk_mem_gen_0_1_sim_netlist.v" />
+                  <option value="design_1_dlmb_v10_0_sim_netlist.v" />
+                  <option value="design_1_ilmb_bram_if_cntlr_0_sim_netlist.v" />
+                  <option value="design_1_axi_bram_ctrl_0_0_sim_netlist.v" />
+                  <option value="design_1_microblaze_0_0_sim_netlist.v" />
+                  <option value="design_1_lmb_bram_0_sim_netlist.v" />
+                  <option value="design_1_dlmb_bram_if_cntlr_0_sim_netlist.v" />
+                  <option value="design_1_rst_clk_wiz_1_100M_0_sim_netlist.v" />
+                  <option value="design_1_clk_wiz_1_0_sim_netlist.v" />
+                  <option value="design_1_ilmb_v10_0_sim_netlist.v" />
                 </set>
+              </option>
+            </Define>
+          </value>
+        </entry>
+        <entry key="TCQ">
+          <value>
+            <Define>
+              <option name="definitions">
+                <list>
+                  <Body>
+                    <option name="offset" value="3654" />
+                    <option name="replacementList" value="100" />
+                    <option name="source" value="fifo_generator_vlog_beh.v" />
+                  </Body>
+                </list>
               </option>
             </Define>
           </value>

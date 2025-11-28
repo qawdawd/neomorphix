@@ -59,7 +59,7 @@ import kotlin.math.min
 fun main() {
     val arch = SnnArch(
         layerCount = 2,
-        neuronsPerLayer = listOf(784, 128),
+        neuronsPerLayer = listOf(1024, 1024),
         connectivity = ConnectivityType.FULLY_CONNECTED,
         staticParameters = listOf(
             StaticParamDescriptor(name = "leakage", bitWidth = 8),

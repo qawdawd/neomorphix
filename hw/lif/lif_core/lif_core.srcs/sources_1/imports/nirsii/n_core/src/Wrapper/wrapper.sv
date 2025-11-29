@@ -184,6 +184,10 @@ module wrapper #(
 
     
     logic [DATA_WIDTH-1:0] bram_dout_q;
+
+    // Provide the core with the BRAM weight data (registered for timing
+    // alignment with bram_dout_q).
+    assign bram_dout_weights = bram_dout_q;
     
     always_ff @(posedge clk) begin
         bram_dout_q <= bram_dout;  // всегда задерживаем на 1 такт

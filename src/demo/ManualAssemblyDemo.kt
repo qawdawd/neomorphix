@@ -59,7 +59,7 @@ import kotlin.math.min
 fun main() {
     val arch = SnnArch(
         layerCount = 2,
-        neuronsPerLayer = listOf(1024, 1024),
+        neuronsPerLayer = listOf(16, 16),
         connectivity = ConnectivityType.FULLY_CONNECTED,
         staticParameters = listOf(
             StaticParamDescriptor(name = "leakage", bitWidth = 8),
@@ -91,13 +91,13 @@ fun main() {
         ),
         queues = listOf(
             QueueConfig(name = "fifo_in", dataWidth = 16, depth = presynCount),
-            QueueConfig(name = "fifo_out", dataWidth = 8, depth = postsynCount)
+            QueueConfig(name = "fifo_out", dataWidth = 16, depth = postsynCount)
         ),
         memoryBanks = listOf(
             MemoryBankConfig(
                 name = "weights",
                 addrWidth = archWidths.synapseAddressWidth,
-                dataWidth = 16,
+                dataWidth = 32,
                 depth = archWidths.totalSynapseCount,
                 writable = false,
                 external = true
@@ -200,7 +200,8 @@ private class ManualAssembly(
             addrWidth = selectorAddrWidth,
             preIndexWidth = preIndexWidth,
             postIndexWidth = postIndexWidth,
-            packing = SynapticPackingConfig(wordWidth = cfg.memoryBanks.first().dataWidth, weightWidth = 8, weightsPerWord = 2),
+//            packing = SynapticPackingConfig(wordWidth = cfg.memoryBanks.first().dataWidth, weightWidth = 16, weightsPerWord = 2),
+            packing = SynapticPackingConfig(wordWidth = 32, weightWidth = 16, weightsPerWord = 2),
             useLinearAddress = true,
             stepByTick = true
         )
@@ -292,7 +293,8 @@ private class ManualAssembly(
         val selectorCfg = cfg.selectors.firstOrNull()
         val weightCfg = cfg.memoryBanks.firstOrNull()
         if (selectorCfg != null && weightCfg != null) {
-            val packing = SynapticPackingConfig(wordWidth = weightCfg.dataWidth, weightWidth = 8, weightsPerWord = 2)
+//            val packing = SynapticPackingConfig(wordWidth = weightCfg.dataWidth, weightWidth = 16, weightsPerWord = 2)
+            val packing = SynapticPackingConfig(wordWidth = 32, weightWidth = 16, weightsPerWord = 2)
             println("Synapse selector: ${selectorCfg.describe()}")
             println("  packing: ${packing.describe()}")
             println("  weight memory: ${weightCfg.describe()}")

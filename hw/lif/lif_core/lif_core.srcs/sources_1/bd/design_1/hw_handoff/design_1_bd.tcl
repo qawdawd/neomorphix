@@ -269,6 +269,7 @@ proc create_root_design { parentCell } {
    CONFIG.DATA_WIDTH {32} \
    CONFIG.ECC_TYPE {Hamming} \
    CONFIG.PROTOCOL {AXI4} \
+   CONFIG.READ_LATENCY {2} \
    CONFIG.SINGLE_PORT_BRAM {1} \
  ] $axi_bram_ctrl_0
 

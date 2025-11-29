@@ -19,12 +19,12 @@ preplace netloc rst_clk_wiz_1_100M_bus_struct_reset 1 1 2 590 420 1240
 preplace netloc rst_clk_wiz_1_100M_peripheral_aresetn 1 0 3 40 650 580 760 1230
 preplace netloc reset_rtl_0_0_1 1 0 2 10J 110 540J
 preplace netloc clk_100MHz_1 1 0 1 10 340n
-preplace netloc microblaze_0_dlmb_1 1 1 1 590 180n
-preplace netloc microblaze_0_ilmb_1 1 1 1 560 200n
 preplace netloc microblaze_0_M_AXI_DP 1 0 2 40 400 520
-preplace netloc BRAM_PORTB_1 1 2 2 1240 0 1490
-preplace netloc axi_interconnect_0_M00_AXI 1 1 1 550 110n
 preplace netloc axi_bram_ctrl_0_BRAM_PORTA 1 2 1 1230 60n
+preplace netloc microblaze_0_dlmb_1 1 1 1 590 180n
+preplace netloc axi_interconnect_0_M00_AXI 1 1 1 550 110n
+preplace netloc microblaze_0_ilmb_1 1 1 1 560 200n
+preplace netloc BRAM_PORTB_1 1 2 2 1240 0 1490
 levelinfo -pg 1 -10 290 1050 1370 1760
 pagesize -pg 1 -db -bbox -sgen -150 -20 1910 870
 "

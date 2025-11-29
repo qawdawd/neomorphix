@@ -14,18 +14,22 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="100130700000fs"></ZoomStartTime>
-      <ZoomEndTime time="100576500001fs"></ZoomEndTime>
-      <Cursor1Time time="100205000000fs"></Cursor1Time>
+      <ZoomStartTime time="18663300000fs"></ZoomStartTime>
+      <ZoomEndTime time="19094100001fs"></ZoomEndTime>
+      <Cursor1Time time="18735100000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="242"></NameColumnWidth>
-      <ValueColumnWidth column_width="74"></ValueColumnWidth>
+      <NameColumnWidth column_width="282"></NameColumnWidth>
+      <ValueColumnWidth column_width="109"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="109" />
+   <WVObjectSize size="59" />
    <wvobject type="logic" fp_name="/tb/dut/u_wrapper/u_core/clk_i[0]">
       <obj_property name="ElementShortName">[0]</obj_property>
       <obj_property name="ObjectShortName">[0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/clk_i">
+      <obj_property name="ElementShortName">clk_i[0:0]</obj_property>
+      <obj_property name="ObjectShortName">clk_i[0:0]</obj_property>
    </wvobject>
    <wvobject type="group" fp_name="group1335">
       <obj_property name="label">TickGenerator</obj_property>
@@ -98,8 +102,8 @@
          <obj_property name="ObjectShortName">empty_fifo_in[0:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/mem_fifo_in">
-         <obj_property name="ElementShortName">mem_fifo_in[8:0][15:0]</obj_property>
-         <obj_property name="ObjectShortName">mem_fifo_in[8:0][15:0]</obj_property>
+         <obj_property name="ElementShortName">mem_fifo_in[16:0][15:0]</obj_property>
+         <obj_property name="ObjectShortName">mem_fifo_in[16:0][15:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/full_n_fifo_in">
          <obj_property name="ElementShortName">full_n_fifo_in[0:0]</obj_property>
@@ -126,283 +130,59 @@
          <obj_property name="ObjectShortName">wr_credit_fifo_in[7:0]</obj_property>
       </wvobject>
    </wvobject>
-   <wvobject type="logic" fp_name="/tb/clk_100MHz">
-      <obj_property name="ElementShortName">clk_100MHz</obj_property>
-      <obj_property name="ObjectShortName">clk_100MHz</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/clka">
-      <obj_property name="ElementShortName">clka</obj_property>
-      <obj_property name="ObjectShortName">clka</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/rsta">
-      <obj_property name="ElementShortName">rsta</obj_property>
-      <obj_property name="ObjectShortName">rsta</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/ena">
-      <obj_property name="ElementShortName">ena</obj_property>
-      <obj_property name="ObjectShortName">ena</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/wea">
-      <obj_property name="ElementShortName">wea[3:0]</obj_property>
-      <obj_property name="ObjectShortName">wea[3:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/addra">
-      <obj_property name="ElementShortName">addra[31:0]</obj_property>
-      <obj_property name="ObjectShortName">addra[31:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/dina">
-      <obj_property name="ElementShortName">dina[31:0]</obj_property>
-      <obj_property name="ObjectShortName">dina[31:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/douta">
-      <obj_property name="ElementShortName">douta[31:0]</obj_property>
-      <obj_property name="ObjectShortName">douta[31:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/bram_rst_a">
-      <obj_property name="ElementShortName">bram_rst_a</obj_property>
-      <obj_property name="ObjectShortName">bram_rst_a</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/bram_clk_a">
-      <obj_property name="ElementShortName">bram_clk_a</obj_property>
-      <obj_property name="ObjectShortName">bram_clk_a</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/bram_en_a">
-      <obj_property name="ElementShortName">bram_en_a</obj_property>
-      <obj_property name="ObjectShortName">bram_en_a</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/bram_we_a">
-      <obj_property name="ElementShortName">bram_we_a[3:0]</obj_property>
-      <obj_property name="ObjectShortName">bram_we_a[3:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/bram_addr_a">
-      <obj_property name="ElementShortName">bram_addr_a[16:0]</obj_property>
-      <obj_property name="ObjectShortName">bram_addr_a[16:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/bram_wrdata_a">
-      <obj_property name="ElementShortName">bram_wrdata_a[31:0]</obj_property>
-      <obj_property name="ObjectShortName">bram_wrdata_a[31:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/bram_rddata_a">
-      <obj_property name="ElementShortName">bram_rddata_a[31:0]</obj_property>
-      <obj_property name="ObjectShortName">bram_rddata_a[31:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_aclk">
-      <obj_property name="ElementShortName">s_axi_aclk</obj_property>
-      <obj_property name="ObjectShortName">s_axi_aclk</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_aresetn">
-      <obj_property name="ElementShortName">s_axi_aresetn</obj_property>
-      <obj_property name="ObjectShortName">s_axi_aresetn</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_awaddr">
-      <obj_property name="ElementShortName">s_axi_awaddr[16:0]</obj_property>
-      <obj_property name="ObjectShortName">s_axi_awaddr[16:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_awlen">
-      <obj_property name="ElementShortName">s_axi_awlen[7:0]</obj_property>
-      <obj_property name="ObjectShortName">s_axi_awlen[7:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_awsize">
-      <obj_property name="ElementShortName">s_axi_awsize[2:0]</obj_property>
-      <obj_property name="ObjectShortName">s_axi_awsize[2:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_awburst">
-      <obj_property name="ElementShortName">s_axi_awburst[1:0]</obj_property>
-      <obj_property name="ObjectShortName">s_axi_awburst[1:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_awlock">
-      <obj_property name="ElementShortName">s_axi_awlock</obj_property>
-      <obj_property name="ObjectShortName">s_axi_awlock</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_awcache">
-      <obj_property name="ElementShortName">s_axi_awcache[3:0]</obj_property>
-      <obj_property name="ObjectShortName">s_axi_awcache[3:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_awprot">
-      <obj_property name="ElementShortName">s_axi_awprot[2:0]</obj_property>
-      <obj_property name="ObjectShortName">s_axi_awprot[2:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_awvalid">
-      <obj_property name="ElementShortName">s_axi_awvalid</obj_property>
-      <obj_property name="ObjectShortName">s_axi_awvalid</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_awready">
-      <obj_property name="ElementShortName">s_axi_awready</obj_property>
-      <obj_property name="ObjectShortName">s_axi_awready</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_wdata">
-      <obj_property name="ElementShortName">s_axi_wdata[31:0]</obj_property>
-      <obj_property name="ObjectShortName">s_axi_wdata[31:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_wstrb">
-      <obj_property name="ElementShortName">s_axi_wstrb[3:0]</obj_property>
-      <obj_property name="ObjectShortName">s_axi_wstrb[3:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_wlast">
-      <obj_property name="ElementShortName">s_axi_wlast</obj_property>
-      <obj_property name="ObjectShortName">s_axi_wlast</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_wvalid">
-      <obj_property name="ElementShortName">s_axi_wvalid</obj_property>
-      <obj_property name="ObjectShortName">s_axi_wvalid</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_wready">
-      <obj_property name="ElementShortName">s_axi_wready</obj_property>
-      <obj_property name="ObjectShortName">s_axi_wready</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_bresp">
-      <obj_property name="ElementShortName">s_axi_bresp[1:0]</obj_property>
-      <obj_property name="ObjectShortName">s_axi_bresp[1:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_bvalid">
-      <obj_property name="ElementShortName">s_axi_bvalid</obj_property>
-      <obj_property name="ObjectShortName">s_axi_bvalid</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_bready">
-      <obj_property name="ElementShortName">s_axi_bready</obj_property>
-      <obj_property name="ObjectShortName">s_axi_bready</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_araddr">
-      <obj_property name="ElementShortName">s_axi_araddr[16:0]</obj_property>
-      <obj_property name="ObjectShortName">s_axi_araddr[16:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_arlen">
-      <obj_property name="ElementShortName">s_axi_arlen[7:0]</obj_property>
-      <obj_property name="ObjectShortName">s_axi_arlen[7:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_arsize">
-      <obj_property name="ElementShortName">s_axi_arsize[2:0]</obj_property>
-      <obj_property name="ObjectShortName">s_axi_arsize[2:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_arburst">
-      <obj_property name="ElementShortName">s_axi_arburst[1:0]</obj_property>
-      <obj_property name="ObjectShortName">s_axi_arburst[1:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_arlock">
-      <obj_property name="ElementShortName">s_axi_arlock</obj_property>
-      <obj_property name="ObjectShortName">s_axi_arlock</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_arcache">
-      <obj_property name="ElementShortName">s_axi_arcache[3:0]</obj_property>
-      <obj_property name="ObjectShortName">s_axi_arcache[3:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_arprot">
-      <obj_property name="ElementShortName">s_axi_arprot[2:0]</obj_property>
-      <obj_property name="ObjectShortName">s_axi_arprot[2:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_arvalid">
-      <obj_property name="ElementShortName">s_axi_arvalid</obj_property>
-      <obj_property name="ObjectShortName">s_axi_arvalid</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_arready">
-      <obj_property name="ElementShortName">s_axi_arready</obj_property>
-      <obj_property name="ObjectShortName">s_axi_arready</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_rdata">
-      <obj_property name="ElementShortName">s_axi_rdata[31:0]</obj_property>
-      <obj_property name="ObjectShortName">s_axi_rdata[31:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_rresp">
-      <obj_property name="ElementShortName">s_axi_rresp[1:0]</obj_property>
-      <obj_property name="ObjectShortName">s_axi_rresp[1:0]</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_rlast">
-      <obj_property name="ElementShortName">s_axi_rlast</obj_property>
-      <obj_property name="ObjectShortName">s_axi_rlast</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_rvalid">
-      <obj_property name="ElementShortName">s_axi_rvalid</obj_property>
-      <obj_property name="ObjectShortName">s_axi_rvalid</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/s_axi_rready">
-      <obj_property name="ElementShortName">s_axi_rready</obj_property>
-      <obj_property name="ObjectShortName">s_axi_rready</obj_property>
-   </wvobject>
-   <wvobject type="protoinst" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/S_AXI">
-      <obj_property name="children_use_element_short_name">true</obj_property>
-      <obj_property name="WaveformStyle">STYLE_ENUM_TRANSACTION</obj_property>
-      <obj_property name="EnumTransactionColorTable">0=blank 1=#D399FF 2=pink</obj_property>
-      <obj_property name="EnumTransactionValueTable">0=blank;1=Read;2=Write;3=Read/Write</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-      <obj_property name="CustomSignalColor">turquoise</obj_property>
-      <obj_property name="Render_Data">/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/S_AXI.readWriteSummary</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-      <obj_property name="CellHeight">36</obj_property>
-      <obj_property name="ElementShortName">S_AXI</obj_property>
-      <obj_property name="ObjectShortName">S_AXI</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/clka">
-      <obj_property name="ElementShortName">clka</obj_property>
-      <obj_property name="ObjectShortName">clka</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/rsta">
-      <obj_property name="ElementShortName">rsta</obj_property>
-      <obj_property name="ObjectShortName">rsta</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/ena">
-      <obj_property name="ElementShortName">ena</obj_property>
-      <obj_property name="ObjectShortName">ena</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/wea">
-      <obj_property name="ElementShortName">wea[3:0]</obj_property>
-      <obj_property name="ObjectShortName">wea[3:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/dina">
-      <obj_property name="ElementShortName">dina[31:0]</obj_property>
-      <obj_property name="ObjectShortName">dina[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/U0/addra_bram_addra_i">
-      <obj_property name="ElementShortName">addra_bram_addra_i[16:0]</obj_property>
-      <obj_property name="ObjectShortName">addra_bram_addra_i[16:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/U0/bram_wrdata_a">
-      <obj_property name="ElementShortName">bram_wrdata_a[31:0]</obj_property>
-      <obj_property name="ObjectShortName">bram_wrdata_a[31:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/U0/bram_addr_a">
-      <obj_property name="ElementShortName">bram_addr_a[16:0]</obj_property>
-      <obj_property name="ObjectShortName">bram_addr_a[16:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/douta">
-      <obj_property name="ElementShortName">douta[31:0]</obj_property>
-      <obj_property name="ObjectShortName">douta[31:0]</obj_property>
+   <wvobject type="group" fp_name="group521">
+      <obj_property name="label">BRAM_PORTB</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="logic" fp_name="/tb/dut/u_wrapper/bram_en">
+         <obj_property name="ElementShortName">bram_en</obj_property>
+         <obj_property name="ObjectShortName">bram_en</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/bram_addr_word">
+         <obj_property name="ElementShortName">bram_addr_word[31:0]</obj_property>
+         <obj_property name="ObjectShortName">bram_addr_word[31:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/bram_dout">
+         <obj_property name="ElementShortName">bram_dout[31:0]</obj_property>
+         <obj_property name="ObjectShortName">bram_dout[31:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/cfg_idx">
+         <obj_property name="ElementShortName">cfg_idx[7:0]</obj_property>
+         <obj_property name="ObjectShortName">cfg_idx[7:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/bram_addr_word_next">
+         <obj_property name="ElementShortName">bram_addr_word_next[31:0]</obj_property>
+         <obj_property name="ObjectShortName">bram_addr_word_next[31:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_bd/BRAM_PORTB_addr">
+         <obj_property name="ElementShortName">BRAM_PORTB_addr[31:0]</obj_property>
+         <obj_property name="ObjectShortName">BRAM_PORTB_addr[31:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_bd/BRAM_PORTB_dout">
+         <obj_property name="ElementShortName">BRAM_PORTB_dout[31:0]</obj_property>
+         <obj_property name="ObjectShortName">BRAM_PORTB_dout[31:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/enb">
+         <obj_property name="ElementShortName">enb</obj_property>
+         <obj_property name="ObjectShortName">enb</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/rstb">
+         <obj_property name="ElementShortName">rstb</obj_property>
+         <obj_property name="ObjectShortName">rstb</obj_property>
+      </wvobject>
    </wvobject>
    <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/clkb">
       <obj_property name="ElementShortName">clkb</obj_property>
       <obj_property name="ObjectShortName">clkb</obj_property>
    </wvobject>
-   <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/rstb">
-      <obj_property name="ElementShortName">rstb</obj_property>
-      <obj_property name="ObjectShortName">rstb</obj_property>
-   </wvobject>
-   <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/enb">
-      <obj_property name="ElementShortName">enb</obj_property>
-      <obj_property name="ObjectShortName">enb</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/addrb">
-      <obj_property name="ElementShortName">addrb[31:0]</obj_property>
-      <obj_property name="ObjectShortName">addrb[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/BRAM_PORTB_dout">
-      <obj_property name="ElementShortName">BRAM_PORTB_dout[31:0]</obj_property>
-      <obj_property name="ObjectShortName">BRAM_PORTB_dout[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
-   </wvobject>
    <wvobject type="array" fp_name="/tb/dut/u_wrapper/cfg_idx">
       <obj_property name="ElementShortName">cfg_idx[7:0]</obj_property>
       <obj_property name="ObjectShortName">cfg_idx[7:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_wrapper/bram_addr_word_next">
-      <obj_property name="ElementShortName">bram_addr_word_next[31:0]</obj_property>
-      <obj_property name="ObjectShortName">bram_addr_word_next[31:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_bd/BRAM_PORTB_addr">
-      <obj_property name="ElementShortName">BRAM_PORTB_addr[31:0]</obj_property>
-      <obj_property name="ObjectShortName">BRAM_PORTB_addr[31:0]</obj_property>
-      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="logic" fp_name="/tb/dut/u_bd/BRAM_PORTB_clk">
       <obj_property name="ElementShortName">BRAM_PORTB_clk</obj_property>
@@ -423,14 +203,7 @@
    <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wd_leakage">
       <obj_property name="ElementShortName">wd_leakage[15:0]</obj_property>
       <obj_property name="ObjectShortName">wd_leakage[15:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wr_threshold">
-      <obj_property name="ElementShortName">wr_threshold[0:0]</obj_property>
-      <obj_property name="ObjectShortName">wr_threshold[0:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wd_threshold">
-      <obj_property name="ElementShortName">wd_threshold[15:0]</obj_property>
-      <obj_property name="ObjectShortName">wd_threshold[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wr_vreset">
       <obj_property name="ElementShortName">wr_vreset[0:0]</obj_property>
@@ -439,6 +212,16 @@
    <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wd_vreset">
       <obj_property name="ElementShortName">wd_vreset[15:0]</obj_property>
       <obj_property name="ObjectShortName">wd_vreset[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wr_threshold">
+      <obj_property name="ElementShortName">wr_threshold[0:0]</obj_property>
+      <obj_property name="ObjectShortName">wr_threshold[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wd_threshold">
+      <obj_property name="ElementShortName">wd_threshold[15:0]</obj_property>
+      <obj_property name="ObjectShortName">wd_threshold[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wr_weight_base">
       <obj_property name="ElementShortName">wr_weight_base[0:0]</obj_property>
@@ -447,6 +230,7 @@
    <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wd_weight_base">
       <obj_property name="ElementShortName">wd_weight_base[15:0]</obj_property>
       <obj_property name="ObjectShortName">wd_weight_base[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wr_neuron_base">
       <obj_property name="ElementShortName">wr_neuron_base[0:0]</obj_property>
@@ -455,6 +239,7 @@
    <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wd_neuron_base">
       <obj_property name="ElementShortName">wd_neuron_base[15:0]</obj_property>
       <obj_property name="ObjectShortName">wd_neuron_base[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wr_postsyn_count">
       <obj_property name="ElementShortName">wr_postsyn_count[0:0]</obj_property>
@@ -463,6 +248,7 @@
    <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wd_postsyn_count">
       <obj_property name="ElementShortName">wd_postsyn_count[15:0]</obj_property>
       <obj_property name="ObjectShortName">wd_postsyn_count[15:0]</obj_property>
+      <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/reg_regs_vreset">
       <obj_property name="ElementShortName">reg_regs_vreset[15:0]</obj_property>
@@ -498,42 +284,47 @@
    <wvobject type="array" fp_name="/tb/dut/u_wrapper/CFG_BASE">
       <obj_property name="ElementShortName">CFG_BASE[31:0]</obj_property>
       <obj_property name="ObjectShortName">CFG_BASE[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/tb/dut/u_wrapper/CFG_EN_CORE_ADDR">
       <obj_property name="ElementShortName">CFG_EN_CORE_ADDR[31:0]</obj_property>
       <obj_property name="ObjectShortName">CFG_EN_CORE_ADDR[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/tb/dut/u_wrapper/CFG_LEAKAGE_ADDR">
       <obj_property name="ElementShortName">CFG_LEAKAGE_ADDR[31:0]</obj_property>
       <obj_property name="ObjectShortName">CFG_LEAKAGE_ADDR[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/tb/dut/u_wrapper/CFG_VRST_ADDR">
       <obj_property name="ElementShortName">CFG_VRST_ADDR[31:0]</obj_property>
       <obj_property name="ObjectShortName">CFG_VRST_ADDR[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/tb/dut/u_wrapper/CFG_VTHRSH_ADDR">
       <obj_property name="ElementShortName">CFG_VTHRSH_ADDR[31:0]</obj_property>
       <obj_property name="ObjectShortName">CFG_VTHRSH_ADDR[31:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_wrapper/CFG_TOTAL_NEUR_ADDR">
-      <obj_property name="ElementShortName">CFG_TOTAL_NEUR_ADDR[31:0]</obj_property>
-      <obj_property name="ObjectShortName">CFG_TOTAL_NEUR_ADDR[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/tb/dut/u_wrapper/CFG_WEIGHT_BASE_ADDR">
       <obj_property name="ElementShortName">CFG_WEIGHT_BASE_ADDR[31:0]</obj_property>
       <obj_property name="ObjectShortName">CFG_WEIGHT_BASE_ADDR[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/tb/dut/u_wrapper/CFG_NEURON_BASE_ADDR">
       <obj_property name="ElementShortName">CFG_NEURON_BASE_ADDR[31:0]</obj_property>
       <obj_property name="ObjectShortName">CFG_NEURON_BASE_ADDR[31:0]</obj_property>
-   </wvobject>
-   <wvobject type="array" fp_name="/tb/dut/u_wrapper/CFG_EMIT_TAG_ADDR">
-      <obj_property name="ElementShortName">CFG_EMIT_TAG_ADDR[31:0]</obj_property>
-      <obj_property name="ObjectShortName">CFG_EMIT_TAG_ADDR[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/tb/dut/u_wrapper/CFG_WORDS">
       <obj_property name="ElementShortName">CFG_WORDS[31:0]</obj_property>
       <obj_property name="ObjectShortName">CFG_WORDS[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/CFG_POSTSYN_NEUR_CNT_ADDR">
+      <obj_property name="ElementShortName">CFG_POSTSYN_NEUR_CNT_ADDR[31:0]</obj_property>
+      <obj_property name="ObjectShortName">CFG_POSTSYN_NEUR_CNT_ADDR[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
    <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wr_fifo_in">
       <obj_property name="ElementShortName">wr_fifo_in[0:0]</obj_property>
@@ -562,5 +353,62 @@
    <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/start_em_manual">
       <obj_property name="ElementShortName">start_em_manual[0:0]</obj_property>
       <obj_property name="ObjectShortName">start_em_manual[0:0]</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/inst/ena">
+      <obj_property name="ElementShortName">ena</obj_property>
+      <obj_property name="ObjectShortName">ena</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/inst/wea">
+      <obj_property name="ElementShortName">wea[3:0]</obj_property>
+      <obj_property name="ObjectShortName">wea[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/inst/addra">
+      <obj_property name="ElementShortName">addra[31:0]</obj_property>
+      <obj_property name="ObjectShortName">addra[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/inst/dina">
+      <obj_property name="ElementShortName">dina[31:0]</obj_property>
+      <obj_property name="ObjectShortName">dina[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/inst/douta">
+      <obj_property name="ElementShortName">douta[31:0]</obj_property>
+      <obj_property name="ObjectShortName">douta[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/bram_addr_word">
+      <obj_property name="ElementShortName">bram_addr_word[31:0]</obj_property>
+      <obj_property name="ObjectShortName">bram_addr_word[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/bram_addr">
+      <obj_property name="ElementShortName">bram_addr[31:0]</obj_property>
+      <obj_property name="ObjectShortName">bram_addr[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/bram_dout">
+      <obj_property name="ElementShortName">bram_dout[15:0]</obj_property>
+      <obj_property name="ObjectShortName">bram_dout[15:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="logic" fp_name="/tb/dut/u_wrapper/mem_test_active">
+      <obj_property name="ElementShortName">mem_test_active</obj_property>
+      <obj_property name="ObjectShortName">mem_test_active</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/web">
+      <obj_property name="ElementShortName">web[3:0]</obj_property>
+      <obj_property name="ObjectShortName">web[3:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/addrb">
+      <obj_property name="ElementShortName">addrb[31:0]</obj_property>
+      <obj_property name="ObjectShortName">addrb[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/dinb">
+      <obj_property name="ElementShortName">dinb[31:0]</obj_property>
+      <obj_property name="ObjectShortName">dinb[31:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/doutb">
+      <obj_property name="ElementShortName">doutb[31:0]</obj_property>
+      <obj_property name="ObjectShortName">doutb[31:0]</obj_property>
+      <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
    </wvobject>
 </wave_config>

@@ -80,7 +80,7 @@ class SnnArch(
         val totalNeuronCountInt = totalNeuronCount.toInt()
         val neuronGlobalIdWidth = bitWidthForCount(max(totalNeuronCountInt, 1))
         val totalSynapseCount = computeSynapseCount()
-        val synapseAddressWidth = bitWidthForCount(max(totalSynapseCount, 1))
+        val synapseAddressWidth = 32 // bitWidthForCount(max(totalSynapseCount, 1))
 
         val widths = ArchWidths(
             layerIndexWidth = layerIndexWidth,

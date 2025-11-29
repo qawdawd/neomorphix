@@ -6,6 +6,10 @@
 module wrapper #(
     parameter ADDR_WIDTH_WORD = 32,
     parameter DATA_WIDTH      = 16,
+    parameter PRESYN_NUM      = 16,
+    parameter POSTSYN_NUM     = 16,
+    parameter CFG_WORDS       = 5,
+    
     parameter WE_WIDTH        = DATA_WIDTH/8
 ) (
     input  logic                       clk,
@@ -23,7 +27,7 @@ module wrapper #(
 );
 
     // ----------------------------------------------------------------
-    // BRAM map (word addresses)
+    // BRAM map (WORD ADDRESSES, not byte addresses)
     // ----------------------------------------------------------------
     localparam logic [ADDR_WIDTH_WORD-1:0] 
             CFG_BASE             = 'd0;
@@ -41,7 +45,7 @@ module wrapper #(
             CFG_VTHRSH_ADDR      = CFG_BASE + (3<<2);
     
     localparam logic [ADDR_WIDTH_WORD-1:0] 
-            CFG_TOTAL_NEUR_ADDR  = CFG_BASE + (4<<2);
+            CFG_POSTSYN_NEUR_CNT_ADDR  = CFG_BASE + (4<<2);
     
     localparam logic [ADDR_WIDTH_WORD-1:0] 
             CFG_WEIGHT_BASE_ADDR = CFG_BASE + (5<<2);
@@ -49,22 +53,30 @@ module wrapper #(
     localparam logic [ADDR_WIDTH_WORD-1:0] 
             CFG_NEURON_BASE_ADDR = CFG_BASE + (6<<2);
     
-    localparam logic [ADDR_WIDTH_WORD-1:0] 
-            CFG_EMIT_TAG_ADDR    = CFG_BASE + (7<<2);
-    
-    localparam int CFG_WORDS   = 8;
+    // localparam int CFG_WORDS   = 8;
 
     localparam logic [ADDR_WIDTH_WORD-1:0] 
             WEIGHTS_BASE  = CFG_BASE + (CFG_WORDS<<2);
-    
+
+    // localparam int PRESYN_NUM = 16;
+    // localparam int POSTSYN_NUM = 16;
+    localparam int WEIGHTS_PER_WORD = 2;
+    localparam int WEIGHT_WORDS = (PRESYN_NUM * POSTSYN_NUM) / WEIGHTS_PER_WORD;
+
     localparam logic [ADDR_WIDTH_WORD-1:0] 
-            IN_SPIKES_BASE = WEIGHTS_BASE + (16<<2);
+            IN_SPIKES_BASE = WEIGHTS_BASE + (WEIGHT_WORDS << 2);
     
     localparam logic [ADDR_WIDTH_WORD-1:0] 
             IN_SPIKES_COUNT = IN_SPIKES_BASE;
-    
+
     localparam logic [ADDR_WIDTH_WORD-1:0] 
-            OUT_SPIKES_BASE = IN_SPIKES_BASE + (16<<2);
+            IN_SPIKES = IN_SPIKES_COUNT + (1<<2);
+
+    localparam int SPIKES_PER_WORD = 2;
+    localparam int IN_SPIKE_WORDS = PRESYN_NUM / SPIKES_PER_WORD;
+
+    localparam logic [ADDR_WIDTH_WORD-1:0] 
+            OUT_SPIKES_BASE = IN_SPIKES + (IN_SPIKE_WORDS<<2);
     
     // ----------------------------------------------------------------
     // Generated core instance
@@ -183,7 +195,8 @@ module wrapper #(
 
     state_t state, state_next;
     
-    
+    logic [15:0] idx;
+
     always_ff @(posedge clk) begin
         if (rst) begin
             state <= ST_IDLE;
@@ -194,12 +207,14 @@ module wrapper #(
             cfg_idx <= '0;
             spk_cnt <= '0;
             out_cnt <= '0;
+
+            idx <= '0;
     
         end else begin
             state <= state_next;
     
             // tick: активен только в ST_RUN
-            en_tick_manual <= 1; // (state_next == ST_RUN);
+            
             rst_tick_manual   <= 1'b0;
 
             unique case (state)
@@ -208,7 +223,7 @@ module wrapper #(
                 ST_CFG_LOAD:
                 // -----------------------------------------------------
                     if (state_next == ST_CFG_LOAD)begin  
-                        if (cfg_idx == 5)  
+                        if (cfg_idx == CFG_WORDS + 1)  
                             spikes_num <= bram_dout[9:0];
                          
                         cfg_idx <= cfg_idx + 1;
@@ -220,18 +235,22 @@ module wrapper #(
                 ST_SPK_LOAD:
                 // -----------------------------------------------------
                 begin
-                    cfg_idx <= (state_next != ST_CFG_LOAD) ? '0 : cfg_idx;
+
+
+                    // cfg_idx <= (state_next != ST_CFG_LOAD) ? '0 : cfg_idx;
     
-                    if (wr_fifo_in && !full_fifo_in)
-                        spk_cnt <= spk_cnt + 1;
-                    else if (state_next != ST_SPK_LOAD)
-                        spk_cnt <= '0;
+                    // if (wr_fifo_in && !full_fifo_in)
+                    //     spk_cnt <= spk_cnt + 1;
+                    // else if (state_next != ST_SPK_LOAD)
+                    //     spk_cnt <= '0;
                 end
     
                 // -----------------------------------------------------
                 ST_RUN:
                 // -----------------------------------------------------
                 begin
+                    en_tick_manual <= 1; // (state_next == ST_RUN);
+
                     cfg_idx <= (state_next != ST_CFG_LOAD) ? '0 : cfg_idx;
                     spk_cnt <= (state_next != ST_SPK_LOAD) ? '0 : spk_cnt;
     
@@ -276,7 +295,7 @@ module wrapper #(
         wr_leakage       = 1'b0;
         wr_threshold     = 1'b0;
         wr_vreset        = 1'b0;
-        wr_weight_base   = 1'b0;
+
         wr_neuron_base   = 1'b0;
         wr_postsyn_count = 1'b0;
         wr_emit_tag      = 1'b0;
@@ -284,10 +303,13 @@ module wrapper #(
         wd_leakage       = '0;
         wd_threshold     = '0;
         wd_vreset        = '0;
-        wd_weight_base   = '0;
         wd_neuron_base   = '0;
         wd_postsyn_count = '0;
         wd_emit_tag      = '0;
+
+        wr_weight_base   = 1'b1;
+        wd_weight_base   = 8;
+
     
         // ---------------------------------------------------------
         case (state)
@@ -309,52 +331,56 @@ module wrapper #(
                 case (cfg_idx)
                     0: begin
                         bram_addr_word_next = CFG_LEAKAGE_ADDR;
-                        wr_leakage = 1'b1;
-                        wd_leakage = bram_dout;
+
                     end
                     1: begin
                         bram_addr_word_next = CFG_VRST_ADDR;
-                        wr_vreset = 1'b1;
-                        wd_vreset = bram_dout;
+                        wr_leakage = 1'b1;
+                        wd_leakage = bram_dout;
+
                     end
                     2: begin
                         bram_addr_word_next = CFG_VTHRSH_ADDR;
-                        wr_threshold = 1'b1;
-                        wd_threshold = bram_dout;
+                        wr_vreset = 1'b1;
+                        wd_vreset = bram_dout;
+
+
                     end
                     3: begin
-                        bram_addr_word_next = CFG_WEIGHT_BASE_ADDR;
-                        wr_weight_base = 1'b1;
-                        wd_weight_base = bram_dout;
+                        bram_addr_word_next = CFG_POSTSYN_NEUR_CNT_ADDR;
+                        wr_threshold = 1'b1;
+                        wd_threshold = bram_dout;
+
+
                     end
                     4: begin
-                        bram_addr_word_next = CFG_NEURON_BASE_ADDR;
-                        wr_neuron_base = 1'b1;
-                        wd_neuron_base = bram_dout;
+                        bram_addr_word_next = IN_SPIKES_COUNT;
+                        wr_postsyn_count = 1'b1;
+                        wd_postsyn_count = bram_dout;
                     end
 
-                    5: begin
-                        bram_addr_word_next = IN_SPIKES_COUNT;
-                    end
+                    // 5: begin
+                    //     bram_addr_word_next = IN_SPIKES_COUNT;
+                    // end
     
                     default:
                         state_next = ST_SPK_LOAD;
                 endcase
-                if (cfg_idx == 6) state_next = ST_SPK_LOAD;
+                if (cfg_idx == CFG_WORDS + 1) state_next = ST_SPK_LOAD;
             end
     
             //------------------------------------------------------
             ST_SPK_LOAD:
             //------------------------------------------------------
             begin
-                bram_addr_word_next = IN_SPIKES_BASE + (spk_cnt << 1);
+                spikes_num = bram_dout;
     
-                if (!full_fifo_in) begin
-                    wr_fifo_in      = 1'b1;
-                    wr_data_fifo_in = bram_dout;
-                end else if (spk_cnt >= spikes_num) begin
-                    state_next = ST_RUN;
-                end
+                // if (!full_fifo_in) begin
+                //     wr_fifo_in      = 1'b1;
+                //     wr_data_fifo_in = bram_dout;
+                // end else if (spk_cnt >= spikes_num) begin
+                //     state_next = ST_RUN;
+                // end
             end
     
             //------------------------------------------------------

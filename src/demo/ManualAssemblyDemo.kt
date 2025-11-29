@@ -392,7 +392,7 @@ private class ManualAssembly(
         val state = g.uglobal("fsm_state", hw_dim_static(2), "0")
         val stateNext = g.uglobal("fsm_state_n", hw_dim_static(2), "0")
         state.assign(stateNext)
-        stateNext.assign(idle)
+        stateNext.assign(state)
 
         synPhase.start.assign(0)
         somPhase.start.assign(0)

@@ -177,6 +177,14 @@ module wrapper #(
         .wd_emit_tag      (wd_emit_tag)
     );
 
+    
+    logic [DATA_WIDTH-1:0] bram_dout_q;
+    
+    always_ff @(posedge clk) begin
+        bram_dout_q <= bram_dout;  // всегда задерживаем на 1 такт
+    end
+    
+
     always_ff @( posedge clk) begin
         bram_addr_word <= bram_addr_word_next;
         bram_en <= bram_en_next;
@@ -335,36 +343,51 @@ module wrapper #(
                     end
                     1: begin
                         bram_addr_word_next = CFG_VRST_ADDR;
-                        wr_leakage = 1'b1;
-                        wd_leakage = bram_dout;
+                        // wr_leakage = 1'b1;
+                        // wd_leakage = bram_dout_q; // bram_dout;
 
                     end
                     2: begin
                         bram_addr_word_next = CFG_VTHRSH_ADDR;
-                        wr_vreset = 1'b1;
-                        wd_vreset = bram_dout;
+                                                wr_leakage = 1'b1;
+                        wd_leakage = bram_dout_q; // bram_dout;
+
+                        // wr_vreset = 1'b1;
+                        // wd_vreset = bram_dout_q; //bram_dout;
 
 
                     end
                     3: begin
                         bram_addr_word_next = CFG_POSTSYN_NEUR_CNT_ADDR;
-                        wr_threshold = 1'b1;
-                        wd_threshold = bram_dout;
+                                                wr_vreset = 1'b1;
+                        wd_vreset = bram_dout_q; //bram_dout;
+
+
+                        // wr_threshold = 1'b1;
+                        // wd_threshold = bram_dout_q; // bram_dout;
 
 
                     end
                     4: begin
                         bram_addr_word_next = IN_SPIKES_COUNT;
-                        wr_postsyn_count = 1'b1;
-                        wd_postsyn_count = bram_dout;
+
+                        wr_threshold = 1'b1;
+                        wd_threshold = bram_dout_q; // bram_dout;
+
+                        // wr_postsyn_count = 1'b1;
+                        // wd_postsyn_count = bram_dout_q; // bram_dout;
                     end
 
-                    // 5: begin
+                    5: begin
+                                           wr_postsyn_count = 1'b1;
+                        wd_postsyn_count = bram_dout_q; // bram_dout;
                     //     bram_addr_word_next = IN_SPIKES_COUNT;
-                    // end
+                    end
     
-                    default:
+                    default: begin 
+                        spikes_num = bram_dout_q; // bram_dout;
                         state_next = ST_SPK_LOAD;
+                    end 
                 endcase
                 if (cfg_idx == CFG_WORDS + 1) state_next = ST_SPK_LOAD;
             end
@@ -373,7 +396,7 @@ module wrapper #(
             ST_SPK_LOAD:
             //------------------------------------------------------
             begin
-                spikes_num = bram_dout;
+                // spikes_num = bram_dout_q; // bram_dout;
     
                 // if (!full_fifo_in) begin
                 //     wr_fifo_in      = 1'b1;

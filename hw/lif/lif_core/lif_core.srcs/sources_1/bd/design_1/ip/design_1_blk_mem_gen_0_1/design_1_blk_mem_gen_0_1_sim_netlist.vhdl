@@ -1,10 +1,10 @@
 -- Copyright 1986-2019 Xilinx, Inc. All Rights Reserved.
 -- --------------------------------------------------------------------------------
 -- Tool Version: Vivado v.2019.1 (lin64) Build 2552052 Fri May 24 14:47:09 MDT 2019
--- Date        : Sat Nov 29 17:29:11 2025
+-- Date        : Sat Nov 29 02:08:53 2025
 -- Host        : thinkpad running 64-bit Debian GNU/Linux 12 (bookworm)
--- Command     : write_vhdl -force -mode funcsim
---               /home/yan/neomorphix/hw/lif/lif_core/lif_core.srcs/sources_1/bd/design_1/ip/design_1_blk_mem_gen_0_1/design_1_blk_mem_gen_0_1_sim_netlist.vhdl
+-- Command     : write_vhdl -force -mode funcsim -rename_top design_1_blk_mem_gen_0_1 -prefix
+--               design_1_blk_mem_gen_0_1_ design_1_blk_mem_gen_0_1_sim_netlist.vhdl
 -- Design      : design_1_blk_mem_gen_0_1
 -- Purpose     : This VHDL netlist is a functional simulation representation of the design and should not be modified or
 --               synthesized. This netlist cannot be used for SDF annotated simulation.
@@ -30,8 +30,6 @@ entity design_1_blk_mem_gen_0_1_blk_mem_gen_prim_wrapper is
     wea : in STD_LOGIC_VECTOR ( 0 to 0 );
     web : in STD_LOGIC_VECTOR ( 0 to 0 )
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of design_1_blk_mem_gen_0_1_blk_mem_gen_prim_wrapper : entity is "blk_mem_gen_prim_wrapper";
 end design_1_blk_mem_gen_0_1_blk_mem_gen_prim_wrapper;
 
 architecture STRUCTURE of design_1_blk_mem_gen_0_1_blk_mem_gen_prim_wrapper is
@@ -8653,8 +8651,6 @@ entity design_1_blk_mem_gen_0_1_blk_mem_gen_prim_width is
     wea : in STD_LOGIC_VECTOR ( 0 to 0 );
     web : in STD_LOGIC_VECTOR ( 0 to 0 )
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of design_1_blk_mem_gen_0_1_blk_mem_gen_prim_width : entity is "blk_mem_gen_prim_width";
 end design_1_blk_mem_gen_0_1_blk_mem_gen_prim_width;
 
 architecture STRUCTURE of design_1_blk_mem_gen_0_1_blk_mem_gen_prim_width is
@@ -10213,8 +10209,6 @@ entity design_1_blk_mem_gen_0_1_blk_mem_gen_generic_cstr is
     rstb : in STD_LOGIC;
     enb : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of design_1_blk_mem_gen_0_1_blk_mem_gen_generic_cstr : entity is "blk_mem_gen_generic_cstr";
 end design_1_blk_mem_gen_0_1_blk_mem_gen_generic_cstr;
 
 architecture STRUCTURE of design_1_blk_mem_gen_0_1_blk_mem_gen_generic_cstr is
@@ -10776,8 +10770,6 @@ entity design_1_blk_mem_gen_0_1_blk_mem_gen_top is
     rstb : in STD_LOGIC;
     enb : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of design_1_blk_mem_gen_0_1_blk_mem_gen_top : entity is "blk_mem_gen_top";
 end design_1_blk_mem_gen_0_1_blk_mem_gen_top;
 
 architecture STRUCTURE of design_1_blk_mem_gen_0_1_blk_mem_gen_top is
@@ -10823,8 +10815,6 @@ entity design_1_blk_mem_gen_0_1_blk_mem_gen_v8_4_3_synth is
     rstb : in STD_LOGIC;
     enb : in STD_LOGIC
   );
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of design_1_blk_mem_gen_0_1_blk_mem_gen_v8_4_3_synth : entity is "blk_mem_gen_v8_4_3_synth";
 end design_1_blk_mem_gen_0_1_blk_mem_gen_v8_4_3_synth;
 
 architecture STRUCTURE of design_1_blk_mem_gen_0_1_blk_mem_gen_v8_4_3_synth is
@@ -11019,7 +11009,7 @@ entity design_1_blk_mem_gen_0_1_blk_mem_gen_v8_4_3 is
   attribute C_READ_DEPTH_B : integer;
   attribute C_READ_DEPTH_B of design_1_blk_mem_gen_0_1_blk_mem_gen_v8_4_3 : entity is 32768;
   attribute C_READ_LATENCY_A : integer;
-  attribute C_READ_LATENCY_A of design_1_blk_mem_gen_0_1_blk_mem_gen_v8_4_3 : entity is 2;
+  attribute C_READ_LATENCY_A of design_1_blk_mem_gen_0_1_blk_mem_gen_v8_4_3 : entity is 1;
   attribute C_READ_LATENCY_B : integer;
   attribute C_READ_LATENCY_B of design_1_blk_mem_gen_0_1_blk_mem_gen_v8_4_3 : entity is 1;
   attribute C_READ_WIDTH_A : integer;
@@ -11068,8 +11058,6 @@ entity design_1_blk_mem_gen_0_1_blk_mem_gen_v8_4_3 is
   attribute C_WRITE_WIDTH_B of design_1_blk_mem_gen_0_1_blk_mem_gen_v8_4_3 : entity is 32;
   attribute C_XDEVICEFAMILY : string;
   attribute C_XDEVICEFAMILY of design_1_blk_mem_gen_0_1_blk_mem_gen_v8_4_3 : entity is "zynq";
-  attribute ORIG_REF_NAME : string;
-  attribute ORIG_REF_NAME of design_1_blk_mem_gen_0_1_blk_mem_gen_v8_4_3 : entity is "blk_mem_gen_v8_4_3";
   attribute downgradeipidentifiedwarnings : string;
   attribute downgradeipidentifiedwarnings of design_1_blk_mem_gen_0_1_blk_mem_gen_v8_4_3 : entity is "yes";
 end design_1_blk_mem_gen_0_1_blk_mem_gen_v8_4_3;
@@ -11370,7 +11358,7 @@ architecture STRUCTURE of design_1_blk_mem_gen_0_1 is
   attribute C_READ_DEPTH_B : integer;
   attribute C_READ_DEPTH_B of U0 : label is 32768;
   attribute C_READ_LATENCY_A : integer;
-  attribute C_READ_LATENCY_A of U0 : label is 2;
+  attribute C_READ_LATENCY_A of U0 : label is 1;
   attribute C_READ_LATENCY_B : integer;
   attribute C_READ_LATENCY_B of U0 : label is 1;
   attribute C_READ_WIDTH_A : integer;
@@ -11423,7 +11411,7 @@ architecture STRUCTURE of design_1_blk_mem_gen_0_1 is
   attribute x_interface_info : string;
   attribute x_interface_info of clka : signal is "xilinx.com:interface:bram:1.0 BRAM_PORTA CLK";
   attribute x_interface_parameter : string;
-  attribute x_interface_parameter of clka : signal is "XIL_INTERFACENAME BRAM_PORTA, MEM_SIZE 131072, MEM_WIDTH 32, MEM_ECC NONE, MASTER_TYPE BRAM_CTRL, READ_WRITE_MODE READ_WRITE, READ_LATENCY 2";
+  attribute x_interface_parameter of clka : signal is "XIL_INTERFACENAME BRAM_PORTA, MEM_SIZE 131072, MEM_WIDTH 32, MEM_ECC NONE, MASTER_TYPE BRAM_CTRL, READ_WRITE_MODE READ_WRITE, READ_LATENCY 1";
   attribute x_interface_info of clkb : signal is "xilinx.com:interface:bram:1.0 BRAM_PORTB CLK";
   attribute x_interface_parameter of clkb : signal is "XIL_INTERFACENAME BRAM_PORTB, MEM_SIZE 8192, MEM_WIDTH 32, MEM_ECC NONE, MASTER_TYPE BRAM_CTRL, READ_WRITE_MODE READ_WRITE, READ_LATENCY 1";
   attribute x_interface_info of ena : signal is "xilinx.com:interface:bram:1.0 BRAM_PORTA EN";

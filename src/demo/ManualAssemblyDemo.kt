@@ -205,6 +205,7 @@ private class ManualAssembly(
             postIndexWidth = postIndexWidth,
 //            packing = SynapticPackingConfig(wordWidth = cfg.memoryBanks.first().dataWidth, weightWidth = 16, weightsPerWord = 2),
             packing = SynapticPackingConfig(wordWidth = 32, weightWidth = 16, weightsPerWord = 2),
+            wordByteStride = 32 / 8, // default stride for byte-addressed 32-bit words
             useLinearAddress = true,
             stepByTick = false
         )

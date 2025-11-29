@@ -29,6 +29,7 @@ fun main() {
         preIndexWidth = 8,
         postIndexWidth = 8,
         packing = packing,
+        wordByteStride = packing.wordWidth / 8, // default stride matches byte-addressed memories
         useLinearAddress = true,
         stepByTick = false
     )

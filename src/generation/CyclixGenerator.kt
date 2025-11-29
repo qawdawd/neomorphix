@@ -400,6 +400,7 @@ class CyclixGenerator {
             preIndexWidth = selector.cfg.preWidth,
             postIndexWidth = selector.cfg.postWidth,
             packing = packing,
+            wordByteStride = packing.wordWidth / 8,
             useLinearAddress = selector.cfg.useLinearAddr,
             stepByTick = selector.cfg.stepByTick
         )

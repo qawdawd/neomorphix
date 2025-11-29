@@ -38,11 +38,9 @@ data class SynapticPhaseConfig(
 /**
  * Рантайм-параметры обработчика:
  * - preIndex: внешний индекс пресинаптического нейрона
- * - tick: опциональный тик для пошагового запуска (если stepByTick=true)
  */
 data class SynapticPhaseRuntime(
-    val preIndex: hw_var,
-    val tick: hw_var? = null
+    val preIndex: hw_var
 )
 
 /**
@@ -79,7 +77,7 @@ class SynapticPhaseUnit(private val instName: String = "syn_phase") {
     /**
      * @param g         экземпляр Cyclix.Generic
      * @param cfg       статическая конфигурация обработчика
-     * @param runtime   рантайм-параметры (preIndex, опциональный tick)
+     * @param runtime   рантайм-параметры (preIndex)
      * @param selector  ранее созданный селектор синапсов
      * @param customLogic пользовательский builder, вызываемый на каждом шаге;
      *                    если null, используется автоматическая логика из IR,
@@ -115,14 +113,6 @@ class SynapticPhaseUnit(private val instName: String = "syn_phase") {
         val stateNext = g.uglobal("state_n_$name", hw_dim_static(1), "0")
         state.assign(stateNext)
 
-        // step_en: разрешение шага по tick (если включено) или постоянно 1
-        val stepEn = g.uglobal("step_en_$name", hw_dim_static(1), "0")
-        stepEn.assign(
-            if (cfg.stepByTick) {
-                runtime.tick?.let { g.eq2(it, 1) } ?: hw_imm(0)
-            } else hw_imm(1)
-        )
-
         // Управление селектором: стартуем один такт, передаем preIndex
         selector.start.assign(g.land(start_i, g.eq2(state, S_IDLE)))
         selector.preIndex.assign(runtime.preIndex)
@@ -143,8 +133,8 @@ class SynapticPhaseUnit(private val instName: String = "syn_phase") {
         g.begif(g.eq2(state, S_RUN)); run {
             busy_o.assign(1)
 
-            // Пользовательская логика вызывается на каждом валидном шаге
-            val runStep = g.land(stepEn, selector.busy)
+            // Пользовательская логика вызывается на каждом валидном шаге, сформированном FSM селектора
+            val runStep = selector.busy
             val chosenLogic =
                 if (cfg.enableCustomLogic && customLogic != null) {
                     customLogic

@@ -78,7 +78,7 @@ class CyclixGenerator {
         val selector = buildSynSelector(g, layoutPlan, namingPlan, regBank, weightMems, tick, widths, program.architecture)
         val neuronSelector = buildNeuronSelector(g, namingPlan, widths, tick)
 
-        val synPhase = buildSynapticPhase(g, program, layoutPlan, namingPlan, selector, fifoIn, tick)
+        val synPhase = buildSynapticPhase(g, program, layoutPlan, namingPlan, selector, fifoIn)
         val somPhase = buildSomaticPhase(g, program, layoutPlan, namingPlan, neuronSelector, tick)
         val emitPhase = buildEmissionPhase(g, program, layoutPlan, namingPlan, neuronSelector, fifoOut, tick)
 
@@ -248,13 +248,12 @@ class CyclixGenerator {
         layoutPlan: LayoutPlan,
         namingPlan: NamingPlan,
         selector: bnmm.selector.SynapseSelectorPorts,
-        fifoIn: bnmm.queue.FifoInIF,
-        tick: hwast.hw_var
+        fifoIn: bnmm.queue.FifoInIF
     ) =
         SynapticPhaseUnit(namingPlan.assigned.synInst).emit(
             g = g,
             cfg = SynapticPhaseConfig(name = namingPlan.assigned.synInst, stepByTick = layoutPlan.phases.syn.gateByTick),
-            runtime = SynapticPhaseRuntime(preIndex = fifoIn.rd_data_o, tick = tick),
+            runtime = SynapticPhaseRuntime(preIndex = fifoIn.rd_data_o),
             selector = selector,
             irLogic = program.phaseBlockOrNull(IrPhase.SYNAPTIC)?.let { SynapticPhaseIrLogic(it.body, program.symbols) },
             bindings = mapOfNotNull(layoutPlan.phases.syn.synParamField, selector.weight)

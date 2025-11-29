@@ -83,7 +83,7 @@ class CyclixGenerator {
         val emitPhase = buildEmissionPhase(g, program, layoutPlan, namingPlan, neuronSelector, fifoOut, tick)
 
         connectPhaseAliases(g, namingPlan, synPhase, somPhase, emitPhase)
-        buildController(g, controlPlan, namingPlan, synPhase, somPhase, emitPhase)
+        buildController(g, controlPlan, namingPlan, synPhase, somPhase, emitPhase, fifoIn)
 
         dynMems // currently instantiated for completeness; future work will wire them
 
@@ -257,9 +257,7 @@ class CyclixGenerator {
             selector = selector,
             irLogic = program.phaseBlockOrNull(IrPhase.SYNAPTIC)?.let { SynapticPhaseIrLogic(it.body, program.symbols) },
             bindings = mapOfNotNull(layoutPlan.phases.syn.synParamField, selector.weight)
-        ).also {
-            fifoIn.rd_o.assign(it.busy)
-        }
+        )
 
     private fun buildSomaticPhase(
         g: Generic,
@@ -330,7 +328,8 @@ class CyclixGenerator {
         namingPlan: NamingPlan,
         synPhase: bnmm.phase.SynapticPhasePorts,
         somPhase: bnmm.phase.SomaticPhasePorts,
-        emitPhase: bnmm.phase.EmissionPhasePorts
+        emitPhase: bnmm.phase.EmissionPhasePorts,
+        fifoIn: bnmm.queue.FifoInIF
     ) {
         val stateCount = controlPlan.states.size
         val stateWidth = max(1, log2ceil(stateCount))
@@ -340,13 +339,24 @@ class CyclixGenerator {
 
         val encoding = controlPlan.states.mapIndexed { idx, st -> st.name to idx }.toMap()
         val idleIdx = encoding["idle"] ?: 0
-        stateNext.assign(idleIdx)
+        stateNext.assign(state)
+
+        val firstPhaseIdx = encoding["run_${controlPlan.phaseOrder.first().name.lowercase()}"] ?: idleIdx
 
         synPhase.start.assign(0)
         somPhase.start.assign(0)
         emitPhase.start.assign(0)
+        fifoIn.rd_o.assign(0)
 
         fun stateEq(idx: Int) = g.eq2(state, idx)
+
+        g.begif(stateEq(idleIdx)); run {
+            g.begif(g.bnot(fifoIn.empty_o)); run {
+            fifoIn.rd_o.assign(1)
+            synPhase.start.assign(1)
+            stateNext.assign(firstPhaseIdx)
+        }; g.endif()
+        }; g.endif()
 
         controlPlan.phaseOrder.forEach { phase ->
             val stateName = "run_${phase.name.lowercase()}"

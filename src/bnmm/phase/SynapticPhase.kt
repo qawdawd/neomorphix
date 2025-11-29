@@ -105,6 +105,11 @@ class SynapticPhaseUnit(private val instName: String = "syn_phase") {
         val start_i = g.uglobal("start_$name", hw_dim_static(1), "0")
         val busy_o = g.uglobal("busy_$name", hw_dim_static(1), "0")
         val done_o = g.uglobal("done_$name", hw_dim_static(1), "0")
+        val preIndexLatched = g.uglobal(
+            "preidx_lat_$name",
+            hw_dim_static(runtime.preIndex.vartype.dimensions[0].sizes[0]),
+            "0"
+        )
 
         // Локальные сигналы
         val S_IDLE = 0
@@ -115,7 +120,7 @@ class SynapticPhaseUnit(private val instName: String = "syn_phase") {
 
         // Управление селектором: стартуем один такт, передаем preIndex
         selector.start.assign(g.land(start_i, g.eq2(state, S_IDLE)))
-        selector.preIndex.assign(runtime.preIndex)
+        selector.preIndex.assign(preIndexLatched)
 
         // Значения busy/done сбрасываются по умолчанию
         busy_o.assign(0)
@@ -124,6 +129,7 @@ class SynapticPhaseUnit(private val instName: String = "syn_phase") {
         // FSM: IDLE
         g.begif(g.eq2(state, S_IDLE)); run {
             g.begif(g.eq2(start_i, 1)); run {
+            preIndexLatched.assign(runtime.preIndex)
             busy_o.assign(1)
             stateNext.assign(S_RUN)
         }; g.endif()

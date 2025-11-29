@@ -434,7 +434,8 @@ private class ManualAssembly(
                     fifoIn.rd_o.assign(1)
                     synPhase.start.assign(1)
                     stateNext.assign(runSyn)
-                }; g.belse(); run {
+                }; g.endif()
+                g.begif(fifoIn.empty_o); run {
                     somPhase.start.assign(1)
                     stateNext.assign(runSom)
                 }; g.endif()

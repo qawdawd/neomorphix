@@ -219,7 +219,12 @@ private class ManualAssembly(
             g = g,
             cfg = selectorCfg,
             runtime = selectorRuntime,
-            mem = ReadPort(addr = weightPorts.addr, en = weightPorts.en, data = weightPorts.data),
+            mem = ReadPort(
+                addr = weightPorts.addr,
+                en = weightPorts.en,
+                data = weightPorts.data,
+                we = weightPorts.we
+            ),
             tick = null
         )
 

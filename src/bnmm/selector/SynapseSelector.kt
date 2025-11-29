@@ -82,7 +82,8 @@ data class SynapseSelectorRuntime(
 data class ReadPort(
     val addr: hw_var,
     val en: hw_var?,
-    val data: hw_var
+    val data: hw_var,
+    val we: hw_var? = null
 )
 
 /**
@@ -161,6 +162,7 @@ class SynapseSelector(private val instName: String = "syn_sel") {
         state.assign(stateNext)
         done_o.assign(0)
         mem.en?.assign(0)
+        mem.we?.assign(0)
 
         val doStep = g.land(stepEn, busy_o)
 
@@ -191,8 +193,11 @@ class SynapseSelector(private val instName: String = "syn_sel") {
 
             // Drive memory interface.
             mem.addr.assign(wordAddr)
-            mem.en?.assign(1)
+            mem.en?.assign(doStep)
+            mem.we?.assign(0)
 
+            // Step through post indices.
+            g.begif(g.eq2(doStep, 1)); run {
             // Extract weight lane when packing is enabled.
             if (cfg.packing.weightsPerWord == 1) {
                 weight.assign(mem.data)
@@ -206,9 +211,6 @@ class SynapseSelector(private val instName: String = "syn_sel") {
                     }; g.endif()
                 }
             }
-
-            // Step through post indices.
-            g.begif(g.eq2(doStep, 1)); run {
             val last = g.eq2(postIdx, g.sub(runtime.postsynCount, hw_imm(1)))
             g.begif(last); run {
             done_o.assign(1)

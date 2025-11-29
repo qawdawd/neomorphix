@@ -14,9 +14,9 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="427571694000fs"></ZoomStartTime>
-      <ZoomEndTime time="428004894001fs"></ZoomEndTime>
-      <Cursor1Time time="427755000000fs"></Cursor1Time>
+      <ZoomStartTime time="431006276807fs"></ZoomStartTime>
+      <ZoomEndTime time="431581139391fs"></ZoomEndTime>
+      <Cursor1Time time="431135000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="282"></NameColumnWidth>
@@ -80,6 +80,7 @@
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wr_data_fifo_in">
          <obj_property name="ElementShortName">wr_data_fifo_in[15:0]</obj_property>
          <obj_property name="ObjectShortName">wr_data_fifo_in[15:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/full_fifo_in">
          <obj_property name="ElementShortName">full_fifo_in[0:0]</obj_property>
@@ -104,6 +105,7 @@
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/mem_fifo_in">
          <obj_property name="ElementShortName">mem_fifo_in[16:0][15:0]</obj_property>
          <obj_property name="ObjectShortName">mem_fifo_in[16:0][15:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/full_n_fifo_in">
          <obj_property name="ElementShortName">full_n_fifo_in[0:0]</obj_property>
@@ -116,6 +118,7 @@
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/credit_fifo_in">
          <obj_property name="ElementShortName">credit_fifo_in[2:0][7:0]</obj_property>
          <obj_property name="ObjectShortName">credit_fifo_in[2:0][7:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/act_fifo_in">
          <obj_property name="ElementShortName">act_fifo_in[0:0]</obj_property>
@@ -169,14 +172,14 @@
          <obj_property name="ObjectShortName">bram_addr_word_next[31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/tb/dut/u_bd/BRAM_PORTB_addr">
-         <obj_property name="ElementShortName">BRAM_PORTB_addr[31:0]</obj_property>
-         <obj_property name="ObjectShortName">BRAM_PORTB_addr[31:0]</obj_property>
-         <obj_property name="Radix">HEXRADIX</obj_property>
-      </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_bd/BRAM_PORTB_dout">
          <obj_property name="ElementShortName">BRAM_PORTB_dout[31:0]</obj_property>
          <obj_property name="ObjectShortName">BRAM_PORTB_dout[31:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_bd/BRAM_PORTB_addr">
+         <obj_property name="ElementShortName">BRAM_PORTB_addr[31:0]</obj_property>
+         <obj_property name="ObjectShortName">BRAM_PORTB_addr[31:0]</obj_property>
          <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/bram_dout_q">

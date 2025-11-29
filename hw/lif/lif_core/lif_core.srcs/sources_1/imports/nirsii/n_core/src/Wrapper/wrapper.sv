@@ -72,7 +72,7 @@ module wrapper #(
     localparam logic [ADDR_WIDTH_WORD-1:0] 
             IN_SPIKES = IN_SPIKES_COUNT + (1<<2);
 
-    localparam int SPIKES_PER_WORD = 2;
+    localparam int SPIKES_PER_WORD = 1; // 2;
     localparam int IN_SPIKE_WORDS = PRESYN_NUM / SPIKES_PER_WORD;
 
     localparam logic [ADDR_WIDTH_WORD-1:0] 
@@ -243,14 +243,17 @@ module wrapper #(
                 ST_SPK_LOAD:
                 // -----------------------------------------------------
                 begin
-
-
-                    // cfg_idx <= (state_next != ST_CFG_LOAD) ? '0 : cfg_idx;
+                    cfg_idx <= (state_next != ST_CFG_LOAD) ? '0 : cfg_idx;
     
                     // if (wr_fifo_in && !full_fifo_in)
                     //     spk_cnt <= spk_cnt + 1;
                     // else if (state_next != ST_SPK_LOAD)
                     //     spk_cnt <= '0;
+
+                    if (state_next == ST_SPK_LOAD)
+                        spk_cnt <= spk_cnt + 1;
+                    else if (state_next != ST_SPK_LOAD)
+                        spk_cnt <= '0;
                 end
     
                 // -----------------------------------------------------
@@ -379,13 +382,16 @@ module wrapper #(
                     end
 
                     5: begin
-                                           wr_postsyn_count = 1'b1;
+                        wr_postsyn_count = 1'b1;
                         wd_postsyn_count = bram_dout_q; // bram_dout;
                     //     bram_addr_word_next = IN_SPIKES_COUNT;
                     end
     
                     default: begin 
                         spikes_num = bram_dout_q; // bram_dout;
+                        
+                        bram_addr_word_next = IN_SPIKES;
+
                         state_next = ST_SPK_LOAD;
                     end 
                 endcase
@@ -398,12 +404,17 @@ module wrapper #(
             begin
                 // spikes_num = bram_dout_q; // bram_dout;
     
-                // if (!full_fifo_in) begin
-                //     wr_fifo_in      = 1'b1;
-                //     wr_data_fifo_in = bram_dout;
-                // end else if (spk_cnt >= spikes_num) begin
-                //     state_next = ST_RUN;
-                // end
+                bram_addr_word_next = IN_SPIKES + ((spk_cnt+1) << 2);
+
+                if (spk_cnt > 0) begin 
+                    if (!full_fifo_in) begin
+                        wr_fifo_in      = 1'b1;
+                        wr_data_fifo_in = bram_dout_q;
+                    end 
+                    if (spk_cnt >= spikes_num) begin
+                        state_next = ST_RUN;
+                    end
+                end 
             end
     
             //------------------------------------------------------
@@ -415,8 +426,6 @@ module wrapper #(
                 bram_addr_word_next = WEIGHTS_BASE + bram_addr_weights;
                 bram_en_next   = bram_en_weights;
                 bram_we_next   = bram_we_weights;
-
-                
     
                 if (!empty_fifo_out)
                     state_next = ST_OUT_RD;

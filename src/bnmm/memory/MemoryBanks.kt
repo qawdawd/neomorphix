@@ -13,7 +13,8 @@ import hwast.hw_var
 data class MemoryReadPort(
     val en: hw_var,
     val addr: hw_var,
-    val data: hw_var
+    val data: hw_var,
+    val we: hw_var? = null
 )
 
 data class MemoryWritePort(
@@ -55,7 +56,7 @@ class StaticMemoryBank(private val instName: String = "mem_static") {
                 val bramDout = g.uport("bram_dout_${name}", PORT_DIR.IN, hw_dim_static(cfg.dataWidth), "0")
 
                 bramWe.assign(hw_imm_zeroes(weWidth))
-                MemoryReadPort(bramEn, bramAddr, bramDout)
+                MemoryReadPort(bramEn, bramAddr, bramDout, bramWe)
             } else {
                 val rd = g.uport("rd_${name}_$idx", PORT_DIR.IN, hw_dim_static(1), "0")
                 val addr = g.uport("addr_${name}_$idx", PORT_DIR.IN, hw_dim_static(cfg.addrWidth), "0")

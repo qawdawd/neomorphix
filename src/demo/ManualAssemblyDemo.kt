@@ -44,6 +44,7 @@ import bnmm.tickgen.TickGenerator
 import cyclix.Generic
 import export.SystemVerilogExporter
 import generation.GeneratedKernel
+import hwast.PORT_DIR
 import hwast.hw_dim_static
 import hwast.hw_var
 import kotlin.math.max
@@ -141,6 +142,7 @@ fun main() {
 
 private data class AssemblyPorts(
     val tick: hw_var,
+    val enLif: hw_var,
     val fifoIn: bnmm.queue.FifoInIF,
     val fifoOut: bnmm.queue.FifoOutIF,
     val weightMem: MemoryReadPort,
@@ -173,6 +175,7 @@ private class ManualAssembly(
 
         logModuleParameters()
 
+        val enLif = g.uport("en_lif", PORT_DIR.IN, hw_dim_static(1), "0")
         val tick = TickGenerator(cfg.tickGen?.name ?: "tick").emit(g, cfg.tickGen ?: TickGenConfig()).tick
         val fifoIn = FifoInput(cfg.queues.first().name).emit(g, cfg.queues.first().toFifoConfig(), tick)
         val fifoOut = FifoOutput(cfg.queues.last().name).emit(g, cfg.queues.last().toFifoConfig(), tick)
@@ -266,10 +269,11 @@ private class ManualAssembly(
             customLogic = emissionWriter(g, fifoOut, regs)
         )
 
-        wireController(g, synPhase, somPhase, emPhase, fifoIn)
+        wireController(g, synPhase, somPhase, emPhase, fifoIn, enLif)
 
         val ports = AssemblyPorts(
             tick = tick,
+            enLif = enLif,
             fifoIn = fifoIn,
             fifoOut = fifoOut,
             weightMem = weightPorts,
@@ -376,7 +380,8 @@ private class ManualAssembly(
         synPhase: bnmm.phase.SynapticPhasePorts,
         somPhase: bnmm.phase.SomaticPhasePorts,
         emPhase: bnmm.phase.EmissionPhasePorts,
-        fifoIn: bnmm.queue.FifoInIF
+        fifoIn: bnmm.queue.FifoInIF,
+        enLif: hw_var
     ) {
         val idle = 0
         val runSyn = 1
@@ -393,10 +398,12 @@ private class ManualAssembly(
         fifoIn.rd_o.assign(0)
 
         g.begif(g.eq2(state, idle)); run {
-            g.begif(g.bnot(fifoIn.empty_o)); run {
-                fifoIn.rd_o.assign(1)
-                synPhase.start.assign(1)
-                stateNext.assign(runSyn)
+            g.begif(g.eq2(enLif, 1)); run {
+                g.begif(g.bnot(fifoIn.empty_o)); run {
+                    fifoIn.rd_o.assign(1)
+                    synPhase.start.assign(1)
+                    stateNext.assign(runSyn)
+                }; g.endif()
             }; g.endif()
         }; g.endif()
 

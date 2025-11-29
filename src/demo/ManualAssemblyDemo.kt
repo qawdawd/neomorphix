@@ -209,8 +209,14 @@ private class ManualAssembly(
             useLinearAddress = true,
             stepByTick = false
         )
-        // Keep selector ranges consistent by sourcing both selectors from one register.
-        val sharedPostCount = regs.postsynCount[postIndexWidth - 1, 0]
+        // Keep selector ranges consistent by sourcing both selectors from one register. Use the full
+        // postsyn_count width so the selector can represent the total neuron count (e.g., 16 -> 5 bits)
+        // instead of truncating to the post index width.
+        val postsynCountWidth = regs.postsynCount.vartype.dimensions.first().GetWidth()
+        require(postsynCountWidth >= postIndexWidth + 1) {
+            "postsyn_count register width ($postsynCountWidth) must be at least postIndexWidth + 1 (${postIndexWidth + 1})"
+        }
+        val sharedPostCount = regs.postsynCount
         val weightBaseWidth = regs.weightBase.vartype.dimensions.first().GetWidth()
         val selectorRuntime = bnmm.selector.SynapseSelectorRuntime(
             postsynCount = sharedPostCount,

@@ -110,13 +110,26 @@ class DynamicMemoryBank(private val instName: String = "mem_dyn") {
  */
 class RegisterBankAdapter(private val instName: String = "reg_bank") {
 
-    fun build(g: Generic, cfg: MemoryBankConfig, registerNames: List<String>): Map<String, hw_var> {
+    fun build(
+        g: Generic,
+        cfg: MemoryBankConfig,
+        registerNames: List<String>,
+        initialValues: Map<String, Int> = emptyMap()
+    ): Map<String, hw_var> {
         require(cfg.registerAdapter) { "Register adapter requires registerAdapter=true in config" }
         require(registerNames.isNotEmpty()) { "At least one register name must be provided" }
 
         val regs = mutableMapOf<String, hw_var>()
         registerNames.forEachIndexed { idx, regName ->
-            val reg = g.uglobal("${instName}_${cfg.name}_${regName}", hw_dim_static(cfg.dataWidth), "0")
+            val init = initialValues[regName]?.let { value ->
+                require(value >= 0) { "Initial register value for $regName must not be negative" }
+                require(value < (1 shl cfg.dataWidth)) {
+                    "Initial register value for $regName ($value) exceeds data width ${cfg.dataWidth}"
+                }
+                value.toString()
+            } ?: "0"
+
+            val reg = g.uglobal("${instName}_${cfg.name}_${regName}", hw_dim_static(cfg.dataWidth), init)
             regs[regName] = reg
             if (cfg.writable) {
                 val wr = g.uport("wr_${regName}", PORT_DIR.IN, hw_dim_static(1), "0")

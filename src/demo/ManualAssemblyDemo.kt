@@ -183,7 +183,12 @@ private class ManualAssembly(
         val weightPorts = StaticMemoryBank("wmem").emit(g, cfg.memoryBanks.first()).readPorts.first()
         val dynPorts = DynamicMemoryBank("dmem").emit(g, cfg.memoryBanks[1])
         val regCfg = cfg.memoryBanks.first { it.registerAdapter }
-        val regMap = RegisterBankAdapter("reg").build(g, regCfg, registerNames)
+        val regMap = RegisterBankAdapter("reg").build(
+            g = g,
+            cfg = regCfg,
+            registerNames = registerNames,
+            initialValues = mapOf("postsyn_count" to postsynCount)
+        )
         val regs = RegisterSet(
             leakage = regMap.getValue("leakage"),
             threshold = regMap.getValue("threshold"),

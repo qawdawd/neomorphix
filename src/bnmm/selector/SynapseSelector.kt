@@ -51,6 +51,12 @@ data class SynapseSelectorConfig(
     val preIndexWidth: Int,
     val postIndexWidth: Int,
     val packing: SynapticPackingConfig,
+    /**
+     * Address stride between adjacent packed words, in bytes. Defaults to the byte size of
+     * [packing.wordWidth], which matches the common case where memories are byte-addressed and each
+     * word is contiguous.
+     */
+    val wordByteStride: Int = packing.wordWidth / 8,
     val useLinearAddress: Boolean = true,
     val stepByTick: Boolean = false
 ) {
@@ -59,10 +65,11 @@ data class SynapseSelectorConfig(
         require(addrWidth > 0) { "Address width must be positive" }
         require(preIndexWidth > 0) { "Pre-synaptic index width must be positive" }
         require(postIndexWidth > 0) { "Post-synaptic index width must be positive" }
+        require(wordByteStride > 0) { "Word byte stride must be positive" }
     }
 
     fun describe(): String =
-        "name=$name addrWidth=${addrWidth}b preIndexWidth=${preIndexWidth}b postIndexWidth=${postIndexWidth}b stepByTick=$stepByTick"
+        "name=$name addrWidth=${addrWidth}b preIndexWidth=${preIndexWidth}b postIndexWidth=${postIndexWidth}b wordByteStride=${wordByteStride} stepByTick=$stepByTick"
 }
 
 /**
@@ -191,8 +198,11 @@ class SynapseSelector(private val instName: String = "syn_sel") {
             val wordAddr = if (cfg.packing.packShift == 0) addrWithBase else g.srl(addrWithBase, hw_imm(cfg.packing.packShift))
             val lane = if (cfg.packing.packShift == 0) hw_imm(0) else g.band(addrWithBase, hw_imm(cfg.packing.laneMask))
 
+            val wordStride = hw_imm(cfg.wordByteStride)
+            val addrWithStride = if (cfg.wordByteStride == 1) wordAddr else g.mul(wordAddr, wordStride)
+
             // Drive memory interface.
-            mem.addr.assign(wordAddr)
+            mem.addr.assign(addrWithStride)
             mem.en?.assign(doStep)
             mem.we?.assign(0)
 

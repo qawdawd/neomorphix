@@ -430,8 +430,15 @@ private class ManualAssembly(
 
         g.begif(g.eq2(state, runSyn)); run {
             g.begif(g.eq2(synPhase.done, 1)); run {
-                somPhase.start.assign(1)
-                stateNext.assign(runSom)
+                g.begif(g.bnot(fifoIn.empty_o)); run {
+                    fifoIn.rd_o.assign(1)
+                    synPhase.start.assign(1)
+                    stateNext.assign(runSyn)
+                }; g.endif()
+                g.begif(fifoIn.empty_o); run {
+                    somPhase.start.assign(1)
+                    stateNext.assign(runSom)
+                }; g.endif()
             }; g.endif()
         }; g.endif()
 

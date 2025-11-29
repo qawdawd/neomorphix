@@ -5,7 +5,7 @@
 // events, and captures output spikes back into BRAM.
 module wrapper #(
     parameter ADDR_WIDTH_WORD = 32,
-    parameter DATA_WIDTH      = 16,
+    parameter DATA_WIDTH      = 32,
     parameter PRESYN_NUM      = 16,
     parameter POSTSYN_NUM     = 16,
     parameter CFG_WORDS       = 5,
@@ -98,7 +98,7 @@ module wrapper #(
     logic                   bram_en_weights;
     logic [1:0]             bram_we_weights;
     logic [ADDR_WIDTH_WORD-1:0] bram_addr_weights;
-    logic [15:0]            bram_dout_weights;
+    logic [DATA_WIDTH-1:0]      bram_dout_weights;
     
     logic [ADDR_WIDTH_WORD-1:0] bram_addr_word_next;
     logic       bram_en_next;
@@ -304,7 +304,7 @@ module wrapper #(
         state_next = state;
     
         // default BRAM FSM control
-        bram_addr_word_next = bram_addr_weights;
+        bram_addr_word_next = 0; //bram_addr_weights;
         bram_en_next   = 1'b1;
         bram_we_next   = 2'b00;
 
@@ -332,7 +332,8 @@ module wrapper #(
         wd_emit_tag      = '0;
 
         wr_weight_base   = 1'b1;
-        wd_weight_base   = 8;
+        wd_weight_base   = WEIGHTS_BASE * 2; // в количетсве весов, а не слов. Нужно будет селектор поправить 
+
 
     
         // ---------------------------------------------------------
@@ -436,7 +437,7 @@ module wrapper #(
             begin
                 // ядро генерирует bram_addr_weights, bram_en, bram_we
                 // мы просто передаем их дальше
-                bram_addr_word_next = WEIGHTS_BASE + bram_addr_weights;
+                bram_addr_word_next = bram_addr_weights;
                 bram_en_next   = bram_en_weights;
                 bram_we_next   = bram_we_weights;
     

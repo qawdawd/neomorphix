@@ -76,20 +76,20 @@ fun main() {
     val registerNames = arch.staticParameterDescriptors().map { it.name } +
         listOf("weight_base", "neuron_base", "postsyn_count", "emit_tag")
 
-    val controllerCfg = ControllerConfig(
-        name = "manual_bnmm_controller",
-        selectors = listOf(
-            SelectorConfig(
-                name = "syn_selector",
-                indexWidth = max(preIndexWidth, postIndexWidth),
-                stepByTick = true
-            )
-        ),
-        phases = listOf(
+        val controllerCfg = ControllerConfig(
+            name = "manual_bnmm_controller",
+            selectors = listOf(
+                SelectorConfig(
+                    name = "syn_selector",
+                    indexWidth = max(preIndexWidth, postIndexWidth),
+                    stepByTick = false
+                )
+            ),
+            phases = listOf(
             PhaseUnitConfig(name = "syn_manual", stepByTick = true),
             PhaseUnitConfig(name = "som_manual", stepByTick = true),
             PhaseUnitConfig(name = "em_manual", stepByTick = true)
-        ),
+            ),
         queues = listOf(
             QueueConfig(name = "fifo_in", dataWidth = 32, depth = presynCount),
             QueueConfig(name = "fifo_out", dataWidth = 32, depth = postsynCount)
@@ -206,7 +206,7 @@ private class ManualAssembly(
 //            packing = SynapticPackingConfig(wordWidth = cfg.memoryBanks.first().dataWidth, weightWidth = 16, weightsPerWord = 2),
             packing = SynapticPackingConfig(wordWidth = 32, weightWidth = 16, weightsPerWord = 2),
             useLinearAddress = true,
-            stepByTick = true
+            stepByTick = false
         )
         // Keep selector ranges consistent by sourcing both selectors from one register.
         val sharedPostCount = regs.postsynCount[postIndexWidth - 1, 0]
@@ -220,7 +220,7 @@ private class ManualAssembly(
             cfg = selectorCfg,
             runtime = selectorRuntime,
             mem = ReadPort(addr = weightPorts.addr, en = weightPorts.en, data = weightPorts.data),
-            tick = tick
+            tick = null
         )
 
         val neuronSelectorName = "${cfg.phases[1].name}_selector"
@@ -246,8 +246,8 @@ private class ManualAssembly(
 
         val synPhase = SynapticPhaseUnit(cfg.phases[0].name).emit(
             g = g,
-            cfg = SynapticPhaseConfig(name = cfg.phases[0].name, stepByTick = true),
-            runtime = SynapticPhaseRuntime(preIndex = fifoIn.rd_data_o, tick = tick),
+            cfg = SynapticPhaseConfig(name = cfg.phases[0].name, stepByTick = false),
+            runtime = SynapticPhaseRuntime(preIndex = fifoIn.rd_data_o),
             selector = synSelector,
             customLogic = synapticAccumulator(g, dynPorts)
         )
@@ -331,11 +331,13 @@ private class ManualAssembly(
         val accumulator = g.uglobal("syn_acc", hw_dim_static(16), "0")
         val dynWr = dynMem.writePorts.first()
         return { ctx ->
-            g.begif(g.eq2(ctx.runStep, 1)); run {
-                accumulator.assign(g.add(accumulator, ctx.selector.weight))
-                dynWr.en.assign(1)
-                dynWr.addr.assign(ctx.selector.postIndex)
-                dynWr.data.assign(accumulator)
+            val stepValid = ctx.selector.busy
+            dynWr.en.assign(stepValid)
+            dynWr.addr.assign(ctx.selector.postIndex)
+            val nextAcc = g.add(accumulator, ctx.selector.weight)
+            g.begif(g.eq2(stepValid, 1)); run {
+                accumulator.assign(nextAcc)
+                dynWr.data.assign(nextAcc)
             }; g.endif()
         }
     }

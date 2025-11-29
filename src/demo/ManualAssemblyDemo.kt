@@ -91,8 +91,8 @@ fun main() {
             PhaseUnitConfig(name = "em_manual", stepByTick = true)
         ),
         queues = listOf(
-            QueueConfig(name = "fifo_in", dataWidth = 16, depth = presynCount),
-            QueueConfig(name = "fifo_out", dataWidth = 16, depth = postsynCount)
+            QueueConfig(name = "fifo_in", dataWidth = 32, depth = presynCount),
+            QueueConfig(name = "fifo_out", dataWidth = 32, depth = postsynCount)
         ),
         memoryBanks = listOf(
             MemoryBankConfig(

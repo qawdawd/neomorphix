@@ -9,6 +9,7 @@ module wrapper #(
     parameter PRESYN_NUM      = 16,
     parameter POSTSYN_NUM     = 16,
     parameter CFG_WORDS       = 5,
+    parameter SPIKE_WIDTH     = 32,
     
     parameter WE_WIDTH        = DATA_WIDTH/8
 ) (
@@ -86,11 +87,11 @@ module wrapper #(
     logic                   tick_o_tick_manual;
     
     logic                   wr_fifo_in;
-    logic [15:0]            wr_data_fifo_in;
+    logic [SPIKE_WIDTH-1:0] wr_data_fifo_in;
     logic                   full_fifo_in;
     
     logic                   rd_fifo_out;
-    logic [7:0]             rd_data_fifo_out;
+    logic [SPIKE_WIDTH-1:0] rd_data_fifo_out;
     logic                   empty_fifo_out;
     
     // external weight BRAM signals from the core
@@ -125,6 +126,8 @@ module wrapper #(
     
     logic                   wr_emit_tag;
     logic [15:0]            wd_emit_tag;
+
+    logic                   en_lif;
     
     
     logic [7:0] cfg_idx;
@@ -137,6 +140,8 @@ module wrapper #(
     bnmm_manual_demo u_core (
         .clk_i            (clk),
         .rst_i            (rst),
+
+        .en_lif           (en_lif),
     
         .en_tick_manual   (en_tick_manual),
         .rst_tick_manual  (rst_tick_manual),
@@ -217,6 +222,8 @@ module wrapper #(
             out_cnt <= '0;
 
             idx <= '0;
+
+            en_lif <= 0;
     
         end else begin
             state <= state_next;
@@ -261,6 +268,8 @@ module wrapper #(
                 // -----------------------------------------------------
                 begin
                     en_tick_manual <= 1; // (state_next == ST_RUN);
+
+                    en_lif <= 1;
 
                     cfg_idx <= (state_next != ST_CFG_LOAD) ? '0 : cfg_idx;
                     spk_cnt <= (state_next != ST_SPK_LOAD) ? '0 : spk_cnt;

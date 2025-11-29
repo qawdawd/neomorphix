@@ -14,13 +14,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="431006276807fs"></ZoomStartTime>
-      <ZoomEndTime time="431581139391fs"></ZoomEndTime>
-      <Cursor1Time time="431135000000fs"></Cursor1Time>
+      <ZoomStartTime time="533209173fs"></ZoomStartTime>
+      <ZoomEndTime time="1093358166fs"></ZoomEndTime>
+      <Cursor1Time time="1000000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="282"></NameColumnWidth>
-      <ValueColumnWidth column_width="97"></ValueColumnWidth>
+      <ValueColumnWidth column_width="93"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="58" />
    <wvobject type="logic" fp_name="/tb/dut/u_wrapper/u_core/clk_i[0]">
@@ -78,8 +78,8 @@
          <obj_property name="ObjectShortName">wr_fifo_in[0:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wr_data_fifo_in">
-         <obj_property name="ElementShortName">wr_data_fifo_in[15:0]</obj_property>
-         <obj_property name="ObjectShortName">wr_data_fifo_in[15:0]</obj_property>
+         <obj_property name="ElementShortName">wr_data_fifo_in[31:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_data_fifo_in[31:0]</obj_property>
          <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/full_fifo_in">
@@ -95,16 +95,16 @@
          <obj_property name="ObjectShortName">rd_fifo_in[0:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/rd_data_fifo_in">
-         <obj_property name="ElementShortName">rd_data_fifo_in[15:0]</obj_property>
-         <obj_property name="ObjectShortName">rd_data_fifo_in[15:0]</obj_property>
+         <obj_property name="ElementShortName">rd_data_fifo_in[31:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_data_fifo_in[31:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/empty_fifo_in">
          <obj_property name="ElementShortName">empty_fifo_in[0:0]</obj_property>
          <obj_property name="ObjectShortName">empty_fifo_in[0:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/mem_fifo_in">
-         <obj_property name="ElementShortName">mem_fifo_in[16:0][15:0]</obj_property>
-         <obj_property name="ObjectShortName">mem_fifo_in[16:0][15:0]</obj_property>
+         <obj_property name="ElementShortName">mem_fifo_in[16:0][31:0]</obj_property>
+         <obj_property name="ObjectShortName">mem_fifo_in[16:0][31:0]</obj_property>
          <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/full_n_fifo_in">

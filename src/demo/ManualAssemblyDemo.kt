@@ -170,6 +170,8 @@ private class ManualAssembly(
     private val registerNames: List<String>
 ) {
 
+    private val postsynCount = arch.neuronsPerLayer.last()
+
     fun buildKernel(): GeneratedKernel {
         val g = Generic("bnmm_manual_demo")
 

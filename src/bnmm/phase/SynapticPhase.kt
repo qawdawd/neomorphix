@@ -107,7 +107,7 @@ class SynapticPhaseUnit(private val instName: String = "syn_phase") {
         val done_o = g.uglobal("done_$name", hw_dim_static(1), "0")
         val preIndexLatched = g.uglobal(
             "preidx_lat_$name",
-            hw_dim_static(runtime.preIndex.vartype.dimensions[0].sizes[0]),
+            hw_dim_static(runtime.preIndex.vartype.dimensions[0].GetWidth()),
             "0"
         )
 

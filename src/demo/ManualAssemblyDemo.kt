@@ -273,7 +273,7 @@ private class ManualAssembly(
 
         val somPhase = SomaticPhaseUnit(cfg.phases[1].name).emit(
             g = g,
-            cfg = SomaticPhaseConfig(name = cfg.phases[1].name, stepByTick = true),
+            cfg = SomaticPhaseConfig(name = cfg.phases[1].name, stepByTick = false),
             runtime = SomaticPhaseRuntime(tick = tick),
             selector = neurSelector,
             customLogic = somaticThreshold(g, dynPorts, regs)
@@ -281,7 +281,7 @@ private class ManualAssembly(
 
         val emPhase = EmissionPhaseUnit(cfg.phases[2].name).emit(
             g = g,
-            cfg = EmissionPhaseConfig(name = cfg.phases[2].name, stepByTick = true),
+            cfg = EmissionPhaseConfig(name = cfg.phases[2].name, stepByTick = false),
             runtime = EmissionPhaseRuntime(tick = tick),
             selector = neurSelector,
             outQueue = fifoOut,

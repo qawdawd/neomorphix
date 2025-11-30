@@ -210,6 +210,12 @@ class FifoInput(private val instName: String = "in_fifo") {
         }; g.endbranch()
         }; g.endcase()
 
+        // Empty flag and credits converge whenever updated pointers match and queue isn't full
+        g.begif(g.land(g.eq2(wptrNext, rptrNext), g.bnot(fullNext))); run {
+            emptyNext.assign(1)
+            credit[readBank].assign(0)
+        }; g.endif()
+
         // Update pointers and flags after resolving the current cycle intent
         wptr.assign(wptrNext)
         rptr.assign(rptrNext)

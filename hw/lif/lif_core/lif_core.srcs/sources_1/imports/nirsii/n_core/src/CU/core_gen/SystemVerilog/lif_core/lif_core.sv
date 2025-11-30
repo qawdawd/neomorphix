@@ -5732,16 +5732,16 @@ always_comb
 	gen182_cyclix_genvar = ~full_reg_input_queue;
 	gen183_cyclix_genvar = (wr_r_input_queue && gen182_cyclix_genvar);
 	wr_en_input_queue = gen183_cyclix_genvar;
-	w_ptr_reg_input_queue = w_ptr_next_input_queue;
-	empty_input_queue = empty_next_input_queue;
-	full_reg_input_queue = full_next_input_queue;
-	r_ptr_reg_input_queue = r_ptr_next_input_queue;
-	gen184_cyclix_genvar = {wr_r_input_queue, rd_input_queue};
-	case (gen184_cyclix_genvar)
-		32'd1:
-			begin
-			gen185_cyclix_genvar = ~empty_input_queue;
-			gen186_cyclix_genvar = gen185_cyclix_genvar;
+        w_ptr_reg_input_queue = w_ptr_next_input_queue;
+        empty_input_queue = empty_next_input_queue;
+        full_reg_input_queue = full_next_input_queue;
+        r_ptr_reg_input_queue = r_ptr_next_input_queue;
+        gen184_cyclix_genvar = {wr_r_input_queue, rd_input_queue};
+        case (gen184_cyclix_genvar)
+                32'd1:
+                        begin
+                        gen185_cyclix_genvar = ~empty_input_queue;
+                        gen186_cyclix_genvar = gen185_cyclix_genvar;
 			gen4_rtl_var = gen186_cyclix_genvar;
 			if (gen4_rtl_var)
 				begin
@@ -5832,12 +5832,17 @@ always_comb
 				begin
 				gen216_cyclix_genvar = ~act_counter_input_queue;
 				credit_counter_input_queue[gen216_cyclix_genvar] = 32'd0;
-				end
-			end
-	endcase
-	rd_output_queue = rd_p_output_queue;
-	rd_data_p_output_queue = rd_data_output_queue;
-	empty_p_output_queue = empty_output_queue;
+                                end
+                        end
+        endcase
+        if ((w_ptr_next_input_queue == r_ptr_next_input_queue))
+                begin
+                empty_next_input_queue = 32'd1;
+                credit_counter_input_queue[~act_counter_input_queue] = 32'd0;
+                end
+        rd_output_queue = rd_p_output_queue;
+        rd_data_p_output_queue = rd_data_output_queue;
+        empty_p_output_queue = empty_output_queue;
 	gen217_cyclix_genvar = (tick == 32'd1);
 	gen218_cyclix_genvar = gen217_cyclix_genvar;
 	gen13_rtl_var = gen218_cyclix_genvar;

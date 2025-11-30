@@ -14,22 +14,27 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="99818833333fs"></ZoomStartTime>
-      <ZoomEndTime time="100036233334fs"></ZoomEndTime>
-      <Cursor1Time time="100000000000fs"></Cursor1Time>
+      <ZoomStartTime time="275333334fs"></ZoomStartTime>
+      <ZoomEndTime time="4623333335fs"></ZoomEndTime>
+      <Cursor1Time time="1000000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="282"></NameColumnWidth>
       <ValueColumnWidth column_width="89"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="10" />
+   <WVObjectSize size="11" />
    <wvobject type="logic" fp_name="/tb/dut/u_wrapper/u_core/clk_i[0]">
       <obj_property name="ElementShortName">[0]</obj_property>
       <obj_property name="ObjectShortName">[0]</obj_property>
    </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/en_lif">
+      <obj_property name="ElementShortName">en_lif[0:0]</obj_property>
+      <obj_property name="ObjectShortName">en_lif[0:0]</obj_property>
+   </wvobject>
    <wvobject type="group" fp_name="group1335">
       <obj_property name="label">TickGenerator</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/tick_tick_manual">
          <obj_property name="ElementShortName">tick_tick_manual[0:0]</obj_property>
          <obj_property name="ObjectShortName">tick_tick_manual[0:0]</obj_property>
@@ -54,6 +59,7 @@
    <wvobject type="group" fp_name="group1365">
       <obj_property name="label">FSM</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/fsm_state">
          <obj_property name="ElementShortName">fsm_state[1:0]</obj_property>
          <obj_property name="ObjectShortName">fsm_state[1:0]</obj_property>
@@ -83,6 +89,7 @@
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/rd_credit_fifo_in">
          <obj_property name="ElementShortName">rd_credit_fifo_in[7:0]</obj_property>
          <obj_property name="ObjectShortName">rd_credit_fifo_in[7:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/rd_fifo_in">
          <obj_property name="ElementShortName">rd_fifo_in[0:0]</obj_property>
@@ -91,6 +98,7 @@
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/rd_data_fifo_in">
          <obj_property name="ElementShortName">rd_data_fifo_in[31:0]</obj_property>
          <obj_property name="ObjectShortName">rd_data_fifo_in[31:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/empty_fifo_in">
          <obj_property name="ElementShortName">empty_fifo_in[0:0]</obj_property>
@@ -125,6 +133,7 @@
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wr_credit_fifo_in">
          <obj_property name="ElementShortName">wr_credit_fifo_in[7:0]</obj_property>
          <obj_property name="ObjectShortName">wr_credit_fifo_in[7:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
       </wvobject>
    </wvobject>
    <wvobject type="group" fp_name="group521">
@@ -156,6 +165,9 @@
          <obj_property name="ElementShortName">bram_dout[31:0]</obj_property>
          <obj_property name="ObjectShortName">bram_dout[31:0]</obj_property>
          <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
+         <obj_property name="radix_fractionWidth">16</obj_property>
+         <obj_property name="radix_otherWidth">0</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/cfg_idx">
          <obj_property name="ElementShortName">cfg_idx[7:0]</obj_property>
@@ -179,7 +191,7 @@
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/bram_dout_q">
          <obj_property name="ElementShortName">bram_dout_q[31:0]</obj_property>
          <obj_property name="ObjectShortName">bram_dout_q[31:0]</obj_property>
-         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
       </wvobject>
       <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/enb">
          <obj_property name="ElementShortName">enb</obj_property>
@@ -269,7 +281,6 @@
    <wvobject type="group" fp_name="group458">
       <obj_property name="label">LOCALPARAMETERS</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/IN_SPIKES_BASE">
          <obj_property name="ElementShortName">IN_SPIKES_BASE[31:0]</obj_property>
          <obj_property name="ObjectShortName">IN_SPIKES_BASE[31:0]</obj_property>
@@ -376,6 +387,7 @@
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/postidx_syn_selector">
          <obj_property name="ElementShortName">postidx_syn_selector[3:0]</obj_property>
          <obj_property name="ObjectShortName">postidx_syn_selector[3:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/busy_syn_selector">
          <obj_property name="ElementShortName">busy_syn_selector[0:0]</obj_property>
@@ -504,8 +516,8 @@
          <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb/dut/bram_dout">
-         <obj_property name="ElementShortName">bram_dout[15:0]</obj_property>
-         <obj_property name="ObjectShortName">bram_dout[15:0]</obj_property>
+         <obj_property name="ElementShortName">bram_dout[32:0]</obj_property>
+         <obj_property name="ObjectShortName">bram_dout[32:0]</obj_property>
          <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/web">

@@ -15,7 +15,7 @@ module top(
     wire        bram_en;
 //    wire [3:0]  bram_we;
     wire [15:0] bram_din;
-    wire [15:0] bram_dout;
+    wire [32:0] bram_dout;
     wire [1:0]  bram_we;
 
 

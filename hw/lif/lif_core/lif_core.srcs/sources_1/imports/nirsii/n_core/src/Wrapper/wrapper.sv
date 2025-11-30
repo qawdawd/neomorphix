@@ -261,7 +261,7 @@ module wrapper #(
                     // else if (state_next != ST_SPK_LOAD)
                     //     spk_cnt <= '0;
 
-                    if (state_next == ST_SPK_LOAD)
+                    if (state_next == ST_SPK_LOAD && (spk_cnt <= spikes_num))
                         spk_cnt <= spk_cnt + 1;
                     else if (state_next != ST_SPK_LOAD)
                         spk_cnt <= '0;
@@ -271,7 +271,7 @@ module wrapper #(
                 ST_RUN:
                 // -----------------------------------------------------
                 begin
-                    en_tick_manual <= 1; // (state_next == ST_RUN);
+                    // en_tick_manual <= 1; // (state_next == ST_RUN);
 
                     en_lif <= 1;
 
@@ -328,11 +328,11 @@ module wrapper #(
         wd_threshold     = '0;
         wd_vreset        = '0;
         wd_neuron_base   = '0;
-        wd_postsyn_count = '0;
+        // wd_postsyn_count = '0;
         wd_emit_tag      = '0;
 
         wr_weight_base   = 1'b1;
-        wd_weight_base   = WEIGHTS_BASE * 2; // в количетсве весов, а не слов. Нужно будет селектор поправить 
+        wd_weight_base   = WEIGHTS_BASE;// * 2; // в количетсве весов, а не слов. Нужно будет селектор поправить 
 
 
     
@@ -425,8 +425,11 @@ module wrapper #(
                         wr_fifo_in      = 1'b1;
                         wr_data_fifo_in = bram_dout_q;
                     end 
-                    if (spk_cnt >= spikes_num) begin
-                        state_next = ST_RUN;
+                    if (spk_cnt > spikes_num) begin
+                        en_tick_manual = 1; // (state_next == ST_RUN);
+                        wr_fifo_in      = 1'b0;
+                        if (tick_o_tick_manual == 1)
+                            state_next = ST_RUN;
                     end
                 end 
             end

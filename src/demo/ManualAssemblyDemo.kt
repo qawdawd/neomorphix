@@ -285,7 +285,7 @@ private class ManualAssembly(
             runtime = EmissionPhaseRuntime(tick = tick),
             selector = neurSelector,
             outQueue = fifoOut,
-            customLogic = emissionWriter(g, fifoOut, regs)
+            customLogic = emissionWriter(g, dynPorts, fifoOut, regs)
         )
 
         wireController(g, synPhase, somPhase, emPhase, fifoIn, enLif)
@@ -380,12 +380,29 @@ private class ManualAssembly(
         }
     }
 
-    private fun emissionWriter(g: Generic, fifoOut: bnmm.queue.FifoOutIF, regs: RegisterSet): (EmissionPhaseContext) -> Unit {
+    private fun emissionWriter(
+        g: Generic,
+        dynMem: MemoryBankPorts,
+        fifoOut: bnmm.queue.FifoOutIF,
+        regs: RegisterSet
+    ): (EmissionPhaseContext) -> Unit {
+        val dynRd = dynMem.readPorts.first()
+        val dynWr = dynMem.writePorts.first()
         return { ctx ->
+            dynRd.en?.assign(ctx.runStep)
+            dynRd.addr.assign(ctx.selector.postIndex)
+            dynWr.en.assign(0)
+            dynWr.addr.assign(ctx.selector.postIndex)
+
             g.begif(g.eq2(ctx.runStep, 1)); run {
-                g.begif(g.bnot(fifoOut.full_o)); run {
-                    fifoOut.we_i.assign(1)
-                    fifoOut.wr_data_i.assign(g.add(regs.emitTag[7, 0], ctx.selector.postIndex))
+                val aboveThreshold = g.geq(dynRd.data, regs.threshold)
+                g.begif(aboveThreshold); run {
+                    g.begif(g.bnot(fifoOut.full_o)); run {
+                        fifoOut.we_i.assign(1)
+                        fifoOut.wr_data_i.assign(g.add(regs.emitTag[7, 0], ctx.selector.postIndex))
+                        dynWr.en.assign(1)
+                        dynWr.data.assign(regs.vreset)
+                    }; g.endif()
                 }; g.endif()
             }; g.endif()
         }

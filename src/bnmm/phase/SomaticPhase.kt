@@ -99,8 +99,8 @@ class SomaticPhaseUnit(private val instName: String = "som_phase") {
             if (cfg.stepByTick) runtime.tick?.let { g.eq2(it, 1) } ?: hw_imm(1) else hw_imm(1)
         )
 
-        // Запуск селектора
-        selector.start.assign(g.land(start_i, g.eq2(state, S_IDLE)))
+        // Запуск селектора: разрешаем старт при поднятом start_i без доп.гейтинга
+        selector.start.assign(start_i)
 
         // Значения busy/done по умолчанию
         busy_o.assign(0)

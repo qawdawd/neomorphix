@@ -95,7 +95,9 @@ class SomaticPhaseUnit(private val instName: String = "som_phase") {
 
         // step_en: разрешение шага по tick (если включено) или постоянно 1
         val stepEn = g.uglobal("step_en_$name", hw_dim_static(1), "0")
-        stepEn.assign(if (cfg.stepByTick) runtime.tick?.let { g.eq2(it, 1) } ?: hw_imm(0) else hw_imm(1))
+        stepEn.assign(
+            if (cfg.stepByTick) runtime.tick?.let { g.eq2(it, 1) } ?: hw_imm(1) else hw_imm(1)
+        )
 
         // Запуск селектора
         selector.start.assign(g.land(start_i, g.eq2(state, S_IDLE)))

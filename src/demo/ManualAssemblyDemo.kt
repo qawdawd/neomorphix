@@ -143,6 +143,7 @@ fun main() {
 private data class AssemblyPorts(
     val tick: hw_var,
     val enLif: hw_var,
+    val emissionDone: hw_var,
     val fifoIn: bnmm.queue.FifoInIF,
     val fifoOut: bnmm.queue.FifoOutIF,
     val weightMem: MemoryReadPort,
@@ -179,6 +180,7 @@ private class ManualAssembly(
         logModuleParameters()
 
         val enLif = g.uport("en_lif", PORT_DIR.IN, hw_dim_static(1), "0")
+        val emissionDone = g.uport("emission_done", PORT_DIR.OUT, hw_dim_static(1), "0")
         val tick = TickGenerator(cfg.tickGen?.name ?: "tick").emit(g, cfg.tickGen ?: TickGenConfig()).tick
         val fifoIn = FifoInput(cfg.queues.first().name).emit(g, cfg.queues.first().toFifoConfig(), tick)
         val fifoOut = FifoOutput(cfg.queues.last().name).emit(g, cfg.queues.last().toFifoConfig(), tick)
@@ -305,11 +307,12 @@ private class ManualAssembly(
             customLogic = emissionWriter(g, dynPorts, fifoOut, regs)
         )
 
-        wireController(g, synPhase, somPhase, emPhase, fifoIn, enLif)
+        wireController(g, synPhase, somPhase, emPhase, fifoIn, enLif, emissionDone)
 
         val ports = AssemblyPorts(
             tick = tick,
             enLif = enLif,
+            emissionDone = emissionDone,
             fifoIn = fifoIn,
             fifoOut = fifoOut,
             weightMem = weightPorts,
@@ -432,7 +435,8 @@ private class ManualAssembly(
         somPhase: bnmm.phase.SomaticPhasePorts,
         emPhase: bnmm.phase.EmissionPhasePorts,
         fifoIn: bnmm.queue.FifoInIF,
-        enLif: hw_var
+        enLif: hw_var,
+        emissionDone: hw_var
     ) {
         val idle = 0
         val runSyn = 1
@@ -442,6 +446,10 @@ private class ManualAssembly(
         val stateNext = g.uglobal("fsm_state_n", hw_dim_static(2), "0")
         state.assign(stateNext)
         stateNext.assign(state)
+
+        val emissionDoneNext = g.uglobal("emission_done_n", hw_dim_static(1), "0")
+        emissionDone.assign(emissionDoneNext)
+        emissionDoneNext.assign(emissionDone)
 
         synPhase.start.assign(0)
         somPhase.start.assign(0)
@@ -453,6 +461,7 @@ private class ManualAssembly(
                 g.begif(g.bnot(fifoIn.empty_o)); run {
                     fifoIn.rd_o.assign(1)
                     synPhase.start.assign(1)
+                    emissionDoneNext.assign(0)
                     stateNext.assign(runSyn)
                 }; g.endif()
             }; g.endif()
@@ -481,6 +490,7 @@ private class ManualAssembly(
 
         g.begif(g.eq2(state, runEm)); run {
             g.begif(g.eq2(emPhase.done, 1)); run {
+                emissionDoneNext.assign(1)
                 stateNext.assign(idle)
             }; g.endif()
         }; g.endif()

@@ -143,12 +143,14 @@ fun main() {
 private data class AssemblyPorts(
     val tick: hw_var,
     val enLif: hw_var,
+    val emissionDone: hw_var,
     val fifoIn: bnmm.queue.FifoInIF,
     val fifoOut: bnmm.queue.FifoOutIF,
     val weightMem: MemoryReadPort,
     val dynMem: MemoryBankPorts,
     val synSelector: SynapseSelectorPorts,
-    val neurSelector: NeuronSelectorPorts,
+    val somSelector: NeuronSelectorPorts,
+    val emSelector: NeuronSelectorPorts,
     val synPhase: bnmm.phase.SynapticPhasePorts,
     val somPhase: bnmm.phase.SomaticPhasePorts,
     val emPhase: bnmm.phase.EmissionPhasePorts
@@ -178,6 +180,7 @@ private class ManualAssembly(
         logModuleParameters()
 
         val enLif = g.uport("en_lif", PORT_DIR.IN, hw_dim_static(1), "0")
+        val emissionDone = g.uport("emission_done", PORT_DIR.OUT, hw_dim_static(1), "0")
         val tick = TickGenerator(cfg.tickGen?.name ?: "tick").emit(g, cfg.tickGen ?: TickGenConfig()).tick
         val fifoIn = FifoInput(cfg.queues.first().name).emit(g, cfg.queues.first().toFifoConfig(), tick)
         val fifoOut = FifoOutput(cfg.queues.last().name).emit(g, cfg.queues.last().toFifoConfig(), tick)
@@ -242,18 +245,34 @@ private class ManualAssembly(
             tick = null
         )
 
-        val neuronSelectorName = "${cfg.phases[1].name}_selector"
-        val neurSelector = NeuronSelector(neuronSelectorName).emit(
+        val neuronSelectorPlan = NeuronSelectorPlan(
+            groupSize = 1,
+            totalGroups = arch.neuronsPerLayer.last(),
+            activeGroups = arch.neuronsPerLayer.last(),
+            remainder = 0
+        )
+        val somSelectorName = "${cfg.phases[1].name}_selector"
+        val somSelector = NeuronSelector(somSelectorName).emit(
             g = g,
             cfg = NeuronSelectorConfig(
-                name = neuronSelectorName,
+                name = somSelectorName,
                 indexWidth = selectorCfg.postIndexWidth,
-                plan = NeuronSelectorPlan(
-                    groupSize = 1,
-                    totalGroups = arch.neuronsPerLayer.last(),
-                    activeGroups = arch.neuronsPerLayer.last(),
-                    remainder = 0
-                ),
+                plan = neuronSelectorPlan,
+                stepByTick = false
+            ),
+            runtime = NeuronSelectorRuntime(
+                totalNeurons = sharedPostCount,
+                baseIndex = regs.neuronBase[selectorCfg.postIndexWidth - 1, 0],
+                tick = tick
+            )
+        )
+        val emSelectorName = "${cfg.phases[2].name}_selector"
+        val emSelector = NeuronSelector(emSelectorName).emit(
+            g = g,
+            cfg = NeuronSelectorConfig(
+                name = emSelectorName,
+                indexWidth = selectorCfg.postIndexWidth,
+                plan = neuronSelectorPlan,
                 stepByTick = false
             ),
             runtime = NeuronSelectorRuntime(
@@ -275,7 +294,7 @@ private class ManualAssembly(
             g = g,
             cfg = SomaticPhaseConfig(name = cfg.phases[1].name, stepByTick = false),
             runtime = SomaticPhaseRuntime(tick = tick),
-            selector = neurSelector,
+            selector = somSelector,
             customLogic = somaticThreshold(g, dynPorts, regs)
         )
 
@@ -283,22 +302,24 @@ private class ManualAssembly(
             g = g,
             cfg = EmissionPhaseConfig(name = cfg.phases[2].name, stepByTick = false),
             runtime = EmissionPhaseRuntime(tick = tick),
-            selector = neurSelector,
+            selector = emSelector,
             outQueue = fifoOut,
             customLogic = emissionWriter(g, dynPorts, fifoOut, regs)
         )
 
-        wireController(g, synPhase, somPhase, emPhase, fifoIn, enLif)
+        wireController(g, synPhase, somPhase, emPhase, fifoIn, enLif, emissionDone)
 
         val ports = AssemblyPorts(
             tick = tick,
             enLif = enLif,
+            emissionDone = emissionDone,
             fifoIn = fifoIn,
             fifoOut = fifoOut,
             weightMem = weightPorts,
             dynMem = dynPorts,
             synSelector = synSelector,
-            neurSelector = neurSelector,
+            somSelector = somSelector,
+            emSelector = emSelector,
             synPhase = synPhase,
             somPhase = somPhase,
             emPhase = emPhase
@@ -414,7 +435,8 @@ private class ManualAssembly(
         somPhase: bnmm.phase.SomaticPhasePorts,
         emPhase: bnmm.phase.EmissionPhasePorts,
         fifoIn: bnmm.queue.FifoInIF,
-        enLif: hw_var
+        enLif: hw_var,
+        emissionDone: hw_var
     ) {
         val idle = 0
         val runSyn = 1
@@ -424,6 +446,10 @@ private class ManualAssembly(
         val stateNext = g.uglobal("fsm_state_n", hw_dim_static(2), "0")
         state.assign(stateNext)
         stateNext.assign(state)
+
+        val emissionDoneNext = g.uglobal("emission_done_n", hw_dim_static(1), "0")
+        emissionDone.assign(emissionDoneNext)
+        emissionDoneNext.assign(emissionDone)
 
         synPhase.start.assign(0)
         somPhase.start.assign(0)
@@ -435,6 +461,7 @@ private class ManualAssembly(
                 g.begif(g.bnot(fifoIn.empty_o)); run {
                     fifoIn.rd_o.assign(1)
                     synPhase.start.assign(1)
+                    emissionDoneNext.assign(0)
                     stateNext.assign(runSyn)
                 }; g.endif()
             }; g.endif()
@@ -463,6 +490,7 @@ private class ManualAssembly(
 
         g.begif(g.eq2(state, runEm)); run {
             g.begif(g.eq2(emPhase.done, 1)); run {
+                emissionDoneNext.assign(1)
                 stateNext.assign(idle)
             }; g.endif()
         }; g.endif()

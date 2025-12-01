@@ -148,7 +148,8 @@ private data class AssemblyPorts(
     val weightMem: MemoryReadPort,
     val dynMem: MemoryBankPorts,
     val synSelector: SynapseSelectorPorts,
-    val neurSelector: NeuronSelectorPorts,
+    val somSelector: NeuronSelectorPorts,
+    val emSelector: NeuronSelectorPorts,
     val synPhase: bnmm.phase.SynapticPhasePorts,
     val somPhase: bnmm.phase.SomaticPhasePorts,
     val emPhase: bnmm.phase.EmissionPhasePorts
@@ -242,18 +243,34 @@ private class ManualAssembly(
             tick = null
         )
 
-        val neuronSelectorName = "${cfg.phases[1].name}_selector"
-        val neurSelector = NeuronSelector(neuronSelectorName).emit(
+        val neuronSelectorPlan = NeuronSelectorPlan(
+            groupSize = 1,
+            totalGroups = arch.neuronsPerLayer.last(),
+            activeGroups = arch.neuronsPerLayer.last(),
+            remainder = 0
+        )
+        val somSelectorName = "${cfg.phases[1].name}_selector"
+        val somSelector = NeuronSelector(somSelectorName).emit(
             g = g,
             cfg = NeuronSelectorConfig(
-                name = neuronSelectorName,
+                name = somSelectorName,
                 indexWidth = selectorCfg.postIndexWidth,
-                plan = NeuronSelectorPlan(
-                    groupSize = 1,
-                    totalGroups = arch.neuronsPerLayer.last(),
-                    activeGroups = arch.neuronsPerLayer.last(),
-                    remainder = 0
-                ),
+                plan = neuronSelectorPlan,
+                stepByTick = false
+            ),
+            runtime = NeuronSelectorRuntime(
+                totalNeurons = sharedPostCount,
+                baseIndex = regs.neuronBase[selectorCfg.postIndexWidth - 1, 0],
+                tick = tick
+            )
+        )
+        val emSelectorName = "${cfg.phases[2].name}_selector"
+        val emSelector = NeuronSelector(emSelectorName).emit(
+            g = g,
+            cfg = NeuronSelectorConfig(
+                name = emSelectorName,
+                indexWidth = selectorCfg.postIndexWidth,
+                plan = neuronSelectorPlan,
                 stepByTick = false
             ),
             runtime = NeuronSelectorRuntime(
@@ -275,7 +292,7 @@ private class ManualAssembly(
             g = g,
             cfg = SomaticPhaseConfig(name = cfg.phases[1].name, stepByTick = false),
             runtime = SomaticPhaseRuntime(tick = tick),
-            selector = neurSelector,
+            selector = somSelector,
             customLogic = somaticThreshold(g, dynPorts, regs)
         )
 
@@ -283,7 +300,7 @@ private class ManualAssembly(
             g = g,
             cfg = EmissionPhaseConfig(name = cfg.phases[2].name, stepByTick = false),
             runtime = EmissionPhaseRuntime(tick = tick),
-            selector = neurSelector,
+            selector = emSelector,
             outQueue = fifoOut,
             customLogic = emissionWriter(g, dynPorts, fifoOut, regs)
         )
@@ -298,7 +315,8 @@ private class ManualAssembly(
             weightMem = weightPorts,
             dynMem = dynPorts,
             synSelector = synSelector,
-            neurSelector = neurSelector,
+            somSelector = somSelector,
+            emSelector = emSelector,
             synPhase = synPhase,
             somPhase = somPhase,
             emPhase = emPhase

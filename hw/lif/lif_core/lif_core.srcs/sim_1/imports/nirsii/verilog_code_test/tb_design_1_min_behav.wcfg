@@ -14,15 +14,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="275333334fs"></ZoomStartTime>
-      <ZoomEndTime time="4623333335fs"></ZoomEndTime>
-      <Cursor1Time time="1000000000fs"></Cursor1Time>
+      <ZoomStartTime time="584637095000fs"></ZoomStartTime>
+      <ZoomEndTime time="585724095001fs"></ZoomEndTime>
+      <Cursor1Time time="584995095000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="282"></NameColumnWidth>
       <ValueColumnWidth column_width="89"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="11" />
+   <WVObjectSize size="14" />
    <wvobject type="logic" fp_name="/tb/dut/u_wrapper/u_core/clk_i[0]">
       <obj_property name="ElementShortName">[0]</obj_property>
       <obj_property name="ObjectShortName">[0]</obj_property>
@@ -69,10 +69,129 @@
          <obj_property name="ObjectShortName">fsm_state_n[1:0]</obj_property>
       </wvobject>
    </wvobject>
+   <wvobject type="group" fp_name="group695">
+      <obj_property name="label">FIFO OUT</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/rd_fifo_out">
+         <obj_property name="ElementShortName">rd_fifo_out[0:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_fifo_out[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/rd_data_fifo_out">
+         <obj_property name="ElementShortName">rd_data_fifo_out[31:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_data_fifo_out[31:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/empty_fifo_out">
+         <obj_property name="ElementShortName">empty_fifo_out[0:0]</obj_property>
+         <obj_property name="ObjectShortName">empty_fifo_out[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/rd_credit_fifo_out">
+         <obj_property name="ElementShortName">rd_credit_fifo_out[7:0]</obj_property>
+         <obj_property name="ObjectShortName">rd_credit_fifo_out[7:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/we_fifo_out">
+         <obj_property name="ElementShortName">we_fifo_out[0:0]</obj_property>
+         <obj_property name="ObjectShortName">we_fifo_out[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wr_data_fifo_out">
+         <obj_property name="ElementShortName">wr_data_fifo_out[31:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_data_fifo_out[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/full_fifo_out">
+         <obj_property name="ElementShortName">full_fifo_out[0:0]</obj_property>
+         <obj_property name="ObjectShortName">full_fifo_out[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/mem_fifo_out">
+         <obj_property name="ElementShortName">mem_fifo_out[16:0][31:0]</obj_property>
+         <obj_property name="ObjectShortName">mem_fifo_out[16:0][31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wptr_fifo_out">
+         <obj_property name="ElementShortName">wptr_fifo_out[3:0]</obj_property>
+         <obj_property name="ObjectShortName">wptr_fifo_out[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/rptr_fifo_out">
+         <obj_property name="ElementShortName">rptr_fifo_out[3:0]</obj_property>
+         <obj_property name="ObjectShortName">rptr_fifo_out[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wptr_n_fifo_out">
+         <obj_property name="ElementShortName">wptr_n_fifo_out[3:0]</obj_property>
+         <obj_property name="ObjectShortName">wptr_n_fifo_out[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/rptr_n_fifo_out">
+         <obj_property name="ElementShortName">rptr_n_fifo_out[3:0]</obj_property>
+         <obj_property name="ObjectShortName">rptr_n_fifo_out[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/full_n_fifo_out">
+         <obj_property name="ElementShortName">full_n_fifo_out[0:0]</obj_property>
+         <obj_property name="ObjectShortName">full_n_fifo_out[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/empty_r_fifo_out">
+         <obj_property name="ElementShortName">empty_r_fifo_out[0:0]</obj_property>
+         <obj_property name="ObjectShortName">empty_r_fifo_out[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/empty_n_fifo_out">
+         <obj_property name="ElementShortName">empty_n_fifo_out[0:0]</obj_property>
+         <obj_property name="ObjectShortName">empty_n_fifo_out[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/credit_fifo_out">
+         <obj_property name="ElementShortName">credit_fifo_out[2:0][7:0]</obj_property>
+         <obj_property name="ObjectShortName">credit_fifo_out[2:0][7:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/act_fifo_out">
+         <obj_property name="ElementShortName">act_fifo_out[0:0]</obj_property>
+         <obj_property name="ObjectShortName">act_fifo_out[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wr_en_fifo_out">
+         <obj_property name="ElementShortName">wr_en_fifo_out[0:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_en_fifo_out[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wr_credit_fifo_out">
+         <obj_property name="ElementShortName">wr_credit_fifo_out[7:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_credit_fifo_out[7:0]</obj_property>
+      </wvobject>
+   </wvobject>
    <wvobject type="group" fp_name="group1406">
       <obj_property name="label">FIFO IN</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
+      <wvobject type="group" fp_name="group607">
+         <obj_property name="label">pointers</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wptr_fifo_in">
+            <obj_property name="ElementShortName">wptr_fifo_in[3:0]</obj_property>
+            <obj_property name="ObjectShortName">wptr_fifo_in[3:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/rptr_fifo_in">
+            <obj_property name="ElementShortName">rptr_fifo_in[3:0]</obj_property>
+            <obj_property name="ObjectShortName">rptr_fifo_in[3:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wptr_n_fifo_in">
+            <obj_property name="ElementShortName">wptr_n_fifo_in[3:0]</obj_property>
+            <obj_property name="ObjectShortName">wptr_n_fifo_in[3:0]</obj_property>
+            <obj_property name="isExpanded"></obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/rptr_n_fifo_in">
+            <obj_property name="ElementShortName">rptr_n_fifo_in[3:0]</obj_property>
+            <obj_property name="ObjectShortName">rptr_n_fifo_in[3:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wptr_fifo_out">
+            <obj_property name="ElementShortName">wptr_fifo_out[3:0]</obj_property>
+            <obj_property name="ObjectShortName">wptr_fifo_out[3:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/rptr_fifo_out">
+            <obj_property name="ElementShortName">rptr_fifo_out[3:0]</obj_property>
+            <obj_property name="ObjectShortName">rptr_fifo_out[3:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wptr_n_fifo_out">
+            <obj_property name="ElementShortName">wptr_n_fifo_out[3:0]</obj_property>
+            <obj_property name="ObjectShortName">wptr_n_fifo_out[3:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/rptr_n_fifo_out">
+            <obj_property name="ElementShortName">rptr_n_fifo_out[3:0]</obj_property>
+            <obj_property name="ObjectShortName">rptr_n_fifo_out[3:0]</obj_property>
+         </wvobject>
+      </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wr_fifo_in">
          <obj_property name="ElementShortName">wr_fifo_in[0:0]</obj_property>
          <obj_property name="ObjectShortName">wr_fifo_in[0:0]</obj_property>
@@ -353,7 +472,6 @@
    <wvobject type="group" fp_name="group470">
       <obj_property name="label">SynSelector</obj_property>
       <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="isExpanded"></obj_property>
       <wvobject type="group" fp_name="group603">
          <obj_property name="label">BRAM</obj_property>
          <obj_property name="DisplayName">label</obj_property>
@@ -439,6 +557,258 @@
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/bram_dout_weights">
          <obj_property name="ElementShortName">bram_dout_weights[31:0]</obj_property>
          <obj_property name="ObjectShortName">bram_dout_weights[31:0]</obj_property>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group629">
+      <obj_property name="label">Somatic Phase</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/step_en_som_manual_selector">
+         <obj_property name="ElementShortName">step_en_som_manual_selector[0:0]</obj_property>
+         <obj_property name="ObjectShortName">step_en_som_manual_selector[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/step_en_som_manual">
+         <obj_property name="ElementShortName">step_en_som_manual[0:0]</obj_property>
+         <obj_property name="ObjectShortName">step_en_som_manual[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wr_postsyn_count">
+         <obj_property name="ElementShortName">wr_postsyn_count[0:0]</obj_property>
+         <obj_property name="ObjectShortName">wr_postsyn_count[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wd_postsyn_count">
+         <obj_property name="ElementShortName">wd_postsyn_count[15:0]</obj_property>
+         <obj_property name="ObjectShortName">wd_postsyn_count[15:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/reg_regs_postsyn_count">
+         <obj_property name="ElementShortName">reg_regs_postsyn_count[15:0]</obj_property>
+         <obj_property name="ObjectShortName">reg_regs_postsyn_count[15:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/processed_som_manual_selector">
+         <obj_property name="ElementShortName">processed_som_manual_selector[4:0]</obj_property>
+         <obj_property name="ObjectShortName">processed_som_manual_selector[4:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wd_postsyn_count">
+         <obj_property name="ElementShortName">wd_postsyn_count[15:0]</obj_property>
+         <obj_property name="ObjectShortName">wd_postsyn_count[15:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/state_som_manual_selector">
+         <obj_property name="ElementShortName">state_som_manual_selector[0:0]</obj_property>
+         <obj_property name="ObjectShortName">state_som_manual_selector[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/processed_som_manual_selector">
+         <obj_property name="ElementShortName">processed_som_manual_selector[4:0]</obj_property>
+         <obj_property name="ObjectShortName">processed_som_manual_selector[4:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/step_en_som_manual_selector">
+         <obj_property name="ElementShortName">step_en_som_manual_selector[0:0]</obj_property>
+         <obj_property name="ObjectShortName">step_en_som_manual_selector[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/step_en_som_manual">
+         <obj_property name="ElementShortName">step_en_som_manual[0:0]</obj_property>
+         <obj_property name="ObjectShortName">step_en_som_manual[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/done_som_manual_selector">
+         <obj_property name="ElementShortName">done_som_manual_selector[0:0]</obj_property>
+         <obj_property name="ObjectShortName">done_som_manual_selector[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/done_som_manual">
+         <obj_property name="ElementShortName">done_som_manual[0:0]</obj_property>
+         <obj_property name="ObjectShortName">done_som_manual[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/busy_som_manual_selector">
+         <obj_property name="ElementShortName">busy_som_manual_selector[0:0]</obj_property>
+         <obj_property name="ObjectShortName">busy_som_manual_selector[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/busy_som_manual">
+         <obj_property name="ElementShortName">busy_som_manual[0:0]</obj_property>
+         <obj_property name="ObjectShortName">busy_som_manual[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/start_som_manual">
+         <obj_property name="ElementShortName">start_som_manual[0:0]</obj_property>
+         <obj_property name="ObjectShortName">start_som_manual[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/start_som_manual_selector">
+         <obj_property name="ElementShortName">start_som_manual_selector[0:0]</obj_property>
+         <obj_property name="ObjectShortName">start_som_manual_selector[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/start_som_manual_selector">
+         <obj_property name="ElementShortName">start_som_manual_selector[0:0]</obj_property>
+         <obj_property name="ObjectShortName">start_som_manual_selector[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/busy_som_manual_selector">
+         <obj_property name="ElementShortName">busy_som_manual_selector[0:0]</obj_property>
+         <obj_property name="ObjectShortName">busy_som_manual_selector[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/done_som_manual_selector">
+         <obj_property name="ElementShortName">done_som_manual_selector[0:0]</obj_property>
+         <obj_property name="ObjectShortName">done_som_manual_selector[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/group_som_manual_selector">
+         <obj_property name="ElementShortName">group_som_manual_selector[3:0]</obj_property>
+         <obj_property name="ObjectShortName">group_som_manual_selector[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/lane_som_manual_selector">
+         <obj_property name="ElementShortName">lane_som_manual_selector[3:0]</obj_property>
+         <obj_property name="ObjectShortName">lane_som_manual_selector[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/post_som_manual_selector">
+         <obj_property name="ElementShortName">post_som_manual_selector[3:0]</obj_property>
+         <obj_property name="ObjectShortName">post_som_manual_selector[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/lane_valid_som_manual_selector">
+         <obj_property name="ElementShortName">lane_valid_som_manual_selector[0:0]</obj_property>
+         <obj_property name="ObjectShortName">lane_valid_som_manual_selector[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/base_som_manual_selector">
+         <obj_property name="ElementShortName">base_som_manual_selector[3:0]</obj_property>
+         <obj_property name="ObjectShortName">base_som_manual_selector[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/state_som_manual_selector">
+         <obj_property name="ElementShortName">state_som_manual_selector[0:0]</obj_property>
+         <obj_property name="ObjectShortName">state_som_manual_selector[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/state_n_som_manual_selector">
+         <obj_property name="ElementShortName">state_n_som_manual_selector[0:0]</obj_property>
+         <obj_property name="ObjectShortName">state_n_som_manual_selector[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/step_en_som_manual_selector">
+         <obj_property name="ElementShortName">step_en_som_manual_selector[0:0]</obj_property>
+         <obj_property name="ObjectShortName">step_en_som_manual_selector[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/state_som_manual_selector">
+         <obj_property name="ElementShortName">state_som_manual_selector[0:0]</obj_property>
+         <obj_property name="ObjectShortName">state_som_manual_selector[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/busy_som_manual_selector">
+         <obj_property name="ElementShortName">busy_som_manual_selector[0:0]</obj_property>
+         <obj_property name="ObjectShortName">busy_som_manual_selector[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/state_som_manual">
+         <obj_property name="ElementShortName">state_som_manual[0:0]</obj_property>
+         <obj_property name="ObjectShortName">state_som_manual[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/gensticky_start_som_manual_selector">
+         <obj_property name="ElementShortName">gensticky_start_som_manual_selector[0:0]</obj_property>
+         <obj_property name="ObjectShortName">gensticky_start_som_manual_selector[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/gensticky_start_som_manual">
+         <obj_property name="ElementShortName">gensticky_start_som_manual[0:0]</obj_property>
+         <obj_property name="ObjectShortName">gensticky_start_som_manual[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/gensticky_start_em_manual">
+         <obj_property name="ElementShortName">gensticky_start_em_manual[0:0]</obj_property>
+         <obj_property name="ObjectShortName">gensticky_start_em_manual[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="group" fp_name="group655">
+         <obj_property name="label">DynMem</obj_property>
+         <obj_property name="DisplayName">label</obj_property>
+         <obj_property name="isExpanded"></obj_property>
+         <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/dmem_state">
+            <obj_property name="ElementShortName">dmem_state[16:0][11:0]</obj_property>
+            <obj_property name="ObjectShortName">dmem_state[16:0][11:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/rd_state_0">
+            <obj_property name="ElementShortName">rd_state_0[0:0]</obj_property>
+            <obj_property name="ObjectShortName">rd_state_0[0:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/addr_state_0">
+            <obj_property name="ElementShortName">addr_state_0[3:0]</obj_property>
+            <obj_property name="ObjectShortName">addr_state_0[3:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/data_state_0">
+            <obj_property name="ElementShortName">data_state_0[11:0]</obj_property>
+            <obj_property name="ObjectShortName">data_state_0[11:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/we_state">
+            <obj_property name="ElementShortName">we_state[0:0]</obj_property>
+            <obj_property name="ObjectShortName">we_state[0:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/waddr_state">
+            <obj_property name="ElementShortName">waddr_state[3:0]</obj_property>
+            <obj_property name="ObjectShortName">waddr_state[3:0]</obj_property>
+         </wvobject>
+         <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wdata_state">
+            <obj_property name="ElementShortName">wdata_state[11:0]</obj_property>
+            <obj_property name="ObjectShortName">wdata_state[11:0]</obj_property>
+         </wvobject>
+      </wvobject>
+   </wvobject>
+   <wvobject type="group" fp_name="group714">
+      <obj_property name="label">Emission</obj_property>
+      <obj_property name="DisplayName">label</obj_property>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/start_em_manual_selector">
+         <obj_property name="ElementShortName">start_em_manual_selector[0:0]</obj_property>
+         <obj_property name="ObjectShortName">start_em_manual_selector[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/busy_em_manual_selector">
+         <obj_property name="ElementShortName">busy_em_manual_selector[0:0]</obj_property>
+         <obj_property name="ObjectShortName">busy_em_manual_selector[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/done_em_manual_selector">
+         <obj_property name="ElementShortName">done_em_manual_selector[0:0]</obj_property>
+         <obj_property name="ObjectShortName">done_em_manual_selector[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/group_em_manual_selector">
+         <obj_property name="ElementShortName">group_em_manual_selector[3:0]</obj_property>
+         <obj_property name="ObjectShortName">group_em_manual_selector[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/lane_em_manual_selector">
+         <obj_property name="ElementShortName">lane_em_manual_selector[3:0]</obj_property>
+         <obj_property name="ObjectShortName">lane_em_manual_selector[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/post_em_manual_selector">
+         <obj_property name="ElementShortName">post_em_manual_selector[3:0]</obj_property>
+         <obj_property name="ObjectShortName">post_em_manual_selector[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/lane_valid_em_manual_selector">
+         <obj_property name="ElementShortName">lane_valid_em_manual_selector[0:0]</obj_property>
+         <obj_property name="ObjectShortName">lane_valid_em_manual_selector[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/base_em_manual_selector">
+         <obj_property name="ElementShortName">base_em_manual_selector[3:0]</obj_property>
+         <obj_property name="ObjectShortName">base_em_manual_selector[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/processed_em_manual_selector">
+         <obj_property name="ElementShortName">processed_em_manual_selector[4:0]</obj_property>
+         <obj_property name="ObjectShortName">processed_em_manual_selector[4:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/state_em_manual_selector">
+         <obj_property name="ElementShortName">state_em_manual_selector[0:0]</obj_property>
+         <obj_property name="ObjectShortName">state_em_manual_selector[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/state_n_em_manual_selector">
+         <obj_property name="ElementShortName">state_n_em_manual_selector[0:0]</obj_property>
+         <obj_property name="ObjectShortName">state_n_em_manual_selector[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/step_en_em_manual_selector">
+         <obj_property name="ElementShortName">step_en_em_manual_selector[0:0]</obj_property>
+         <obj_property name="ObjectShortName">step_en_em_manual_selector[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/start_em_manual">
+         <obj_property name="ElementShortName">start_em_manual[0:0]</obj_property>
+         <obj_property name="ObjectShortName">start_em_manual[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/busy_em_manual">
+         <obj_property name="ElementShortName">busy_em_manual[0:0]</obj_property>
+         <obj_property name="ObjectShortName">busy_em_manual[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/done_em_manual">
+         <obj_property name="ElementShortName">done_em_manual[0:0]</obj_property>
+         <obj_property name="ObjectShortName">done_em_manual[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/state_em_manual">
+         <obj_property name="ElementShortName">state_em_manual[0:0]</obj_property>
+         <obj_property name="ObjectShortName">state_em_manual[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/state_n_em_manual">
+         <obj_property name="ElementShortName">state_n_em_manual[0:0]</obj_property>
+         <obj_property name="ObjectShortName">state_n_em_manual[0:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/step_en_em_manual">
+         <obj_property name="ElementShortName">step_en_em_manual[0:0]</obj_property>
+         <obj_property name="ObjectShortName">step_en_em_manual[0:0]</obj_property>
       </wvobject>
    </wvobject>
    <wvobject type="group" fp_name="group460">

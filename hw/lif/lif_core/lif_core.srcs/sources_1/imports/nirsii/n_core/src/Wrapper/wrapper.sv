@@ -128,6 +128,8 @@ module wrapper #(
     logic [15:0]            wd_emit_tag;
 
     logic                   en_lif;
+
+    logic                   emission_done;
     
     
     logic [7:0] cfg_idx;
@@ -179,7 +181,9 @@ module wrapper #(
         .wd_postsyn_count (wd_postsyn_count),
     
         .wr_emit_tag      (wr_emit_tag),
-        .wd_emit_tag      (wd_emit_tag)
+        .wd_emit_tag      (wd_emit_tag),
+
+        .emission_done   (emission_done) 
     );
 
     
@@ -444,7 +448,7 @@ module wrapper #(
                 bram_en_next   = bram_en_weights;
                 bram_we_next   = bram_we_weights;
     
-                if (!empty_fifo_out)
+                if (emission_done)
                     state_next = ST_OUT_RD;
             end
     
@@ -452,198 +456,21 @@ module wrapper #(
             ST_OUT_RD:
             //------------------------------------------------------
             begin
-                rd_fifo_out = 1'b1;
-    
-                bram_addr_word_next = OUT_SPIKES_BASE + (out_cnt << 1);
-                bram_we_next   = 2'b11;
-                // bram_din - у тебя нет входа, значит ядро не пишет
-                // Если надо писать - добавь bram_din_weights
-    
-                state_next = ST_RUN;
+
+                if (!empty_fifo_out) begin 
+                    rd_fifo_out = 1'b1;
+                    bram_addr_word_next = OUT_SPIKES_BASE + (out_cnt << 1);
+                    bram_we_next   = 2'b11;
+                    // bram_din - у тебя нет входа, значит ядро не пишет
+                    // Если надо писать - добавь bram_din_weights
+                    // state_next = ST_RUN;
+                end
+                else begin
+                    state_next = ST_IDLE;
+                end
             end
     
         endcase
     end
-
-
-
-//    logic [7:0] cfg_idx;
-//    logic [9:0] spikes_num;
-//    logic [9:0] spk_cnt;
-//    logic [9:0] out_cnt;
-
-//    logic [ADDR_WIDTH_WORD-1:0] bram_addr_next;
-//    logic                       bram_en_next;
-//    logic [WE_WIDTH-1:0]        bram_we_next;
-//    logic [DATA_WIDTH-1:0]      bram_din_next;
-
-//    // ----------------------------------------------------------------
-//    // Sequential logic
-//    // ----------------------------------------------------------------
-//    always_ff @(posedge clk) begin
-//        if (rst) begin
-//            state             <= ST_IDLE;
-//            cfg_idx           <= '0;
-//            spikes_num        <= '0;
-//            spk_cnt           <= '0;
-//            out_cnt           <= '0;
-
-//            bram_addr_word    <= '0;
-//            bram_en           <= 1'b0;
-//            bram_we           <= '0;
-//            bram_din          <= '0;
-//            last_read_data    <= '0;
-
-//            wr_fifo_in        <= 1'b0;
-//            rd_fifo_out       <= 1'b0;
-
-//            en_tick_manual    <= 1'b0;
-//            rst_tick_manual   <= 1'b1;
-//        end else begin
-//            state          <= state_next;
-//            bram_addr_word <= bram_addr_next;
-//            bram_en        <= bram_en_next;
-//            bram_we        <= bram_we_next;
-//            bram_din       <= bram_din_next;
-//            last_read_data <= bram_dout;
-
-//            rst_tick_manual  <= 1'b0;
-//            en_tick_manual   <= (state_next == ST_RUN);
-
-//            if (state == ST_CFG_LOAD)
-//                cfg_idx <= cfg_idx + 1'b1;
-//            else if (state_next == ST_CFG_LOAD && state != ST_CFG_LOAD)
-//                cfg_idx <= 0;
-
-//            if (state == ST_IN_LOAD && wr_fifo_in && !full_fifo_in)
-//                spk_cnt <= spk_cnt + 1'b1;
-//            else if (state_next != ST_IN_LOAD)
-//                spk_cnt <= '0;
-
-//            if (state == ST_RUN && rd_fifo_out && !empty_fifo_out)
-//                out_cnt <= out_cnt + 1'b1;
-//            else if (state_next != ST_RUN)
-//                out_cnt <= '0;
-
-//            if (state == ST_IN_CNT)
-//                spikes_num <= bram_dout[9:0];
-//        end
-//    end
-
-//    // ----------------------------------------------------------------
-//    // Combinational control
-//    // ----------------------------------------------------------------
-//    always_comb begin
-//        state_next    = state;
-
-//        bram_addr_next = bram_addr_word;
-//        bram_en_next  = 1'b1;
-//        bram_we_next  = '0;
-//        bram_din_next = '0;
-
-//        wr_leakage       = 1'b0;
-//        wr_threshold     = 1'b0;
-//        wr_vreset        = 1'b0;
-//        wr_total_neurons = 1'b0;
-//        wr_weight_base   = 1'b0;
-//        wr_neuron_base   = 1'b0;
-//        wr_emit_tag      = 1'b0;
-
-//        wr_fifo_in       = 1'b0;
-//        wr_data_fifo_in  = '0;
-//        rd_fifo_out      = 1'b0;
-
-//        wd_leakage        = 16'd0;
-//        wd_threshold      = 16'd0;
-//        wd_vreset         = 16'd0;
-//        wd_total_neurons  = 16'd0;
-//        wd_weight_base    = 16'd0;
-//        wd_neuron_base    = 16'd0;
-//        wd_emit_tag       = 16'd0;
-
-//        case (state)
-//            ST_IDLE: begin
-//                bram_addr_next = CFG_EN_CORE_ADDR;
-//                if (bram_dout[0])
-//                    state_next = ST_CFG_LOAD;
-//            end
-
-//            ST_CFG_LOAD: begin
-//                case (cfg_idx)
-//                    0: begin
-//                        bram_addr_next = CFG_LEAKAGE_ADDR;
-//                        wr_leakage     = 1'b1;
-//                        wd_leakage     = bram_dout[15:0];
-//                    end
-//                    1: begin
-//                        bram_addr_next = CFG_VRST_ADDR;
-//                        wr_vreset      = 1'b1;
-//                        wd_vreset      = bram_dout[15:0];
-//                    end
-//                    2: begin
-//                        bram_addr_next = CFG_VTHRSH_ADDR;
-//                        wr_threshold   = 1'b1;
-//                        wd_threshold   = bram_dout[15:0];
-//                    end
-//                    3: begin
-//                        bram_addr_next = CFG_TOTAL_NEUR_ADDR;
-//                        wr_total_neurons = 1'b1;
-//                        wd_total_neurons = bram_dout[15:0];
-//                    end
-//                    4: begin
-//                        bram_addr_next = CFG_WEIGHT_BASE_ADDR;
-//                        wr_weight_base = 1'b1;
-//                        wd_weight_base = bram_dout[15:0];
-//                    end
-//                    5: begin
-//                        bram_addr_next = CFG_NEURON_BASE_ADDR;
-//                        wr_neuron_base = 1'b1;
-//                        wd_neuron_base = bram_dout[15:0];
-//                    end
-//                    6: begin
-//                        bram_addr_next = CFG_EMIT_TAG_ADDR;
-//                        wr_emit_tag    = 1'b1;
-//                        wd_emit_tag    = bram_dout[15:0];
-//                    end
-//                    default: begin
-//                        state_next = ST_IN_CNT;
-//                    end
-//                endcase
-//            end
-
-//            ST_IN_CNT: begin
-//                bram_addr_next = IN_SPIKES_COUNT;
-//                state_next     = ST_IN_LOAD;
-//            end
-
-//            ST_IN_LOAD: begin
-//                bram_addr_next = IN_SPIKES_BASE + (spk_cnt << 2);
-//                if (spk_cnt < spikes_num && !full_fifo_in) begin
-//                    wr_fifo_in      = 1'b1;
-//                    wr_data_fifo_in = bram_dout[15:0];
-//                end else if (spk_cnt >= spikes_num) begin
-//                    state_next = ST_RUN;
-//                end
-//            end
-
-//            ST_RUN: begin
-//                // default: core drives BRAM for weights (offset to WEIGHTS_BASE)
-//                bram_addr_next = WEIGHTS_BASE + {{(ADDR_WIDTH_WORD-4){1'b0}}, bram_addr_weights};
-//                bram_en_next   = bram_en_weights;
-//                bram_we_next   = {{(WE_WIDTH-2){1'b0}}, bram_we_weights};
-
-//                // capture outgoing spikes into BRAM (overrides weight access for a cycle)
-//                if (!empty_fifo_out) begin
-//                    rd_fifo_out    = 1'b1;
-//                    bram_en_next   = 1'b1;
-//                    bram_we_next   = 4'b0011;
-//                    bram_addr_next = OUT_SPIKES_BASE + (out_cnt << 2);
-//                    bram_din_next  = {16'd0, rd_data_fifo_out};
-//                end
-//            end
-
-//            default: state_next = ST_IDLE;
-//        endcase
-//    end
 
 endmodule

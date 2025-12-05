@@ -75,9 +75,9 @@ module wrapper #(
     localparam logic [ADDR_WIDTH_WORD-1:0] 
         CFG_L4_POSTSYN_NEUR_CNT_ADDR = 36; // CFG_BASE + (5<<2);
 
-        localparam logic [ADDR_WIDTH_WORD-1:0]  WEIGHT_L3_WORDS =  (PRESYN_L3_NUMS * POSTSYN_L3_NUMS) / WEIGHTS_PER_WORD     ;
+    localparam logic [ADDR_WIDTH_WORD-1:0]  WEIGHT_L3_WORDS =  (PRESYN_L3_NUMS * POSTSYN_L3_NUMS) / WEIGHTS_PER_WORD;
 
-localparam logic [ADDR_WIDTH_WORD-1:0]  WEIGHT_L2_WORDS = (PRESYN_L2_NUMS * POSTSYN_L2_NUMS) / WEIGHTS_PER_WORD ;
+    localparam logic [ADDR_WIDTH_WORD-1:0]  WEIGHT_L2_WORDS = (PRESYN_L2_NUMS * POSTSYN_L2_NUMS) / WEIGHTS_PER_WORD;
     
     localparam logic [ADDR_WIDTH_WORD-1:0] 
         WEIGHTS_L2_BASE  = (WEIGHTS_BASE + (WEIGHT_WORDS<<2));  
@@ -88,6 +88,12 @@ localparam logic [ADDR_WIDTH_WORD-1:0]  WEIGHT_L2_WORDS = (PRESYN_L2_NUMS * POST
     localparam logic [ADDR_WIDTH_WORD-1:0] 
         WEIGHTS_L4_BASE  = 48; // CFG_BASE + (CFG_WORDS<<2);
 
+
+    localparam logic [ADDR_WIDTH_WORD-1:0] 
+        CFG_FLAG_DATA_READY  = 52; // CFG_BASE + (CFG_WORDS<<2);
+            
+    localparam logic [ADDR_WIDTH_WORD-1:0] 
+        CFG_CORE_BUSY  = 56; // CFG_BASE + (CFG_WORDS<<2);
     
 
     // localparam int CFG_WORDS   = 8;
@@ -139,6 +145,9 @@ localparam logic [ADDR_WIDTH_WORD-1:0]  WEIGHT_L2_WORDS = (PRESYN_L2_NUMS * POST
     logic       bram_en_next;
     logic [1:0] bram_we_next;
 
+        logic [ADDR_WIDTH_WORD-1:0] bram_din_next;
+
+
     
     // register adapter strobes
     logic                   wr_leakage;
@@ -181,14 +190,14 @@ localparam logic [ADDR_WIDTH_WORD-1:0]  WEIGHT_L2_WORDS = (PRESYN_L2_NUMS * POST
     logic [7:0] neur_num_curr_layer;
 
 
-        logic [2:0] network_done;
+    logic [2:0] network_done;
 
-        logic [31:0] L2_postsyn_neurons;
-        logic [31:0] L3_postsyn_neurons;
-        logic [31:0] L4_postsyn_neurons;
-        logic [31:0] weights_L2_base;
-        logic [31:0] weights_L3_base;
-        logic [31:0] weights_L4_base;
+    logic [31:0] L2_postsyn_neurons;
+    logic [31:0] L3_postsyn_neurons;
+    logic [31:0] L4_postsyn_neurons;
+    logic [31:0] weights_L2_base;
+    logic [31:0] weights_L3_base;
+    logic [31:0] weights_L4_base;
 
 
 //    (* dont_touch = "true" *)
@@ -249,6 +258,10 @@ localparam logic [ADDR_WIDTH_WORD-1:0]  WEIGHT_L2_WORDS = (PRESYN_L2_NUMS * POST
     always_ff @(posedge clk) begin
         bram_dout_q <= bram_dout;  // всегда задерживаем на 1 такт
     end
+
+    always_ff @(posedge clk) begin
+        bram_din <= bram_din_next;  // всегда задерживаем на 1 такт
+    end
     
 
     always_ff @( posedge clk) begin
@@ -273,6 +286,7 @@ localparam logic [ADDR_WIDTH_WORD-1:0]  WEIGHT_L2_WORDS = (PRESYN_L2_NUMS * POST
     logic [15:0] idx;
 
     bit data_ready;
+    bit busy;
 
     always_ff @(posedge clk) begin
         if (rst) begin
@@ -305,8 +319,10 @@ localparam logic [ADDR_WIDTH_WORD-1:0]  WEIGHT_L2_WORDS = (PRESYN_L2_NUMS * POST
                 ST_IDLE:
                 //------------------------------------------------------
                 begin
-                    if (bram_dout[0])
-                       network_done <= 1;
+                if (bram_dout[0]) begin 
+                    network_done <= 1;
+                    busy <= 1;
+                end
                 end
 
                 // -----------------------------------------------------
@@ -398,19 +414,19 @@ localparam logic [ADDR_WIDTH_WORD-1:0]  WEIGHT_L2_WORDS = (PRESYN_L2_NUMS * POST
                             weights_L4_base <= bram_dout;
                         end
                         13: begin
-                            wr_weight_base   = 1'b1;
+                            wr_weight_base   <= 1'b1;
 
                             if (layer_cnt == 0) begin 
-                                wd_weight_base   = bram_dout;
+                                wd_weight_base   <= bram_dout;
                             end 
                             else if (layer_cnt == 1) begin 
-                                wd_weight_base   = weights_L2_base;
+                                wd_weight_base   <= weights_L2_base;
                             end
                             else if (layer_cnt == 2) begin 
-                                wd_weight_base   = weights_L3_base;
+                                wd_weight_base   <= weights_L3_base;
                             end 
                             else if (layer_cnt == 3) begin 
-                                wd_weight_base   = weights_L4_base;
+                                wd_weight_base   <= weights_L4_base;
                             end
                         end
 
@@ -465,25 +481,30 @@ localparam logic [ADDR_WIDTH_WORD-1:0]  WEIGHT_L2_WORDS = (PRESYN_L2_NUMS * POST
                 //------------------------------------------------------
                 ST_OUT_RD:
                 //------------------------------------------------------
-                begin                  
-                    if (rd_fifo_out && !empty_fifo_out) begin 
-                        out_cnt <= out_cnt + 1;
-                        queue_buf[out_cnt] <= rd_data_fifo_out;
+                begin              
+                    if (layer_cnt < layer_num) begin     
+                        if (rd_fifo_out && !empty_fifo_out) begin 
+                            out_cnt <= out_cnt + 1;
+                            queue_buf[out_cnt] <= rd_data_fifo_out;
+                        end 
                     end 
-                    else if (state_next != ST_OUT_RD) begin 
+                    else if (state_next == ST_PROCESSING_DONE) begin 
                         rd_fifo_out <= 0;
                         out_cnt <= '0;
-                        if (layer_cnt == layer_num) begin 
-                            layer_cnt <= 0;
-                            network_done <= 2;
-                        end
-                        else layer_cnt <= layer_cnt + 1;
+                        layer_cnt <= 0;
+                        network_done <= 2;
                     end
+                    else if (state_next == ST_IDLE) begin 
+                        layer_cnt <= layer_cnt + 1; 
+                    end 
+                    
                 end 
 
                 ST_PROCESSING_DONE:
                 begin 
                     data_ready <= 1;
+
+
                 end 
 
                 // -----------------------------------------------------
@@ -510,7 +531,7 @@ localparam logic [ADDR_WIDTH_WORD-1:0]  WEIGHT_L2_WORDS = (PRESYN_L2_NUMS * POST
         bram_en_next   = 1'b1;
         bram_we_next   = 2'b00;
 
-        bram_din        = 0;
+        bram_din_next        = 0;
         bram_we         = 0;
     
         // core-input defaults
@@ -525,15 +546,22 @@ localparam logic [ADDR_WIDTH_WORD-1:0]  WEIGHT_L2_WORDS = (PRESYN_L2_NUMS * POST
     
         // ---------------------------------------------------------
         case (state)
-    
             //------------------------------------------------------
             ST_IDLE:
             //------------------------------------------------------
             begin
                 bram_addr_word_next = CFG_EN_CORE_ADDR;
     
-                if (bram_dout[0])
-                    state_next = ST_CFG_LOAD;
+                if (bram_dout[0]) begin 
+                    if (~busy) begin 
+                        bram_addr_word_next = CFG_CORE_BUSY;
+                        bram_din_next <= 32'b1;
+                        bram_we_next = 2'b1;
+                    end
+                    else if (busy) begin 
+                        state_next = ST_CFG_LOAD;    
+                    end 
+                end 
             end
     
             //------------------------------------------------------
@@ -652,24 +680,28 @@ localparam logic [ADDR_WIDTH_WORD-1:0]  WEIGHT_L2_WORDS = (PRESYN_L2_NUMS * POST
             ST_OUT_RD:
             //------------------------------------------------------
             begin
-                if (!empty_fifo_out) begin 
+                if (!empty_fifo_out && (layer_cnt <= layer_num)) begin 
+                    state_next = ST_OUT_RD;
+                end 
+                else if (!empty_fifo_out && (layer_cnt == layer_num)) begin 
                     bram_addr_word_next = OUT_SPIKES_BASE + (out_cnt << 1);
-                    bram_we_next   = 2'b1;
-                end
-                else begin
-                    if (layer_cnt == layer_num) begin 
-                        state_next = ST_PROCESSING_DONE;
-                    end 
-                    else begin 
-                        state_next = ST_IDLE;
-                    end
-                end
+                    bram_din_next = rd_data_fifo_out;
+                    bram_we_next = 2'b1;
+                end 
+                else if (empty_fifo_out && (layer_cnt == layer_num)) begin 
+                    state_next = ST_PROCESSING_DONE;
+                end 
+                else if (empty_fifo_out && (layer_cnt < layer_num)) begin 
+                    state_next = ST_IDLE;
+                end 
             end
 
             ST_PROCESSING_DONE:
             begin 
-                if 
-                data_ready <= 1;
+                bram_addr_word_next = CFG_CORE_BUSY;
+                bram_din_next = 32'b0;
+                bram_we_next = 2'b1;
+                state_next = ST_IDLE;
             end 
     
         endcase

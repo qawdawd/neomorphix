@@ -51,11 +51,10 @@ import kotlin.math.max
 import kotlin.math.min
 
 /**
- * Semi-manual assembly demo that reuses BNMM building blocks directly instead of
- * consuming transaction ASTs. The flow stitches together tick generation,
- * ingress/egress FIFOs, static and dynamic memories, selectors, the three phase
- * handlers, and a tiny FSM. Finally, it exports the constructed Cyclix design to
- * SystemVerilog using the ActiveCore backend.
+ * Генератор нейроморфного ядра для ускорения вычислений LIF-нейрона.
+ * Генератор использует компоненты оригинальной базовой нейроморфной микроархитектурной
+ * модели из библиотеки классов neo/neuromorphix основанной на фреймворке ActiveCore
+ * для программно-управляемого синтеза аппаратуры.
  */
 fun main() {
     val arch = SnnArch(

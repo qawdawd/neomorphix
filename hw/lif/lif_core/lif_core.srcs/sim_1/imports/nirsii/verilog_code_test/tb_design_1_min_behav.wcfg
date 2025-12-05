@@ -14,13 +14,13 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="584637095000fs"></ZoomStartTime>
-      <ZoomEndTime time="585724095001fs"></ZoomEndTime>
-      <Cursor1Time time="584995095000fs"></Cursor1Time>
+      <ZoomStartTime time="579669413770fs"></ZoomStartTime>
+      <ZoomEndTime time="580129533203fs"></ZoomEndTime>
+      <Cursor1Time time="579885000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
       <NameColumnWidth column_width="282"></NameColumnWidth>
-      <ValueColumnWidth column_width="89"></ValueColumnWidth>
+      <ValueColumnWidth column_width="65"></ValueColumnWidth>
    </column_width_setting>
    <WVObjectSize size="14" />
    <wvobject type="logic" fp_name="/tb/dut/u_wrapper/u_core/clk_i[0]">
@@ -249,6 +249,10 @@
          <obj_property name="ElementShortName">wr_en_fifo_in[0:0]</obj_property>
          <obj_property name="ObjectShortName">wr_en_fifo_in[0:0]</obj_property>
       </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/spikes_num">
+         <obj_property name="ElementShortName">spikes_num[9:0]</obj_property>
+         <obj_property name="ObjectShortName">spikes_num[9:0]</obj_property>
+      </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wr_credit_fifo_in">
          <obj_property name="ElementShortName">wr_credit_fifo_in[7:0]</obj_property>
          <obj_property name="ObjectShortName">wr_credit_fifo_in[7:0]</obj_property>
@@ -275,55 +279,36 @@
          <obj_property name="ElementShortName">bram_en</obj_property>
          <obj_property name="ObjectShortName">bram_en</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/tb/dut/u_wrapper/bram_addr_word">
-         <obj_property name="ElementShortName">bram_addr_word[31:0]</obj_property>
-         <obj_property name="ObjectShortName">bram_addr_word[31:0]</obj_property>
-         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-      </wvobject>
-      <wvobject type="array" fp_name="/tb/dut/u_wrapper/bram_dout">
-         <obj_property name="ElementShortName">bram_dout[31:0]</obj_property>
-         <obj_property name="ObjectShortName">bram_dout[31:0]</obj_property>
-         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-         <obj_property name="radix_realType">SIGNEDFIXEDPOINTRADIX</obj_property>
-         <obj_property name="radix_fractionWidth">16</obj_property>
-         <obj_property name="radix_otherWidth">0</obj_property>
-      </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/cfg_idx">
          <obj_property name="ElementShortName">cfg_idx[7:0]</obj_property>
          <obj_property name="ObjectShortName">cfg_idx[7:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/bram_addr_word_next">
          <obj_property name="ElementShortName">bram_addr_word_next[31:0]</obj_property>
          <obj_property name="ObjectShortName">bram_addr_word_next[31:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
       </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/bram_addr_word">
+         <obj_property name="ElementShortName">bram_addr_word[31:0]</obj_property>
+         <obj_property name="ObjectShortName">bram_addr_word[31:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_bd/BRAM_PORTB_dout">
          <obj_property name="ElementShortName">BRAM_PORTB_dout[31:0]</obj_property>
          <obj_property name="ObjectShortName">BRAM_PORTB_dout[31:0]</obj_property>
          <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/tb/dut/u_bd/BRAM_PORTB_addr">
-         <obj_property name="ElementShortName">BRAM_PORTB_addr[31:0]</obj_property>
-         <obj_property name="ObjectShortName">BRAM_PORTB_addr[31:0]</obj_property>
-         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-      </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/bram_dout_q">
          <obj_property name="ElementShortName">bram_dout_q[31:0]</obj_property>
          <obj_property name="ObjectShortName">bram_dout_q[31:0]</obj_property>
-         <obj_property name="Radix">HEXRADIX</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/enb">
-         <obj_property name="ElementShortName">enb</obj_property>
-         <obj_property name="ObjectShortName">enb</obj_property>
-      </wvobject>
-      <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/rstb">
-         <obj_property name="ElementShortName">rstb</obj_property>
-         <obj_property name="ObjectShortName">rstb</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
       </wvobject>
    </wvobject>
    <wvobject type="group" fp_name="group457">
       <obj_property name="label">Static Parameters</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wr_leakage">
          <obj_property name="ElementShortName">wr_leakage[0:0]</obj_property>
          <obj_property name="ObjectShortName">wr_leakage[0:0]</obj_property>
@@ -360,9 +345,19 @@
          <obj_property name="ObjectShortName">wd_postsyn_count[15:0]</obj_property>
          <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
       </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/spk_cnt">
+         <obj_property name="ElementShortName">spk_cnt[9:0]</obj_property>
+         <obj_property name="ObjectShortName">spk_cnt[9:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/spikes_num">
          <obj_property name="ElementShortName">spikes_num[9:0]</obj_property>
          <obj_property name="ObjectShortName">spikes_num[9:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/layer_num">
+         <obj_property name="ElementShortName">layer_num[15:0]</obj_property>
+         <obj_property name="ObjectShortName">layer_num[15:0]</obj_property>
          <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wr_weight_base">
@@ -372,16 +367,55 @@
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wd_weight_base">
          <obj_property name="ElementShortName">wd_weight_base[15:0]</obj_property>
          <obj_property name="ObjectShortName">wd_weight_base[15:0]</obj_property>
-         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wr_neuron_base">
          <obj_property name="ElementShortName">wr_neuron_base[0:0]</obj_property>
          <obj_property name="ObjectShortName">wr_neuron_base[0:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/L4_postsyn_neurons">
+         <obj_property name="ElementShortName">L4_postsyn_neurons[31:0]</obj_property>
+         <obj_property name="ObjectShortName">L4_postsyn_neurons[31:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/weights_L4_base">
+         <obj_property name="ElementShortName">weights_L4_base[31:0]</obj_property>
+         <obj_property name="ObjectShortName">weights_L4_base[31:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/L3_postsyn_neurons">
+         <obj_property name="ElementShortName">L3_postsyn_neurons[31:0]</obj_property>
+         <obj_property name="ObjectShortName">L3_postsyn_neurons[31:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/weights_L3_base">
+         <obj_property name="ElementShortName">weights_L3_base[31:0]</obj_property>
+         <obj_property name="ObjectShortName">weights_L3_base[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/weights_L4_base">
+         <obj_property name="ElementShortName">weights_L4_base[31:0]</obj_property>
+         <obj_property name="ObjectShortName">weights_L4_base[31:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/weights_L3_base">
+         <obj_property name="ElementShortName">weights_L3_base[31:0]</obj_property>
+         <obj_property name="ObjectShortName">weights_L3_base[31:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/weights_L2_base">
+         <obj_property name="ElementShortName">weights_L2_base[31:0]</obj_property>
+         <obj_property name="ObjectShortName">weights_L2_base[31:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/L2_postsyn_neurons">
+         <obj_property name="ElementShortName">L2_postsyn_neurons[31:0]</obj_property>
+         <obj_property name="ObjectShortName">L2_postsyn_neurons[31:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wd_neuron_base">
          <obj_property name="ElementShortName">wd_neuron_base[15:0]</obj_property>
          <obj_property name="ObjectShortName">wd_neuron_base[15:0]</obj_property>
-         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/reg_regs_vreset">
          <obj_property name="ElementShortName">reg_regs_vreset[15:0]</obj_property>
@@ -400,6 +434,7 @@
    <wvobject type="group" fp_name="group458">
       <obj_property name="label">LOCALPARAMETERS</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/IN_SPIKES_BASE">
          <obj_property name="ElementShortName">IN_SPIKES_BASE[31:0]</obj_property>
          <obj_property name="ObjectShortName">IN_SPIKES_BASE[31:0]</obj_property>
@@ -440,11 +475,6 @@
          <obj_property name="ObjectShortName">CFG_WEIGHT_BASE_ADDR[31:0]</obj_property>
          <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/tb/dut/u_wrapper/CFG_NEURON_BASE_ADDR">
-         <obj_property name="ElementShortName">CFG_NEURON_BASE_ADDR[31:0]</obj_property>
-         <obj_property name="ObjectShortName">CFG_NEURON_BASE_ADDR[31:0]</obj_property>
-         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
-      </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/CFG_WORDS">
          <obj_property name="ElementShortName">CFG_WORDS[31:0]</obj_property>
          <obj_property name="ObjectShortName">CFG_WORDS[31:0]</obj_property>
@@ -472,6 +502,7 @@
    <wvobject type="group" fp_name="group470">
       <obj_property name="label">SynSelector</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject type="group" fp_name="group603">
          <obj_property name="label">BRAM</obj_property>
          <obj_property name="DisplayName">label</obj_property>
@@ -492,6 +523,7 @@
          <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/bram_dout_weights">
             <obj_property name="ElementShortName">bram_dout_weights[31:0]</obj_property>
             <obj_property name="ObjectShortName">bram_dout_weights[31:0]</obj_property>
+            <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
          </wvobject>
       </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/start_syn_selector">
@@ -819,10 +851,6 @@
          <obj_property name="ElementShortName">clkb</obj_property>
          <obj_property name="ObjectShortName">clkb</obj_property>
       </wvobject>
-      <wvobject type="array" fp_name="/tb/dut/u_wrapper/cfg_idx">
-         <obj_property name="ElementShortName">cfg_idx[7:0]</obj_property>
-         <obj_property name="ObjectShortName">cfg_idx[7:0]</obj_property>
-      </wvobject>
       <wvobject type="logic" fp_name="/tb/dut/u_bd/BRAM_PORTB_clk">
          <obj_property name="ElementShortName">BRAM_PORTB_clk</obj_property>
          <obj_property name="ObjectShortName">BRAM_PORTB_clk</obj_property>
@@ -903,10 +931,40 @@
          <obj_property name="ElementShortName">dinb[31:0]</obj_property>
          <obj_property name="ObjectShortName">dinb[31:0]</obj_property>
       </wvobject>
+      <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/bram_rst_a">
+         <obj_property name="ElementShortName">bram_rst_a</obj_property>
+         <obj_property name="ObjectShortName">bram_rst_a</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/bram_en_a">
+         <obj_property name="ElementShortName">bram_en_a</obj_property>
+         <obj_property name="ObjectShortName">bram_en_a</obj_property>
+      </wvobject>
+      <wvobject type="logic" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/bram_clk_a">
+         <obj_property name="ElementShortName">bram_clk_a</obj_property>
+         <obj_property name="ObjectShortName">bram_clk_a</obj_property>
+      </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/blk_mem_gen_0/doutb">
          <obj_property name="ElementShortName">doutb[31:0]</obj_property>
          <obj_property name="ObjectShortName">doutb[31:0]</obj_property>
          <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/bram_we_a">
+         <obj_property name="ElementShortName">bram_we_a[3:0]</obj_property>
+         <obj_property name="ObjectShortName">bram_we_a[3:0]</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/bram_addr_a">
+         <obj_property name="ElementShortName">bram_addr_a[16:0]</obj_property>
+         <obj_property name="ObjectShortName">bram_addr_a[16:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/bram_wrdata_a">
+         <obj_property name="ElementShortName">bram_wrdata_a[31:0]</obj_property>
+         <obj_property name="ObjectShortName">bram_wrdata_a[31:0]</obj_property>
+         <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
+      </wvobject>
+      <wvobject type="array" fp_name="/tb/dut/u_bd/design_1_i/axi_bram_ctrl_0/bram_rddata_a">
+         <obj_property name="ElementShortName">bram_rddata_a[31:0]</obj_property>
+         <obj_property name="ObjectShortName">bram_rddata_a[31:0]</obj_property>
       </wvobject>
    </wvobject>
 </wave_config>

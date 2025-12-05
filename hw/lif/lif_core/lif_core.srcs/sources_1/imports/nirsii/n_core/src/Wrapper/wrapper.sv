@@ -8,7 +8,7 @@ module wrapper #(
     parameter DATA_WIDTH      = 32,
     parameter PRESYN_NUM      = 16,
     parameter POSTSYN_NUM     = 16,
-    parameter CFG_WORDS       = 5,
+    parameter CFG_WORDS       = 12,
     parameter SPIKE_WIDTH     = 32,
     
     parameter WE_WIDTH        = DATA_WIDTH/8
@@ -30,42 +30,77 @@ module wrapper #(
     // ----------------------------------------------------------------
     // BRAM map (WORD ADDRESSES, not byte addresses)
     // ----------------------------------------------------------------
+
+    parameter PRESYN_L2_NUMS  = POSTSYN_NUM; 
+    parameter POSTSYN_L2_NUMS =  8;
+    parameter PRESYN_L3_NUMS  = POSTSYN_L2_NUMS; 
+    parameter POSTSYN_L3_NUMS  = 8;
+
+    localparam logic [ADDR_WIDTH_WORD-1:0] 
+            WEIGHTS_BASE  = 64; // CFG_BASE + (CFG_WORDS<<2);
+
+    localparam int WEIGHTS_PER_WORD = 2;
+
     localparam logic [ADDR_WIDTH_WORD-1:0] 
             CFG_BASE             = 'd0;
     
     localparam logic [ADDR_WIDTH_WORD-1:0] 
-            CFG_EN_CORE_ADDR     = CFG_BASE + 0;
+            CFG_EN_CORE_ADDR     = 0; // CFG_BASE + 0;
     
     localparam logic [ADDR_WIDTH_WORD-1:0] 
-            CFG_LEAKAGE_ADDR     = CFG_BASE + (1<<2);
+            CFG_LEAKAGE_ADDR     = 4; //  CFG_BASE + (1<<2);
     
     localparam logic [ADDR_WIDTH_WORD-1:0] 
-            CFG_VRST_ADDR        = CFG_BASE + (2<<2);
+            CFG_VRST_ADDR        = 8; //CFG_BASE + (2<<2);
     
     localparam logic [ADDR_WIDTH_WORD-1:0] 
-            CFG_VTHRSH_ADDR      = CFG_BASE + (3<<2);
+            CFG_VTHRSH_ADDR      = 12; // CFG_BASE + (3<<2);
     
     localparam logic [ADDR_WIDTH_WORD-1:0] 
-            CFG_POSTSYN_NEUR_CNT_ADDR  = CFG_BASE + (4<<2);
+            CFG_POSTSYN_NEUR_CNT_ADDR  = 16; // CFG_BASE + (4<<2);
     
     localparam logic [ADDR_WIDTH_WORD-1:0] 
-            CFG_WEIGHT_BASE_ADDR = CFG_BASE + (5<<2);
+            CFG_WEIGHT_BASE_ADDR = 20; // CFG_BASE + (5<<2);
     
     localparam logic [ADDR_WIDTH_WORD-1:0] 
-            CFG_NEURON_BASE_ADDR = CFG_BASE + (6<<2);
-    
-    // localparam int CFG_WORDS   = 8;
+            CFG_LAYERS_NUM = 24; // CFG_BASE + (6<<2);
+
 
     localparam logic [ADDR_WIDTH_WORD-1:0] 
-            WEIGHTS_BASE  = CFG_BASE + (CFG_WORDS<<2);
+        CFG_L2_POSTSYN_NEUR_CNT_ADDR  = 28; // CFG_BASE + (4<<2);
+    
+    localparam logic [ADDR_WIDTH_WORD-1:0] 
+        CFG_L3_POSTSYN_NEUR_CNT_ADDR = 32; // CFG_BASE + (5<<2);
+    
+    localparam logic [ADDR_WIDTH_WORD-1:0] 
+        CFG_L4_POSTSYN_NEUR_CNT_ADDR = 36; // CFG_BASE + (5<<2);
+
+        localparam logic [ADDR_WIDTH_WORD-1:0]  WEIGHT_L3_WORDS =  (PRESYN_L3_NUMS * POSTSYN_L3_NUMS) / WEIGHTS_PER_WORD     ;
+
+localparam logic [ADDR_WIDTH_WORD-1:0]  WEIGHT_L2_WORDS = (PRESYN_L2_NUMS * POSTSYN_L2_NUMS) / WEIGHTS_PER_WORD ;
+    
+    localparam logic [ADDR_WIDTH_WORD-1:0] 
+        WEIGHTS_L2_BASE  = (WEIGHTS_BASE + (WEIGHT_WORDS<<2));  
+
+    localparam logic [ADDR_WIDTH_WORD-1:0] 
+        WEIGHTS_L3_BASE  = (WEIGHTS_L2_BASE + (WEIGHT_L2_WORDS<<2));
+
+    localparam logic [ADDR_WIDTH_WORD-1:0] 
+        WEIGHTS_L4_BASE  = 48; // CFG_BASE + (CFG_WORDS<<2);
+
+    
+
+    // localparam int CFG_WORDS   = 8;
+
+
 
     // localparam int PRESYN_NUM = 16;
     // localparam int POSTSYN_NUM = 16;
-    localparam int WEIGHTS_PER_WORD = 2;
+
     localparam int WEIGHT_WORDS = (PRESYN_NUM * POSTSYN_NUM) / WEIGHTS_PER_WORD;
 
     localparam logic [ADDR_WIDTH_WORD-1:0] 
-            IN_SPIKES_BASE = WEIGHTS_BASE + (WEIGHT_WORDS << 2);
+            IN_SPIKES_BASE = WEIGHTS_L2_BASE + (WEIGHT_L2_WORDS << 2);
     
     localparam logic [ADDR_WIDTH_WORD-1:0] 
             IN_SPIKES_COUNT = IN_SPIKES_BASE;
@@ -138,6 +173,24 @@ module wrapper #(
 
     logic [9:0] spikes_num;
     
+    logic [15:0] layer_num;
+    logic [15:0] layer_cnt;
+
+    logic [SPIKE_WIDTH-1:0] queue_buf[1024];
+
+    logic [7:0] neur_num_curr_layer;
+
+
+        logic [2:0] network_done;
+
+        logic [31:0] L2_postsyn_neurons;
+        logic [31:0] L3_postsyn_neurons;
+        logic [31:0] L4_postsyn_neurons;
+        logic [31:0] weights_L2_base;
+        logic [31:0] weights_L3_base;
+        logic [31:0] weights_L4_base;
+
+
 //    (* dont_touch = "true" *)
     bnmm_manual_demo u_core (
         .clk_i            (clk),
@@ -206,17 +259,20 @@ module wrapper #(
     // ----------------------------------------------------------------
     // FSM bookkeeping
     // ----------------------------------------------------------------
-    typedef enum logic [2:0] {
+    typedef enum logic [3:0] {
         ST_IDLE,
         ST_CFG_LOAD,
         ST_SPK_LOAD, 
         ST_RUN,
-        ST_OUT_RD
+        ST_OUT_RD,
+        ST_PROCESSING_DONE
     } state_t;
 
     state_t state, state_next;
     
     logic [15:0] idx;
+
+    bit data_ready;
 
     always_ff @(posedge clk) begin
         if (rst) begin
@@ -230,30 +286,140 @@ module wrapper #(
             out_cnt <= '0;
 
             idx <= '0;
-
             en_lif <= 0;
+
+            rd_fifo_out <= 0;
+
+            layer_cnt <= 0;
+
+            network_done <= 0;
+
+            data_ready <= 0;
     
         end else begin
-            state <= state_next;
-    
-            // tick: активен только в ST_RUN
-            
+            state <= state_next;          
             rst_tick_manual   <= 1'b0;
 
             unique case (state)
-    
+                //------------------------------------------------------
+                ST_IDLE:
+                //------------------------------------------------------
+                begin
+                    if (bram_dout[0])
+                       network_done <= 1;
+                end
+
                 // -----------------------------------------------------
                 ST_CFG_LOAD:
                 // -----------------------------------------------------
+                begin
                     if (state_next == ST_CFG_LOAD)begin  
                         if (cfg_idx == CFG_WORDS + 1)  
                             spikes_num <= bram_dout[9:0];
-                         
                         cfg_idx <= cfg_idx + 1;
                     end else
                         cfg_idx <= '0;
-                 
-    
+   
+                    // if (wr_fifo_in && !full_fifo_in)
+                    //     spk_cnt <= spk_cnt + 1;
+                    // else if (state_next != ST_SPK_LOAD)
+                    //     spk_cnt <= '0;
+
+                    case (cfg_idx)
+                        0: begin
+                        end
+                        1: begin
+                            wr_leakage <= 1'b1;
+                            wd_leakage <= bram_dout;
+                        end
+                        2: begin
+                            wr_leakage <= 1'b0;
+                            wr_vreset <= 1'b1;
+                            wd_vreset <= bram_dout;
+                        end
+                        3: begin
+                            wr_vreset <= 1'b0;
+                            wr_threshold <= 1'b1;
+                            wd_threshold <= bram_dout;
+                        end
+                        4: begin
+                            wr_threshold <= 1'b0;
+                            if (layer_cnt == 0) begin 
+                                wr_postsyn_count <= 1'b1;
+                                wd_postsyn_count <= bram_dout;
+                            end 
+                            else if (layer_cnt == 1) begin 
+                                wr_postsyn_count <= 1'b1;
+                                wd_postsyn_count <= L2_postsyn_neurons;
+                            end
+                            else if (layer_cnt == 2) begin 
+                                wr_postsyn_count <= 1'b1;
+                                wd_postsyn_count <= L3_postsyn_neurons;
+                            end 
+                            else if (layer_cnt == 3) begin 
+                                wr_postsyn_count <= 1'b1;
+                                wd_postsyn_count <= L4_postsyn_neurons;
+                            end  
+                        end
+                        5: begin
+                            wr_postsyn_count <= 0;
+                            if (layer_cnt == 0) begin 
+                                spikes_num <= bram_dout;
+                            end 
+                            else if (layer_cnt == 1) begin 
+                                spikes_num <= 16;
+                            end
+                            else if (layer_cnt == 2) begin 
+                                spikes_num <= 13;
+                            end 
+                            else if (layer_cnt == 3) begin 
+                                spikes_num <= 8;
+                            end
+                        end
+                        6: begin
+                            layer_num <= bram_dout;
+                        end
+                        7: begin
+                            L2_postsyn_neurons <= bram_dout;
+                        end                    
+                        8: begin
+                            L3_postsyn_neurons <= bram_dout;
+                        end
+                        9: begin
+                            L4_postsyn_neurons <= bram_dout;
+                        end 
+                        10: begin
+                            weights_L2_base <= bram_dout;
+                        end
+                        11: begin
+                            weights_L3_base <= bram_dout;
+                        end
+                        12: begin
+                            weights_L4_base <= bram_dout;
+                        end
+                        13: begin
+                            wr_weight_base   = 1'b1;
+
+                            if (layer_cnt == 0) begin 
+                                wd_weight_base   = bram_dout;
+                            end 
+                            else if (layer_cnt == 1) begin 
+                                wd_weight_base   = weights_L2_base;
+                            end
+                            else if (layer_cnt == 2) begin 
+                                wd_weight_base   = weights_L3_base;
+                            end 
+                            else if (layer_cnt == 3) begin 
+                                wd_weight_base   = weights_L4_base;
+                            end
+                        end
+
+                        default: begin 
+                            wr_weight_base <= 0;
+                        end 
+                    endcase                    
+                end
+
                 // -----------------------------------------------------
                 ST_SPK_LOAD:
                 // -----------------------------------------------------
@@ -265,10 +431,14 @@ module wrapper #(
                     // else if (state_next != ST_SPK_LOAD)
                     //     spk_cnt <= '0;
 
-                    if (state_next == ST_SPK_LOAD && (spk_cnt <= spikes_num))
+                    if (state_next == ST_SPK_LOAD && (spk_cnt < spikes_num))
                         spk_cnt <= spk_cnt + 1;
                     else if (state_next != ST_SPK_LOAD)
                         spk_cnt <= '0;
+
+                    if (spk_cnt == spikes_num) begin 
+                        en_tick_manual <= 1;
+                    end 
                 end
     
                 // -----------------------------------------------------
@@ -286,8 +456,36 @@ module wrapper #(
                     //     out_cnt <= out_cnt + 1;
                     // else if (state_next != ST_RUN)
                     //     out_cnt <= '0;
+
+                    if (state_next == ST_OUT_RD) begin 
+                        rd_fifo_out <= 1'b1;
+                    end 
                 end
-    
+
+                //------------------------------------------------------
+                ST_OUT_RD:
+                //------------------------------------------------------
+                begin                  
+                    if (rd_fifo_out && !empty_fifo_out) begin 
+                        out_cnt <= out_cnt + 1;
+                        queue_buf[out_cnt] <= rd_data_fifo_out;
+                    end 
+                    else if (state_next != ST_OUT_RD) begin 
+                        rd_fifo_out <= 0;
+                        out_cnt <= '0;
+                        if (layer_cnt == layer_num) begin 
+                            layer_cnt <= 0;
+                            network_done <= 2;
+                        end
+                        else layer_cnt <= layer_cnt + 1;
+                    end
+                end 
+
+                ST_PROCESSING_DONE:
+                begin 
+                    data_ready <= 1;
+                end 
+
                 // -----------------------------------------------------
                 default:
                 // Covers ST_IDLE, ST_OUT_RD, any future states
@@ -318,25 +516,10 @@ module wrapper #(
         // core-input defaults
         wr_fifo_in      = 1'b0;
         wr_data_fifo_in = '0;
-        rd_fifo_out     = 1'b0;
-    
-        wr_leakage       = 1'b0;
-        wr_threshold     = 1'b0;
-        wr_vreset        = 1'b0;
+        // rd_fifo_out     = 1'b0;
 
-        wr_neuron_base   = 1'b0;
-        wr_postsyn_count = 1'b0;
-        wr_emit_tag      = 1'b0;
-    
-        wd_leakage       = '0;
-        wd_threshold     = '0;
-        wd_vreset        = '0;
-        wd_neuron_base   = '0;
-        // wd_postsyn_count = '0;
-        wd_emit_tag      = '0;
-
-        wr_weight_base   = 1'b1;
-        wd_weight_base   = WEIGHTS_BASE;// * 2; // в количетсве весов, а не слов. Нужно будет селектор поправить 
+        // wr_weight_base   = 1'b1;
+        // wd_weight_base   = WEIGHTS_BASE; // в количетсве весов, а не слов. Нужно будет селектор поправить 
 
 
     
@@ -360,56 +543,52 @@ module wrapper #(
                 case (cfg_idx)
                     0: begin
                         bram_addr_word_next = CFG_LEAKAGE_ADDR;
-
                     end
                     1: begin
                         bram_addr_word_next = CFG_VRST_ADDR;
-                        // wr_leakage = 1'b1;
-                        // wd_leakage = bram_dout_q; // bram_dout;
-
                     end
                     2: begin
                         bram_addr_word_next = CFG_VTHRSH_ADDR;
-                                                wr_leakage = 1'b1;
-                        wd_leakage = bram_dout_q; // bram_dout;
-
-                        // wr_vreset = 1'b1;
-                        // wd_vreset = bram_dout_q; //bram_dout;
-
-
                     end
                     3: begin
                         bram_addr_word_next = CFG_POSTSYN_NEUR_CNT_ADDR;
-                                                wr_vreset = 1'b1;
-                        wd_vreset = bram_dout_q; //bram_dout;
-
-
-                        // wr_threshold = 1'b1;
-                        // wd_threshold = bram_dout_q; // bram_dout;
-
-
                     end
                     4: begin
                         bram_addr_word_next = IN_SPIKES_COUNT;
-
-                        wr_threshold = 1'b1;
-                        wd_threshold = bram_dout_q; // bram_dout;
-
-                        // wr_postsyn_count = 1'b1;
-                        // wd_postsyn_count = bram_dout_q; // bram_dout;
                     end
-
                     5: begin
-                        wr_postsyn_count = 1'b1;
-                        wd_postsyn_count = bram_dout_q; // bram_dout;
-                    //     bram_addr_word_next = IN_SPIKES_COUNT;
+                        bram_addr_word_next = CFG_LAYERS_NUM;
                     end
+                    6: begin
+                        bram_addr_word_next = CFG_L2_POSTSYN_NEUR_CNT_ADDR;
+                    end
+                    7: begin
+                        bram_addr_word_next = CFG_L3_POSTSYN_NEUR_CNT_ADDR;
+                    end
+                    8: begin
+                        bram_addr_word_next = CFG_L4_POSTSYN_NEUR_CNT_ADDR;
+                    end
+                    9: begin
+                        bram_addr_word_next = WEIGHTS_L2_BASE;
+                    end 
+                    10: begin
+                        bram_addr_word_next = WEIGHTS_L3_BASE;
+                    end
+                    11: begin
+                        bram_addr_word_next = WEIGHTS_L4_BASE;
+                    end
+                    12: begin
+                        bram_addr_word_next = WEIGHTS_BASE;
+                    end
+
+                    // 12: begin
+                    //     bram_addr_word_next = IN_SPIKES;
+                    // end
+
     
                     default: begin 
-                        spikes_num = bram_dout_q; // bram_dout;
-                        
+                        // spikes_num = bram_dout_q; // bram_dout;
                         bram_addr_word_next = IN_SPIKES;
-
                         state_next = ST_SPK_LOAD;
                     end 
                 endcase
@@ -419,21 +598,38 @@ module wrapper #(
             //------------------------------------------------------
             ST_SPK_LOAD:
             //------------------------------------------------------
-            begin
-                // spikes_num = bram_dout_q; // bram_dout;
-    
-                bram_addr_word_next = IN_SPIKES + ((spk_cnt+1) << 2);
-
-                if (spk_cnt > 0) begin 
-                    if (!full_fifo_in) begin
-                        wr_fifo_in      = 1'b1;
-                        wr_data_fifo_in = bram_dout_q;
+            begin  
+                if (network_done == 1) begin 
+                    bram_addr_word_next = IN_SPIKES + ((spk_cnt+1) << 2);
+                    if (spk_cnt > 0) begin 
+                        if (!full_fifo_in) begin
+                            wr_fifo_in      = 1'b1;
+                            wr_data_fifo_in = bram_dout_q;
+                        end 
+                        if (spk_cnt == spikes_num) begin
+                            // en_tick_manual = 1;
+                            wr_fifo_in      = 1'b0;
+                            // if (tick_o_tick_manual == 1) begin 
+                                state_next = ST_RUN;
+                                // spk_cnt = 0;
+                            // end 
+                        end
                     end 
-                    if (spk_cnt > spikes_num) begin
-                        en_tick_manual = 1; // (state_next == ST_RUN);
-                        wr_fifo_in      = 1'b0;
-                        if (tick_o_tick_manual == 1)
-                            state_next = ST_RUN;
+                end 
+                else if (network_done == 2) begin 
+                    if (spk_cnt > 0) begin 
+                        if (!full_fifo_in) begin
+                            wr_fifo_in      = 1'b1;
+                            wr_data_fifo_in = queue_buf[spk_cnt];
+                        end 
+                        if (spk_cnt == spikes_num) begin
+                            // en_tick_manual = 1;
+                            wr_fifo_in      = 1'b0;
+                            if (tick_o_tick_manual == 1) begin 
+                                state_next = ST_RUN;
+                                spk_cnt <= 0;
+                            end 
+                        end
                     end
                 end 
             end
@@ -456,19 +652,25 @@ module wrapper #(
             ST_OUT_RD:
             //------------------------------------------------------
             begin
-
                 if (!empty_fifo_out) begin 
-                    rd_fifo_out = 1'b1;
                     bram_addr_word_next = OUT_SPIKES_BASE + (out_cnt << 1);
-                    bram_we_next   = 2'b11;
-                    // bram_din - у тебя нет входа, значит ядро не пишет
-                    // Если надо писать - добавь bram_din_weights
-                    // state_next = ST_RUN;
+                    bram_we_next   = 2'b1;
                 end
                 else begin
-                    state_next = ST_IDLE;
+                    if (layer_cnt == layer_num) begin 
+                        state_next = ST_PROCESSING_DONE;
+                    end 
+                    else begin 
+                        state_next = ST_IDLE;
+                    end
                 end
             end
+
+            ST_PROCESSING_DONE:
+            begin 
+                if 
+                data_ready <= 1;
+            end 
     
         endcase
     end

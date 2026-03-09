@@ -14,15 +14,15 @@
       </db_ref>
    </db_ref_list>
    <zoom_setting>
-      <ZoomStartTime time="579669413770fs"></ZoomStartTime>
-      <ZoomEndTime time="580129533203fs"></ZoomEndTime>
-      <Cursor1Time time="579885000000fs"></Cursor1Time>
+      <ZoomStartTime time="426129800000fs"></ZoomStartTime>
+      <ZoomEndTime time="426571800001fs"></ZoomEndTime>
+      <Cursor1Time time="426205000000fs"></Cursor1Time>
    </zoom_setting>
    <column_width_setting>
-      <NameColumnWidth column_width="282"></NameColumnWidth>
-      <ValueColumnWidth column_width="65"></ValueColumnWidth>
+      <NameColumnWidth column_width="275"></NameColumnWidth>
+      <ValueColumnWidth column_width="60"></ValueColumnWidth>
    </column_width_setting>
-   <WVObjectSize size="14" />
+   <WVObjectSize size="16" />
    <wvobject type="logic" fp_name="/tb/dut/u_wrapper/u_core/clk_i[0]">
       <obj_property name="ElementShortName">[0]</obj_property>
       <obj_property name="ObjectShortName">[0]</obj_property>
@@ -259,6 +259,14 @@
          <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
       </wvobject>
    </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/spk_cnt">
+      <obj_property name="ElementShortName">spk_cnt[9:0]</obj_property>
+      <obj_property name="ObjectShortName">spk_cnt[9:0]</obj_property>
+   </wvobject>
+   <wvobject type="array" fp_name="/tb/dut/u_wrapper/spikes_num">
+      <obj_property name="ElementShortName">spikes_num[9:0]</obj_property>
+      <obj_property name="ObjectShortName">spikes_num[9:0]</obj_property>
+   </wvobject>
    <wvobject type="group" fp_name="group521">
       <obj_property name="label">BRAM_PORTB</obj_property>
       <obj_property name="DisplayName">label</obj_property>
@@ -490,19 +498,27 @@
       <obj_property name="label">Wrapper</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
+      <wvobject type="array" fp_name="/tb/dut/u_wrapper/network_done">
+         <obj_property name="ElementShortName">network_done[2:0]</obj_property>
+         <obj_property name="ObjectShortName">network_done[2:0]</obj_property>
+      </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/state_next">
-         <obj_property name="ElementShortName">state_next[2:0]</obj_property>
-         <obj_property name="ObjectShortName">state_next[2:0]</obj_property>
+         <obj_property name="ElementShortName">state_next[3:0]</obj_property>
+         <obj_property name="ObjectShortName">state_next[3:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/state">
-         <obj_property name="ElementShortName">state[2:0]</obj_property>
-         <obj_property name="ObjectShortName">state[2:0]</obj_property>
+         <obj_property name="ElementShortName">state[3:0]</obj_property>
+         <obj_property name="ObjectShortName">state[3:0]</obj_property>
       </wvobject>
    </wvobject>
    <wvobject type="group" fp_name="group470">
       <obj_property name="label">SynSelector</obj_property>
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="isExpanded"></obj_property>
+      <wvobject type="logic" fp_name="/tb/dut/u_wrapper/u_core/clk_i[0]">
+         <obj_property name="ElementShortName">[0]</obj_property>
+         <obj_property name="ObjectShortName">[0]</obj_property>
+      </wvobject>
       <wvobject type="group" fp_name="group603">
          <obj_property name="label">BRAM</obj_property>
          <obj_property name="DisplayName">label</obj_property>
@@ -548,8 +564,8 @@
          <obj_property name="ObjectShortName">done_syn_selector[0:0]</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/weight_syn_selector">
-         <obj_property name="ElementShortName">weight_syn_selector[15:0]</obj_property>
-         <obj_property name="ObjectShortName">weight_syn_selector[15:0]</obj_property>
+         <obj_property name="ElementShortName">weight_syn_selector[31:0]</obj_property>
+         <obj_property name="ObjectShortName">weight_syn_selector[31:0]</obj_property>
          <obj_property name="Radix">SIGNEDDECRADIX</obj_property>
       </wvobject>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/wr_weight_base">
@@ -589,11 +605,13 @@
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/bram_dout_weights">
          <obj_property name="ElementShortName">bram_dout_weights[31:0]</obj_property>
          <obj_property name="ObjectShortName">bram_dout_weights[31:0]</obj_property>
+         <obj_property name="Radix">UNSIGNEDDECRADIX</obj_property>
       </wvobject>
    </wvobject>
    <wvobject type="group" fp_name="group629">
       <obj_property name="label">Somatic Phase</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/step_en_som_manual_selector">
          <obj_property name="ElementShortName">step_en_som_manual_selector[0:0]</obj_property>
          <obj_property name="ObjectShortName">step_en_som_manual_selector[0:0]</obj_property>
@@ -770,6 +788,7 @@
    <wvobject type="group" fp_name="group714">
       <obj_property name="label">Emission</obj_property>
       <obj_property name="DisplayName">label</obj_property>
+      <obj_property name="isExpanded"></obj_property>
       <wvobject type="array" fp_name="/tb/dut/u_wrapper/u_core/start_em_manual_selector">
          <obj_property name="ElementShortName">start_em_manual_selector[0:0]</obj_property>
          <obj_property name="ObjectShortName">start_em_manual_selector[0:0]</obj_property>

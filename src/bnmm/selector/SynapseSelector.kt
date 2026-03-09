@@ -162,8 +162,8 @@ class SynapseSelector(private val instName: String = "syn_sel") {
         // FSM state.
         val S_IDLE = 0
         val S_RUN = 1
-        val state = g.uglobal("state_$name", hw_dim_static(1), "0")
-        val stateNext = g.uglobal("state_n_$name", hw_dim_static(1), "0")
+        val state = g.uglobal("state_$name", hw_dim_static(2), "0")
+        val stateNext = g.uglobal("state_n_$name", hw_dim_static(2), "0")
 
         // Default assignments.
         state.assign(stateNext)
@@ -177,12 +177,22 @@ class SynapseSelector(private val instName: String = "syn_sel") {
         g.begif(g.eq2(state, S_IDLE)); run {
             busy_o.assign(0)
             g.begif(g.eq2(start_i, 1)); run {
-            preLatched.assign(preIdx_i)
-            postIdx.assign(0)
-            busy_o.assign(1)
-            stateNext.assign(S_RUN)
+                preLatched.assign(preIdx_i)
+                postIdx.assign(0)
+                busy_o.assign(1)
+                stateNext.assign(S_RUN)
+            }; g.endif()
         }; g.endif()
-        }; g.endif()
+
+//        g.begif(g.eq2(state, S_GET_VAL)); run {
+////            busy_o.assign(0)
+////            g.begif(g.eq2(start_i, 1)); run {
+////            preLatched.assign(preIdx_i)
+////            postIdx.assign(0)
+////            busy_o.assign(1)
+//            stateNext.assign(S_RUN)
+////        }; g.endif()
+//        }; g.endif()
 
         // RUN: iterate over post-synaptic indices and generate addresses.
         g.begif(g.eq2(state, S_RUN)); run {
@@ -202,35 +212,35 @@ class SynapseSelector(private val instName: String = "syn_sel") {
             val addrWithStride = if (cfg.wordByteStride == 1) wordAddr else g.mul(wordAddr, wordStride)
 
             // Drive memory interface.
-            mem.addr.assign(addrWithStride)
+            mem.addr.assign(/*addrWithStride*/postIdx)
             mem.en?.assign(doStep)
             mem.we?.assign(0)
 
             // Step through post indices.
             g.begif(g.eq2(doStep, 1)); run {
             // Extract weight lane when packing is enabled.
-            if (cfg.packing.weightsPerWord == 1) {
-                weight.assign(mem.data)
-            } else {
-                // Simple priority-if mux to choose lane slice.
-                for (i in 0 until cfg.packing.weightsPerWord) {
-                    val lsb = i * cfg.packing.weightWidth
-                    val msb = lsb + cfg.packing.weightWidth - 1
-                    g.begif(g.eq2(lane, i)); run {
-                        weight.assign(mem.data[msb, lsb])
-                    }; g.endif()
+                if (cfg.packing.weightsPerWord == 1) {
+                    weight.assign(mem.data)
+                } else {
+                    // Simple priority-if mux to choose lane slice.
+                    for (i in 0 until cfg.packing.weightsPerWord) {
+                        val lsb = i * cfg.packing.weightWidth
+                        val msb = lsb + cfg.packing.weightWidth - 1
+                        g.begif(g.eq2(lane, i)); run {
+                            weight.assign(mem.data[msb, lsb])
+                        }; g.endif()
+                    }
                 }
-            }
-            val last = g.eq2(postIdx, g.sub(runtime.postsynCount, hw_imm(1)))
-            g.begif(last); run {
-            done_o.assign(1)
-            busy_o.assign(0)
-            stateNext.assign(S_IDLE)
-        }; g.endif()
-            g.begelse(); run {
-            postIdx.assign(postIdx.plus(1))
-        }; g.endif()
-        }; g.endif()
+                val last = g.eq2(postIdx, g.sub(runtime.postsynCount, hw_imm(1)))
+                g.begif(last); run {
+                    done_o.assign(1)
+                    busy_o.assign(0)
+                    stateNext.assign(S_IDLE)
+                }; g.endif()
+                g.begelse(); run {
+                    postIdx.assign(postIdx.plus(1))
+                }; g.endif()
+            }; g.endif()
         }; g.endif()
 
         return SynapseSelectorPorts(

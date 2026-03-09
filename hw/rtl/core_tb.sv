@@ -1,7 +1,7 @@
 module core_tb #(
     parameter SPIKE_WIDTH     = 32,
     parameter ADDR_WIDTH_WORD = 32,
-    parameter DATA_WIDTH      = 32, 
+    parameter DATA_WIDTH      = 16, 
 
     // Сколько 32-битных слов в модели памяти весов
     parameter int WEIGHTS_MEM_WORDS = 4096
@@ -101,15 +101,54 @@ module core_tb #(
     // 1-cycle latency BRAM weights model (read-only for now)
     // ============================================================
 
+
     logic [DATA_WIDTH-1:0] weights_mem [0:WEIGHTS_MEM_WORDS-1];
 
     // защита от выхода за диапазон: если адрес > глубины, отдадим 0
+    // function automatic logic [DATA_WIDTH-1:0] weights_read(input logic [ADDR_WIDTH_WORD-1:0] addr);
+    //     if (addr < WEIGHTS_MEM_WORDS)
+    //         return weights_mem[addr];
+    //     else
+    //         return '0;
+    // endfunction
+
+
+    // Путь к файлу с весами (можно переопределять через +WEIGHTS_FILE=...)
+    // Пример запуска: vvp simv +WEIGHTS_FILE=weights.dat
+    string WEIGHTS_FILE = "/home/yan/nirsii/nncompiler/neuromorphic_snn/examples/1_mnist/data/weights_fc1_1805.dat";
+
+    initial begin : init_weights_mem
+        int have_arg;
+        have_arg = $value$plusargs("WEIGHTS_FILE=%s", WEIGHTS_FILE);
+        $display("[TB] loading weights from '%s' (have_arg=%0d)", WEIGHTS_FILE, have_arg);
+
+        // если файла нет/пусто — Icarus все равно попробует, так что лучше проверять fd
+        begin : try_load
+            int fd;
+            fd = $fopen(WEIGHTS_FILE, "r");
+            if (fd == 0) begin
+                $display("[TB] WARNING: cannot open '%s', using fallback pattern", WEIGHTS_FILE);
+                for (int k = 0; k < WEIGHTS_MEM_WORDS; k++) weights_mem[k] = k[DATA_WIDTH-1:0];
+            end else begin
+                $fclose(fd);
+                $readmemh(WEIGHTS_FILE, weights_mem);
+            end
+        end
+    end
+
     function automatic logic [DATA_WIDTH-1:0] weights_read(input logic [ADDR_WIDTH_WORD-1:0] addr);
-        if (addr < WEIGHTS_MEM_WORDS)
-            return weights_mem[addr];
-        else
-            return '0;
+        int unsigned idx;
+    begin
+return weights_mem[addr];
+
+        // idx = (addr >> 1); // byte-address -> 16-bit word index (2 bytes per word)
+        // if (idx < WEIGHTS_MEM_WORDS)
+        //     return weights_mem[idx];
+        // else
+        //     return '0;
+    end
     endfunction
+
 
     // зарегистрированные сигналы чтения (адрес/enable) -> 1 такт латентности
     logic [ADDR_WIDTH_WORD-1:0] rd_addr_q;
@@ -122,23 +161,24 @@ module core_tb #(
             bram_dout_weights <= '0;
         end else begin
             // latch request
-            rd_addr_q <= bram_addr_weights;
-            rd_en_q   <= bram_en_weights;
+            rd_addr_q = bram_addr_weights;
+            rd_en_q   = bram_en_weights;
 
             // serve previous cycle request (1-cycle latency)
-            if (rd_en_q) bram_dout_weights <= weights_read(rd_addr_q);
-            else         bram_dout_weights <= '0;
+            /*if (rd_en_q)*/ bram_dout_weights = weights_read(rd_addr_q);
+            // else         bram_dout_weights <= '0;
         end
     end
+    
 
-    // (опционально) быстрый init памяти — сейчас детерминированный паттерн,
-    // потом заменим на загрузку реальных весов / из файла.
-    initial begin : init_weights_mem
-        for (int k = 0; k < WEIGHTS_MEM_WORDS; k++) begin
-            // пример: lower16=k, upper16=k+1
-            weights_mem[k] = {16'(k+1), 16'(k)};
-        end
-    end
+    // // (опционально) быстрый init памяти — сейчас детерминированный паттерн,
+    // // потом заменим на загрузку реальных весов / из файла.
+    // initial begin : init_weights_mem
+    //     for (int k = 0; k < WEIGHTS_MEM_WORDS; k++) begin
+    //         // пример: lower16=k, upper16=k+1
+    //         weights_mem[k] = {16'(k+1), 16'(k)};
+    //     end
+    // end
 
     // ============================================================
     // Ingress spikes driver (task + optional file load)
@@ -345,13 +385,15 @@ module core_tb #(
         write_reg(wr_emit_tag,      wd_emit_tag,      0);   
 
         @(posedge clk);
-        en_lif <= 1'b1;
+    
 
         // int unsigned nspk;
         // load_spikes_from_file("spikes.txt", nspk); // или пропусти и заполни spikes_buf вручную
         // fifo_in_push_loaded();
         // или без файла:
         for (i=0; i<16; i++) fifo_in_push(i);
+
+        en_lif <= 1'b1;
 
         // for (i = 0; i < 10; i++) begin
         //     // ждём пока можно писать

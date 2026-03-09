@@ -212,7 +212,7 @@ private class ManualAssembly(
 //            preIndexWidth = preIndexWidth,/home/yan/nirsii/nncompiler/neuromorphic_snn/examples/1_mnist/data
 //            postIndexWidth = postIndexWidth,
 //            packing = SynapticPackingConfig(wordWidth = cfg.memoryBanks.first().dataWidth, weightWidth = 16, weightsPerWord = 2),
-////            packing = SynapticPackingConfig(wordWidth = 32, weightWidth = 16, weightsPerWord = 2),
+////            packing = SynapticPackingConfig(wordWidth = 16, weightWidth = 8, weightsPerWord = 2),
 //            wordByteStride = 16, // default stride for byte-addressed 32-bit words
 //            useLinearAddress = true,
 //            stepByTick = false
@@ -223,9 +223,9 @@ private class ManualAssembly(
             preIndexWidth = preIndexWidth,
             postIndexWidth = postIndexWidth,
             packing = SynapticPackingConfig(
-                wordWidth = 16,             // <-- было 32
-                weightWidth = 16,
-                weightsPerWord = 1          // <-- один вес на слово
+                wordWidth = 16,
+                weightWidth = 8,
+                weightsPerWord = 2
             ),
             wordByteStride = 2,            // 16 бит = 2 байта (если память byte-addressed)
             useLinearAddress = true,
@@ -351,7 +351,7 @@ private class ManualAssembly(
         val weightCfg = cfg.memoryBanks.firstOrNull()
         if (selectorCfg != null && weightCfg != null) {
 //            val packing = SynapticPackingConfig(wordWidth = weightCfg.dataWidth, weightWidth = 16, weightsPerWord = 2)
-            val packing = SynapticPackingConfig(wordWidth = 32, weightWidth = 16, weightsPerWord = 2)
+            val packing = SynapticPackingConfig(wordWidth = 16, weightWidth = 8, weightsPerWord = 2)
             println("Synapse selector: ${selectorCfg.describe()}")
             println("  packing: ${packing.describe()}")
             println("  weight memory: ${weightCfg.describe()}")

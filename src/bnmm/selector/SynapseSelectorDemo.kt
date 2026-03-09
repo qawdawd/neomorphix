@@ -22,7 +22,7 @@ import symbols.SymbolTable
 fun main() {
     val g = Generic("synaptic_phase_demo")
 
-    val packing = SynapticPackingConfig(wordWidth = 32, weightWidth = 16, weightsPerWord = 2)
+    val packing = SynapticPackingConfig(wordWidth = 16, weightWidth = 8, weightsPerWord = 2)
     val selCfg = SynapseSelectorConfig(
         name = "demo_sel",
         addrWidth = 12,

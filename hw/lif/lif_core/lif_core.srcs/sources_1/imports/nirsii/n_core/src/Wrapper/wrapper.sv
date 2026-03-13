@@ -6,7 +6,7 @@
 module wrapper #(
     parameter ADDR_WIDTH_WORD = 32,
     parameter DATA_WIDTH      = 32,
-    parameter PRESYN_NUM      = 16,
+    parameter PRESYN_NUM      = 28*28,
     parameter POSTSYN_NUM     = 16,
     parameter CFG_WORDS       = 12,
     parameter SPIKE_WIDTH     = 32,
@@ -380,16 +380,16 @@ module wrapper #(
                         5: begin
                             wr_postsyn_count <= 0;
                             if (layer_cnt == 0) begin 
-                                spikes_num <= bram_dout;
+                                spikes_num <= 16;// bram_dout;
                             end 
                             else if (layer_cnt == 1) begin 
                                 spikes_num <= 16;
                             end
                             else if (layer_cnt == 2) begin 
-                                spikes_num <= 13;
+                                spikes_num <= 16;
                             end 
                             else if (layer_cnt == 3) begin 
-                                spikes_num <= 8;
+                                spikes_num <= 16;
                             end
                         end
                         6: begin
@@ -503,8 +503,6 @@ module wrapper #(
                 ST_PROCESSING_DONE:
                 begin 
                     data_ready <= 1;
-
-
                 end 
 
                 // -----------------------------------------------------
@@ -609,7 +607,7 @@ module wrapper #(
                         bram_addr_word_next = WEIGHTS_BASE;
                     end
 
-                    // 12: begin
+                    // 13: begin
                     //     bram_addr_word_next = IN_SPIKES;
                     // end
 

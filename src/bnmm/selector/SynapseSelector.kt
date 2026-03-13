@@ -190,6 +190,9 @@ class SynapseSelector(private val instName: String = "syn_sel") {
 
         // Default assignments.
         state.assign(stateNext)
+        stateNext.assign(state)
+        laneLatched.assign(laneLatchedNext)
+        laneLatchedNext.assign(laneLatched)
         done_o.assign(0)
         mem.en?.assign(0)
         mem.we?.assign(0)
@@ -247,7 +250,7 @@ class SynapseSelector(private val instName: String = "syn_sel") {
             val lane = g.band(addrWithBase, hw_imm(1))
             val addrWithStride = g.sll(wordAddr, hw_imm(1))
 
-            // Drive memory interface.
+            // Drive memory interface (request phase).
             mem.addr.assign(addrWithStride)
             mem.en?.assign(doStep)
             mem.we?.assign(0)
@@ -272,6 +275,29 @@ class SynapseSelector(private val instName: String = "syn_sel") {
                     postIdx.assign(postIdx.plus(1))
                 }; g.endif()
             }; g.endif()
+        }; g.endif()
+
+        // LAST_RESP: capture the final BRAM response and only then assert done.
+        g.begif(g.eq2(state, S_LAST_RESP)); run {
+            busy_o.assign(1)
+            mem.en?.assign(0)
+            mem.we?.assign(0)
+
+            if (cfg.packing.weightsPerWord == 1) {
+                weight.assign(mem.data)
+            } else {
+                for (i in 0 until cfg.packing.weightsPerWord) {
+                    val lsb = i * cfg.packing.weightWidth
+                    val msb = lsb + cfg.packing.weightWidth - 1
+                    g.begif(g.eq2(laneLatched, i)); run {
+                        weight.assign(mem.data[msb, lsb])
+                    }; g.endif()
+                }
+            }
+
+            done_o.assign(1)
+            busy_o.assign(0)
+            stateNext.assign(S_IDLE)
         }; g.endif()
 
         return SynapseSelectorPorts(

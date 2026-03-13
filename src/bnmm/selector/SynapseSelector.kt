@@ -173,7 +173,7 @@ class SynapseSelector(private val instName: String = "syn_sel") {
         val stepEn = g.uglobal("step_en_$name", hw_dim_static(1), "0")
         stepEn.assign(
             if (cfg.stepByTick) {
-                if (tick != null) g.eq2(tick, 1) else hw_imm(0)
+                if (tick != null) g.eq2(tick, hw_imm(1)) else hw_imm(0)
             } else {
                 hw_imm(1)
             }
@@ -195,23 +195,20 @@ class SynapseSelector(private val instName: String = "syn_sel") {
         stateNext.assign(state)
         laneLatched.assign(laneLatchedNext)
         laneLatchedNext.assign(laneLatched)
-        done_o.assign(0)
-        mem.en?.assign(0)
-        mem.we?.assign(0)
+        done_o.assign(hw_imm(0))
+        mem.en?.assign(hw_imm(0))
+        mem.we?.assign(hw_imm(0))
 
         val doStep = g.land(stepEn, busy_o)
 
         // IDLE: latch preIndex when start is asserted.
-        g.begif(g.eq2(state, S_IDLE)); run {
-            busy_o.assign(0)
-            g.begif(g.eq2(start_i, 1)); run {
-                preLatched.assign(preIdx_i)
-                postIdx.assign(0)
-                rowBase.assign(0)
-                preCnt.assign(preIdx_i)
-                busy_o.assign(1)
-                stateNext.assign(S_INIT)
-            }; g.endif()
+        g.begif(g.eq2(state, hw_imm(S_IDLE))); run {
+            busy_o.assign(hw_imm(0))
+            g.begif(g.eq2(start_i, hw_imm(1))); run {
+            preLatched.assign(preIdx_i)
+            postIdx.assign(hw_imm(0))
+            busy_o.assign(hw_imm(1))
+            stateNext.assign(hw_imm(S_RUN))
         }; g.endif()
 
         // INIT: compute row base index = preIdx * postsynCount using repeated addition.
@@ -237,8 +234,8 @@ class SynapseSelector(private val instName: String = "syn_sel") {
 //        }; g.endif()
 
         // RUN: iterate over post-synaptic indices and generate addresses.
-        g.begif(g.eq2(state, S_RUN)); run {
-            busy_o.assign(1)
+        g.begif(g.eq2(state, hw_imm(S_RUN))); run {
+            busy_o.assign(hw_imm(1))
 
             // Compute linear address = pre * postsynCount + post.
             val fullIndex = g.add(rowBase, postIdx)
@@ -258,10 +255,10 @@ class SynapseSelector(private val instName: String = "syn_sel") {
             // Drive memory interface (request phase).
             mem.addr.assign(addrWithStride)
             mem.en?.assign(doStep)
-            mem.we?.assign(0)
+            mem.we?.assign(hw_imm(0))
 
             // Step through post indices.
-            g.begif(g.eq2(doStep, 1)); run {
+            g.begif(g.eq2(doStep, hw_imm(1))); run {
             // Extract returned weight for previously requested address.
             if (cfg.packing.weightsPerWord == 1) {
                 weight.assign(mem.data)
@@ -280,14 +277,14 @@ class SynapseSelector(private val instName: String = "syn_sel") {
             g.begif(last); run {
             // For synchronous BRAM the final data arrives one cycle later.
             // Move to LAST_RESP so the last weight can be latched.
-            stateNext.assign(S_LAST_RESP)
+            stateNext.assign(hw_imm(S_LAST_RESP))
         }; g.endif()
 
         // LAST_RESP: capture the final BRAM response and only then assert done.
-        g.begif(g.eq2(state, S_LAST_RESP)); run {
-            busy_o.assign(1)
-            mem.en?.assign(0)
-            mem.we?.assign(0)
+        g.begif(g.eq2(state, hw_imm(S_LAST_RESP))); run {
+            busy_o.assign(hw_imm(1))
+            mem.en?.assign(hw_imm(0))
+            mem.we?.assign(hw_imm(0))
 
             if (cfg.packing.weightsPerWord == 1) {
                 weight.assign(mem.data)
@@ -301,9 +298,9 @@ class SynapseSelector(private val instName: String = "syn_sel") {
                 }
             }
 
-            done_o.assign(1)
-            busy_o.assign(0)
-            stateNext.assign(S_IDLE)
+            done_o.assign(hw_imm(1))
+            busy_o.assign(hw_imm(0))
+            stateNext.assign(hw_imm(S_IDLE))
         }; g.endif()
 
         return SynapseSelectorPorts(

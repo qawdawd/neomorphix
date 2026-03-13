@@ -252,6 +252,9 @@ class SynapseSelector(private val instName: String = "syn_sel") {
             val lane = g.band(addrWithBase, hw_imm(1))
             val addrWithStride = g.sll(wordAddr, hw_imm(1))
 
+            val wordStride = hw_imm(cfg.wordByteStride)
+            val addrWithStride = if (cfg.wordByteStride == 1) wordAddr else g.mul(wordAddr, wordStride)
+
             // Drive memory interface (request phase).
             mem.addr.assign(addrWithStride)
             mem.en?.assign(doStep)

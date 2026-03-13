@@ -128,7 +128,7 @@ class SynapticPhaseUnit(private val instName: String = "syn_phase") {
         drainCtrNext.assign(drainCtr)
 
         val runStepDrain = g.uglobal("runstep_drain_$name", hw_dim_static(1), "0")
-        runStepDrain.assign(0)
+        runStepDrain.assign(hw_imm(0))
 
         // Управление селектором: стартуем один такт, передаем preIndex
         selector.start.assign(g.land(start_i, g.eq2(state, S_IDLE)))

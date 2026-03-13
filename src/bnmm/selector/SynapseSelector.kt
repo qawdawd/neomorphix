@@ -136,10 +136,7 @@ class SynapseSelector(private val instName: String = "syn_sel") {
     ): SynapseSelectorPorts {
         val name = cfg.name
 
-        // Temporary fixed profile requested by hardware integration:
-        // - 2 parameters per memory word
-        // - 16-bit memory word
-        // - byte-addressed memory interface (address step = 1 byte)
+        // Temporary fixed profile requested by hardware integration.
         val fixedWeightsPerWord = 2
         val fixedWordWidth = 16
         val fixedWordByteStride = 2
@@ -148,9 +145,6 @@ class SynapseSelector(private val instName: String = "syn_sel") {
         }
         require(cfg.packing.wordWidth == fixedWordWidth) {
             "Current selector profile requires 16-bit memory words"
-        }
-        require(cfg.packing.weightWidth * cfg.packing.weightsPerWord == cfg.packing.wordWidth) {
-            "Current selector profile expects packed parameters to exactly fill the 16-bit word"
         }
         require(cfg.wordByteStride == fixedWordByteStride) {
             "Current selector profile requires byte-addressed memory with 16-bit words (stride=2 bytes)"
@@ -242,15 +236,11 @@ class SynapseSelector(private val instName: String = "syn_sel") {
             val rawAddr = if (cfg.useLinearAddress) fullIndex else g.cnct(preLatched, postIdx)
             val addrWithBase = if (runtime.baseAddress != null) g.add(rawAddr, runtime.baseAddress) else rawAddr
 
-            // Fixed packing profile (2 params per 16-bit word):
-            // word address = floor(index/2), lane = index % 2.
-            // Byte-addressed memory with 16-bit words => byte addr = wordAddr << 1.
+            // Fixed profile (2 params per 16-bit word):
+            // wordAddr = floor(index / 2), lane = index % 2, byteAddr = wordAddr << 1.
             val wordAddr = g.srl(addrWithBase, hw_imm(1))
             val lane = g.band(addrWithBase, hw_imm(1))
             val addrWithStride = g.sll(wordAddr, hw_imm(1))
-
-            val wordStride = hw_imm(cfg.wordByteStride)
-            val addrWithStride = if (cfg.wordByteStride == 1) wordAddr else g.mul(wordAddr, wordStride)
 
             // Drive memory interface (request phase).
             mem.addr.assign(addrWithStride)
@@ -278,6 +268,33 @@ class SynapseSelector(private val instName: String = "syn_sel") {
             // For synchronous BRAM the final data arrives one cycle later.
             // Move to LAST_RESP so the last weight can be latched.
             stateNext.assign(hw_imm(S_LAST_RESP))
+        }; g.endif()
+            g.begelse(); run {
+            postIdx.assign(postIdx.plus(1))
+        }; g.endif()
+        }; g.endif()
+
+        // LAST_RESP: capture the final BRAM response and only then assert done.
+        g.begif(g.eq2(state, hw_imm(S_LAST_RESP))); run {
+            busy_o.assign(hw_imm(1))
+            mem.en?.assign(hw_imm(0))
+            mem.we?.assign(hw_imm(0))
+
+            if (cfg.packing.weightsPerWord == 1) {
+                weight.assign(mem.data)
+            } else {
+                for (i in 0 until cfg.packing.weightsPerWord) {
+                    val lsb = i * cfg.packing.weightWidth
+                    val msb = lsb + cfg.packing.weightWidth - 1
+                    g.begif(g.eq2(laneLatched, hw_imm(i))); run {
+                        weight.assign(mem.data[msb, lsb])
+                    }; g.endif()
+                }
+            }
+
+            done_o.assign(hw_imm(1))
+            busy_o.assign(hw_imm(0))
+            stateNext.assign(hw_imm(S_IDLE))
         }; g.endif()
 
         // LAST_RESP: capture the final BRAM response and only then assert done.

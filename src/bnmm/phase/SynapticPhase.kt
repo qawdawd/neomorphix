@@ -114,9 +114,21 @@ class SynapticPhaseUnit(private val instName: String = "syn_phase") {
         // Локальные сигналы
         val S_IDLE = 0
         val S_RUN = 1
-        val state = g.uglobal("state_$name", hw_dim_static(1), "0")
-        val stateNext = g.uglobal("state_n_$name", hw_dim_static(1), "0")
+        val S_DRAIN = 2
+        val pipelineDrainCycles = 2
+
+        val state = g.uglobal("state_$name", hw_dim_static(2), "0")
+        val stateNext = g.uglobal("state_n_$name", hw_dim_static(2), "0")
         state.assign(stateNext)
+        stateNext.assign(state)
+
+        val drainCtr = g.uglobal("drain_ctr_$name", hw_dim_static(2), "0")
+        val drainCtrNext = g.uglobal("drain_ctr_n_$name", hw_dim_static(2), "0")
+        drainCtr.assign(drainCtrNext)
+        drainCtrNext.assign(drainCtr)
+
+        val runStepDrain = g.uglobal("runstep_drain_$name", hw_dim_static(1), "0")
+        runStepDrain.assign(0)
 
         // Управление селектором: стартуем один такт, передаем preIndex
         selector.start.assign(g.land(start_i, g.eq2(state, S_IDLE)))
@@ -163,11 +175,46 @@ class SynapticPhaseUnit(private val instName: String = "syn_phase") {
                 )
             }
 
-            // Завершение по done селектора
+            // После done селектора даём 2 такта на дренаж пользовательского пайплайна
             g.begif(g.eq2(selector.done, 1)); run {
+            stateNext.assign(S_DRAIN)
+            drainCtrNext.assign(pipelineDrainCycles)
+        }; g.endif()
+        }; g.endif()
+
+        // FSM: DRAIN — пользовательская логика ещё 1-2 такта дописывает хвост пайплайна
+        g.begif(g.eq2(state, S_DRAIN)); run {
+            busy_o.assign(1)
+
+            val chosenLogic =
+                if (cfg.enableCustomLogic && customLogic != null) {
+                    customLogic
+                } else if (cfg.enableIrLogic && irLogic != null) {
+                    buildIrLogic(
+                        g = g,
+                        irLogic = irLogic,
+                        bindings = bindings,
+                        namePrefix = name
+                    )
+                } else null
+
+            if (chosenLogic != null) {
+                chosenLogic(
+                    SynapticPhaseContext(
+                        g = g,
+                        selector = selector,
+                        runStep = runStepDrain
+                    )
+                )
+            }
+
+            g.begif(g.eq2(drainCtr, 0)); run {
             busy_o.assign(0)
             done_o.assign(1)
             stateNext.assign(S_IDLE)
+        }; g.endif()
+            g.begelse(); run {
+            drainCtrNext.assign(g.sub(drainCtr, 1))
         }; g.endif()
         }; g.endif()
 

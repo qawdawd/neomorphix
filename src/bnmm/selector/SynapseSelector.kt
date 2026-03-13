@@ -320,6 +320,29 @@ class SynapseSelector(private val instName: String = "syn_sel") {
             stateNext.assign(hw_imm(S_IDLE))
         }; g.endif()
 
+        // LAST_RESP: capture the final BRAM response and only then assert done.
+        g.begif(g.eq2(state, hw_imm(S_LAST_RESP))); run {
+            busy_o.assign(hw_imm(1))
+            mem.en?.assign(hw_imm(0))
+            mem.we?.assign(hw_imm(0))
+
+            if (cfg.packing.weightsPerWord == 1) {
+                weight.assign(mem.data)
+            } else {
+                for (i in 0 until cfg.packing.weightsPerWord) {
+                    val lsb = i * cfg.packing.weightWidth
+                    val msb = lsb + cfg.packing.weightWidth - 1
+                    g.begif(g.eq2(laneLatched, hw_imm(i))); run {
+                        weight.assign(mem.data[msb, lsb])
+                    }; g.endif()
+                }
+            }
+
+            done_o.assign(hw_imm(1))
+            busy_o.assign(hw_imm(0))
+            stateNext.assign(hw_imm(S_IDLE))
+        }; g.endif()
+
         return SynapseSelectorPorts(
             start = start_i,
             preIndex = preIdx_i,

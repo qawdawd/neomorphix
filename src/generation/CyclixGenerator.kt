@@ -383,15 +383,12 @@ class CyclixGenerator {
         namingPlan: NamingPlan,
         arch: SnnArch
     ): SynapseSelectorConfig {
-        val synField = phases.syn.synParamField ?: wmems.keys.first()
-        val packPlan: SynPackPlan? = phases.syn.packedSlices
-        val weightWidth = packPlan?.sliceOf(synField)?.let { it.msb - it.lsb + 1 } ?: wmems[synField]?.cfg?.wordWidth
-            ?: arch.staticParameters.firstOrNull()?.bitWidth ?: 1
-        val wordWidth = packPlan?.wordWidth ?: wmems[synField]?.cfg?.wordWidth ?: weightWidth
+        // Temporary fixed selector profile:
+        // 2 parameters per 16-bit word, byte-addressed memory.
         val packing = SynapticPackingConfig(
-            wordWidth = wordWidth,
-            weightWidth = weightWidth,
-            weightsPerWord = if (packPlan != null) wordWidth / weightWidth else 1
+            wordWidth = 16,
+            weightWidth = 8,
+            weightsPerWord = 2
         )
 
         return SynapseSelectorConfig(
@@ -400,7 +397,7 @@ class CyclixGenerator {
             preIndexWidth = selector.cfg.preWidth,
             postIndexWidth = selector.cfg.postWidth,
             packing = packing,
-            wordByteStride = packing.wordWidth / 8,
+            wordByteStride = 2,
             useLinearAddress = selector.cfg.useLinearAddr,
             stepByTick = selector.cfg.stepByTick
         )

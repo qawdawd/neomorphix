@@ -15,8 +15,8 @@ fun main() {
 
     val tick = g.uport("tick", PORT_DIR.IN, hw_dim_static(1), "0")
 
-    val inCfg = FifoConfig(name = "in", dataWidth = 16, depth = 8)
-    val outCfg = FifoConfig(name = "out", dataWidth = 16, depth = 8)
+    val inCfg = FifoConfig(name = "in", dataWidth = 4, depth = 128)
+    val outCfg = FifoConfig(name = "out", dataWidth = 4, depth = 128)
 
     val inFifo = FifoInput().emit(g, inCfg, tick)
     val outFifo = FifoOutput().emit(g, outCfg, tick)

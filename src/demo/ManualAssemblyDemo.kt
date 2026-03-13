@@ -44,9 +44,7 @@ import bnmm.tickgen.TickGenerator
 import cyclix.Generic
 import export.SystemVerilogExporter
 import generation.GeneratedKernel
-import hwast.PORT_DIR
-import hwast.hw_dim_static
-import hwast.hw_var
+import hwast.*
 import kotlin.math.max
 import kotlin.math.min
 
@@ -59,7 +57,7 @@ import kotlin.math.min
 fun main() {
     val arch = SnnArch(
         layerCount = 2,
-        neuronsPerLayer = listOf(16, 16),
+        neuronsPerLayer = listOf(512, 512),
         connectivity = ConnectivityType.FULLY_CONNECTED,
         staticParameters = listOf(
             StaticParamDescriptor(name = "leakage", bitWidth = 8),
@@ -97,7 +95,7 @@ fun main() {
             MemoryBankConfig(
                 name = "weights",
                 addrWidth = archWidths.synapseAddressWidth,
-                dataWidth = 32,
+                dataWidth = 16, // 32,
                 depth = archWidths.totalSynapseCount,
                 writable = false,
                 external = true
@@ -107,6 +105,7 @@ fun main() {
                 addrWidth = bitWidthForCount(postsynCount),
                 dataWidth = 12,
                 depth = postsynCount,
+                ports = 2,
                 writable = true
             ),
             MemoryBankConfig(
@@ -207,14 +206,28 @@ private class ManualAssembly(
         val archWidths = arch.getDerivedWidths()
         val preIndexWidth = archWidths.neuronIndexWidths.first()
         val postIndexWidth = archWidths.neuronIndexWidths.last()
+//        val selectorCfg = SynapseSelectorConfig(
+//            name = cfg.selectors.first().name,
+//            addrWidth = selectorAddrWidth,
+//            preIndexWidth = preIndexWidth,/home/yan/nirsii/nncompiler/neuromorphic_snn/examples/1_mnist/data
+//            postIndexWidth = postIndexWidth,
+//            packing = SynapticPackingConfig(wordWidth = cfg.memoryBanks.first().dataWidth, weightWidth = 16, weightsPerWord = 2),
+////            packing = SynapticPackingConfig(wordWidth = 16, weightWidth = 8, weightsPerWord = 2),
+//            wordByteStride = 16, // default stride for byte-addressed 32-bit words
+//            useLinearAddress = true,
+//            stepByTick = false
+//        )
         val selectorCfg = SynapseSelectorConfig(
             name = cfg.selectors.first().name,
             addrWidth = selectorAddrWidth,
             preIndexWidth = preIndexWidth,
             postIndexWidth = postIndexWidth,
-//            packing = SynapticPackingConfig(wordWidth = cfg.memoryBanks.first().dataWidth, weightWidth = 16, weightsPerWord = 2),
-            packing = SynapticPackingConfig(wordWidth = 32, weightWidth = 16, weightsPerWord = 2),
-            wordByteStride = 32 / 8, // default stride for byte-addressed 32-bit words
+            packing = SynapticPackingConfig(
+                wordWidth = 16,
+                weightWidth = 8,
+                weightsPerWord = 2
+            ),
+            wordByteStride = 2,            // 16 бит = 2 байта (если память byte-addressed)
             useLinearAddress = true,
             stepByTick = false
         )
@@ -229,8 +242,9 @@ private class ManualAssembly(
         val weightBaseWidth = regs.weightBase.vartype.dimensions.first().GetWidth()
         val selectorRuntime = bnmm.selector.SynapseSelectorRuntime(
             postsynCount = sharedPostCount,
-            baseAddress = regs.weightBase[min(weightBaseWidth, selectorCfg.addrWidth) - 1, 0]
+            baseAddress = regs.weightBase // [min(weightBaseWidth, selectorCfg.addrWidth) - 1, 0]
         )
+
         val synSelector = SynapseSelector(selectorCfg.name).emit(
             g = g,
             cfg = selectorCfg,
@@ -337,7 +351,7 @@ private class ManualAssembly(
         val weightCfg = cfg.memoryBanks.firstOrNull()
         if (selectorCfg != null && weightCfg != null) {
 //            val packing = SynapticPackingConfig(wordWidth = weightCfg.dataWidth, weightWidth = 16, weightsPerWord = 2)
-            val packing = SynapticPackingConfig(wordWidth = 32, weightWidth = 16, weightsPerWord = 2)
+            val packing = SynapticPackingConfig(wordWidth = 16, weightWidth = 8, weightsPerWord = 2)
             println("Synapse selector: ${selectorCfg.describe()}")
             println("  packing: ${packing.describe()}")
             println("  weight memory: ${weightCfg.describe()}")
@@ -402,24 +416,63 @@ private class ManualAssembly(
             // Stage d0: weight request from selector
             reqValid_d1_n.assign(ctx.selector.busy)
             g.begif(g.eq2(ctx.selector.busy, 1)); run {
-                postIdx_d1_n.assign(ctx.selector.postIndex)
-            }; g.endif()
+            postIdx_d1_n.assign(ctx.selector.postIndex)
+        }; g.endif()
 
             // Stage d1: latch weight and launch dynamic state read
             dynRd.en?.assign(reqValid_d1)
             dynRd.addr.assign(postIdx_d1)
             reqValid_d2_n.assign(reqValid_d1)
             g.begif(g.eq2(reqValid_d1, 1)); run {
-                weight_d1_n.assign(ctx.selector.weight)
-                postIdx_d2_n.assign(postIdx_d1)
-            }; g.endif()
+            weight_d1_n.assign(ctx.selector.weight)
+            postIdx_d2_n.assign(postIdx_d1)
+        }; g.endif()
 
             // Stage d2: write dynamic state update for the same post index
             dynWr.en.assign(reqValid_d2)
             dynWr.addr.assign(postIdx_d2)
-            dynWr.data.assign(g.add(dynRd.data, weight_d1))
+            dynWr.data.assign(g.add(dynRd.data, weight_d1_n))
         }
     }
+//
+//    private fun synapticAccumulator(g: Generic, dynMem: MemoryBankPorts): (SynapticPhaseContext) -> Unit {
+//
+//        val dynRd = dynMem.readPorts.first()
+//        val dynWr = dynMem.writePorts.first()
+//
+//        // debug / trace signals
+//        val trace_step   = g.uglobal("trace_step",   hw_dim_static(1),  "0")
+//        val trace_pre    = g.uglobal("trace_pre",    hw_dim_static(16), "0")
+//        val trace_post   = g.uglobal("trace_post",   hw_dim_static(16), "0")
+//        val trace_weight = g.uglobal("trace_weight", hw_dim_static(16), "0")
+//        val trace_state  = g.uglobal("trace_state",  hw_dim_static(16), "0")
+//
+//        return { ctx ->
+//
+//            val stepValid = ctx.selector.busy
+//
+//            // ---- signals used in synaptic phase ----
+//
+//            trace_step.assign(stepValid)
+//
+//            trace_pre.assign(ctx.selector.preIndex)
+//            trace_post.assign(ctx.selector.postIndex)
+//
+//            trace_weight.assign(ctx.selector.weight)
+//
+//            // state memory read
+//            dynRd.en?.assign(stepValid)
+//            dynRd.addr.assign(ctx.selector.postIndex)
+//
+//            trace_state.assign(dynRd.data)
+//
+//            // state memory write (без вычислений)
+//            dynWr.en.assign(stepValid)
+//            dynWr.addr.assign(ctx.selector.postIndex)
+//            dynWr.data.assign(dynRd.data)
+//
+//        }
+//    }
 
     private fun somaticThreshold(
         g: Generic,

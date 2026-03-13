@@ -142,10 +142,19 @@ class SynapticPhaseUnit(private val instName: String = "syn_phase") {
         g.begif(g.eq2(state, S_IDLE)); run {
             g.begif(g.eq2(start_i, 1)); run {
             preIndexLatched.assign(runtime.preIndex)
-            busy_o.assign(1)
+            busy_o.assign(0)
             stateNext.assign(S_RUN)
+//            stateNext.assign(S_DELAY_1)
         }; g.endif()
         }; g.endif()
+//
+//        g.begif(g.eq2(state, S_DELAY_1)); run {
+//            stateNext.assign(S_DELAY_2)
+//        }; g.endif()
+//
+//        g.begif(g.eq2(state, S_DELAY_2)); run {
+//            stateNext.assign(S_RUN)
+//        }; g.endif()
 
         // FSM: RUN — пока селектор не закончит обход
         g.begif(g.eq2(state, S_RUN)); run {

@@ -204,15 +204,35 @@ class SynapseSelector(private val instName: String = "syn_sel") {
             busy_o.assign(hw_imm(1))
             stateNext.assign(hw_imm(S_RUN))
         }; g.endif()
+
+        // INIT: compute row base index = preIdx * postsynCount using repeated addition.
+        g.begif(g.eq2(state, S_INIT)); run {
+            busy_o.assign(1)
+            g.begif(g.eq2(preCnt, 0)); run {
+                stateNext.assign(S_RUN)
+            }; g.endif()
+            g.begelse(); run {
+                rowBase.assign(g.add(rowBase, runtime.postsynCount))
+                preCnt.assign(g.sub(preCnt, hw_imm(1)))
+            }; g.endif()
         }; g.endif()
+
+//        g.begif(g.eq2(state, S_GET_VAL)); run {
+////            busy_o.assign(0)
+////            g.begif(g.eq2(start_i, 1)); run {
+////            preLatched.assign(preIdx_i)
+////            postIdx.assign(0)
+////            busy_o.assign(1)
+//            stateNext.assign(S_RUN)
+////        }; g.endif()
+//        }; g.endif()
 
         // RUN: iterate over post-synaptic indices and generate addresses.
         g.begif(g.eq2(state, hw_imm(S_RUN))); run {
             busy_o.assign(hw_imm(1))
 
             // Compute linear address = pre * postsynCount + post.
-            val baseAddr = g.mul(preLatched, runtime.postsynCount)
-            val fullIndex = g.add(baseAddr, postIdx)
+            val fullIndex = g.add(rowBase, postIdx)
             val rawAddr = if (cfg.useLinearAddress) fullIndex else g.cnct(preLatched, postIdx)
             val addrWithBase = if (runtime.baseAddress != null) g.add(rawAddr, runtime.baseAddress) else rawAddr
 
@@ -253,6 +273,51 @@ class SynapseSelector(private val instName: String = "syn_sel") {
             postIdx.assign(postIdx.plus(1))
         }; g.endif()
         }; g.endif()
+
+        // LAST_RESP: capture the final BRAM response and only then assert done.
+        g.begif(g.eq2(state, hw_imm(S_LAST_RESP))); run {
+            busy_o.assign(hw_imm(1))
+            mem.en?.assign(hw_imm(0))
+            mem.we?.assign(hw_imm(0))
+
+            if (cfg.packing.weightsPerWord == 1) {
+                weight.assign(mem.data)
+            } else {
+                for (i in 0 until cfg.packing.weightsPerWord) {
+                    val lsb = i * cfg.packing.weightWidth
+                    val msb = lsb + cfg.packing.weightWidth - 1
+                    g.begif(g.eq2(laneLatched, hw_imm(i))); run {
+                        weight.assign(mem.data[msb, lsb])
+                    }; g.endif()
+                }
+            }
+
+            done_o.assign(hw_imm(1))
+            busy_o.assign(hw_imm(0))
+            stateNext.assign(hw_imm(S_IDLE))
+        }; g.endif()
+
+        // LAST_RESP: capture the final BRAM response and only then assert done.
+        g.begif(g.eq2(state, hw_imm(S_LAST_RESP))); run {
+            busy_o.assign(hw_imm(1))
+            mem.en?.assign(hw_imm(0))
+            mem.we?.assign(hw_imm(0))
+
+            if (cfg.packing.weightsPerWord == 1) {
+                weight.assign(mem.data)
+            } else {
+                for (i in 0 until cfg.packing.weightsPerWord) {
+                    val lsb = i * cfg.packing.weightWidth
+                    val msb = lsb + cfg.packing.weightWidth - 1
+                    g.begif(g.eq2(laneLatched, hw_imm(i))); run {
+                        weight.assign(mem.data[msb, lsb])
+                    }; g.endif()
+                }
+            }
+
+            done_o.assign(hw_imm(1))
+            busy_o.assign(hw_imm(0))
+            stateNext.assign(hw_imm(S_IDLE))
         }; g.endif()
 
         // LAST_RESP: capture the final BRAM response and only then assert done.

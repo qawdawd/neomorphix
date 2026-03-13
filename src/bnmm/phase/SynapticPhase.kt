@@ -114,8 +114,6 @@ class SynapticPhaseUnit(private val instName: String = "syn_phase") {
         // Локальные сигналы
         val S_IDLE = 0
         val S_RUN = 1
-//        val S_DELAY_1 = 2
-//        val S_DELAY_2 = 3
         val S_DRAIN = 2
         val pipelineDrainCycles = 2
 

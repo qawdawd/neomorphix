@@ -416,22 +416,22 @@ private class ManualAssembly(
             // Stage d0: weight request from selector
             reqValid_d1_n.assign(ctx.selector.busy)
             g.begif(g.eq2(ctx.selector.busy, 1)); run {
-            postIdx_d1_n.assign(ctx.selector.postIndex)
-        }; g.endif()
+                postIdx_d1_n.assign(ctx.selector.postIndex)
+            }; g.endif()
 
             // Stage d1: latch weight and launch dynamic state read
             dynRd.en?.assign(reqValid_d1)
             dynRd.addr.assign(postIdx_d1)
             reqValid_d2_n.assign(reqValid_d1)
             g.begif(g.eq2(reqValid_d1, 1)); run {
-            weight_d1_n.assign(ctx.selector.weight)
-            postIdx_d2_n.assign(postIdx_d1)
-        }; g.endif()
+                weight_d1_n.assign(ctx.selector.weight)
+                postIdx_d2_n.assign(postIdx_d1)
+            }; g.endif()
 
             // Stage d2: write dynamic state update for the same post index
             dynWr.en.assign(reqValid_d2)
             dynWr.addr.assign(postIdx_d2)
-            dynWr.data.assign(g.add(dynRd.data, weight_d1_n))
+            dynWr.data.assign(g.add(dynRd.data, weight_d1))
         }
     }
 //

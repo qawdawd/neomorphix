@@ -367,17 +367,57 @@ private class ManualAssembly(
     }
 
     private fun synapticAccumulator(g: Generic, dynMem: MemoryBankPorts): (SynapticPhaseContext) -> Unit {
-        val accumulator = g.uglobal("syn_acc", hw_dim_static(16), "0")
+        val postIndexWidth = arch.getDerivedWidths().neuronIndexWidths.last()
+
+        val reqValid_d1 = g.uglobal("syn_req_valid_d1", hw_dim_static(1), "0")
+        val reqValid_d1_n = g.uglobal("syn_req_valid_d1_n", hw_dim_static(1), "0")
+        reqValid_d1.assign(reqValid_d1_n)
+
+        val postIdx_d1 = g.uglobal("syn_post_idx_d1", hw_dim_static(postIndexWidth), "0")
+        val postIdx_d1_n = g.uglobal("syn_post_idx_d1_n", hw_dim_static(postIndexWidth), "0")
+        postIdx_d1.assign(postIdx_d1_n)
+
+        val weight_d1 = g.uglobal("syn_weight_d1", hw_dim_static(16), "0")
+        val weight_d1_n = g.uglobal("syn_weight_d1_n", hw_dim_static(16), "0")
+        weight_d1.assign(weight_d1_n)
+
+        val reqValid_d2 = g.uglobal("syn_req_valid_d2", hw_dim_static(1), "0")
+        val reqValid_d2_n = g.uglobal("syn_req_valid_d2_n", hw_dim_static(1), "0")
+        reqValid_d2.assign(reqValid_d2_n)
+
+        val postIdx_d2 = g.uglobal("syn_post_idx_d2", hw_dim_static(postIndexWidth), "0")
+        val postIdx_d2_n = g.uglobal("syn_post_idx_d2_n", hw_dim_static(postIndexWidth), "0")
+        postIdx_d2.assign(postIdx_d2_n)
+
+        val dynRd = dynMem.readPorts.first()
         val dynWr = dynMem.writePorts.first()
         return { ctx ->
-            val stepValid = ctx.selector.busy
-            dynWr.en.assign(stepValid)
-            dynWr.addr.assign(ctx.selector.postIndex)
-            val nextAcc = g.add(accumulator, ctx.selector.weight)
-            g.begif(g.eq2(stepValid, 1)); run {
-                accumulator.assign(nextAcc)
-                dynWr.data.assign(nextAcc)
+            // hold-by-default for pipeline registers
+            reqValid_d1_n.assign(reqValid_d1)
+            postIdx_d1_n.assign(postIdx_d1)
+            weight_d1_n.assign(weight_d1)
+            reqValid_d2_n.assign(reqValid_d2)
+            postIdx_d2_n.assign(postIdx_d2)
+
+            // Stage d0: weight request from selector
+            reqValid_d1_n.assign(ctx.selector.busy)
+            g.begif(g.eq2(ctx.selector.busy, 1)); run {
+                postIdx_d1_n.assign(ctx.selector.postIndex)
             }; g.endif()
+
+            // Stage d1: latch weight and launch dynamic state read
+            dynRd.en?.assign(reqValid_d1)
+            dynRd.addr.assign(postIdx_d1)
+            reqValid_d2_n.assign(reqValid_d1)
+            g.begif(g.eq2(reqValid_d1, 1)); run {
+                weight_d1_n.assign(ctx.selector.weight)
+                postIdx_d2_n.assign(postIdx_d1)
+            }; g.endif()
+
+            // Stage d2: write dynamic state update for the same post index
+            dynWr.en.assign(reqValid_d2)
+            dynWr.addr.assign(postIdx_d2)
+            dynWr.data.assign(g.add(dynRd.data, weight_d1))
         }
     }
 
